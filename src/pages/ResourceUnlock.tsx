@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play } from 'lucide-react';
+import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick } from 'lucide-react';
 import { useAdSession } from '../hooks/useAdSession';
 import { useToast } from '../context/ToastContext';
 import { AdInterstitial } from '../components/AdInterstitial';
@@ -17,6 +17,7 @@ export const ResourceUnlock = () => {
     const [isRevealing, setIsRevealing] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [nextAdCountdown, setNextAdCountdown] = useState<number | null>(null);
+    const [showTreeCard, setShowTreeCard] = useState(true);
 
     // Mock resource fetch
     const resource = mockExploreResources.find(r => r.slug === slug) || {
@@ -207,12 +208,16 @@ export const ResourceUnlock = () => {
                             {resource.description}
                         </p>
 
-                        <div className="flex items-center gap-2 text-[12px] font-bold text-textMid mb-6">
+                        <div className="flex items-center flex-wrap justify-center gap-2 text-[12px] font-bold text-textMid mb-6">
                             <span>{resource.unlockCount} unlocks</span>
                             <span className="w-1 h-1 rounded-full bg-border" />
                             <span>{resource.fileSize}</span>
                             <span className="w-1 h-1 rounded-full bg-border" />
-                            <span className="px-2 py-0.5 bg-surfaceAlt rounded-md">{resource.fileType}</span>
+                            <span className="px-2 py-0.5 bg-surfaceAlt rounded-md text-[11px]">{resource.fileType}</span>
+                            <span className="px-2 py-0.5 bg-brandTint text-brand rounded-md text-[11px] flex items-center gap-1">{isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}</span>
+                            {resource.donateEnabled && (
+                                <span className="px-2 py-0.5 bg-[#EBF5EE] text-[#166534] rounded-md text-[11px] flex items-center gap-1">🌱 Trees</span>
+                            )}
                         </div>
 
                         {/* Locked/Revealed Preview Zone */}
@@ -240,13 +245,23 @@ export const ResourceUnlock = () => {
                             )}
                         </div>
 
-                        {resource.donateEnabled && (
+                        {resource.donateEnabled ? (
                             <div className="mt-5 w-full bg-[#EBF5EE] border border-[#BBF7D0] rounded-[16px] p-4 flex items-start gap-4">
                                 <span className="text-[24px] shrink-0 mt-0.5">🌳</span>
                                 <div>
-                                    <h4 className="text-[14px] font-[900] text-[#166534] leading-tight mb-1">Make an Impact</h4>
-                                    <p className="text-[13px] font-[600] text-[#166534]/80 leading-relaxed">
-                                        5% of earnings from your unlock go to planting trees in Kenya.
+                                    <h4 className="text-[14px] font-black text-[#166534] leading-tight mb-1">Make an Impact</h4>
+                                    <p className="text-[13px] font-semibold text-[#166534]/80 leading-relaxed">
+                                        This creator has planted 142 trees so far. 5% of earnings from your unlock will plant trees in Kenya.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="mt-5 w-full bg-surfaceAlt border border-border rounded-[16px] p-4 flex items-start gap-4">
+                                <span className="text-[24px] shrink-0 mt-0.5">🌱</span>
+                                <div>
+                                    <h4 className="text-[14px] font-black text-text leading-tight mb-1">Global Impact</h4>
+                                    <p className="text-[13px] font-semibold text-textMid leading-relaxed">
+                                        AdGate creators have planted 12,450 trees so far. <Link to="/" className="text-brand hover:underline">Create your own free link</Link> at adgate.io.
                                     </p>
                                 </div>
                             </div>
@@ -312,6 +327,10 @@ export const ResourceUnlock = () => {
                                 </button>
                             )}
 
+                            {resource.donateEnabled && nextAdCountdown === null && (
+                                <p className="text-center text-[12px] font-bold text-success mt-3 flex items-center justify-center gap-1"><span className="text-[14px]">🌱</span> Unlocking this also plants trees</p>
+                            )}
+
                             {adsClicked > 0 && adsClicked < totalAdsRequired && nextAdCountdown === null && (
                                 <p className="text-center text-[13px] font-bold text-brand mt-4 animate-popIn">
                                     Great! Just {totalAdsRequired - adsClicked} more {isVideo ? 'video' : 'ad'}{totalAdsRequired - adsClicked > 1 ? 's' : ''} to unlock your free resource.
@@ -342,7 +361,14 @@ export const ResourceUnlock = () => {
                                     </>
                                 )}
                             </button>
-                            <p className="text-center text-[12px] font-bold text-textMid mb-8">
+                            {resource.donateEnabled && (
+                                <button
+                                    className="w-full h-[44px] bg-[#EBF5EE] hover:bg-[#dcfce7] border border-[#BBF7D0] text-[#166534] font-black text-[14px] rounded-[14px] flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-[0.98] mb-2"
+                                >
+                                    Share Your Impact 🌱
+                                </button>
+                            )}
+                            <p className="text-center text-[12px] font-bold text-textMid mb-8 mt-1">
                                 {resource.fileSize} • {resource.fileType} Secure Download
                             </p>
 
@@ -402,6 +428,21 @@ export const ResourceUnlock = () => {
                         onClick={handleAdClick}
                     />
                 )
+            )}
+
+            {/* Trees Counter Fixed Card */}
+            {showTreeCard && (
+                <div className="hidden sm:flex fixed bottom-6 left-6 z-40 w-[240px] bg-white border border-border shadow-[0_4px_16px_rgba(0,0,0,0.08)] rounded-[16px] p-4 flex-col animate-slideInRight">
+                    <button onClick={() => setShowTreeCard(false)} className="absolute top-3 right-3 text-textLight hover:text-text transition-colors">
+                        <X size={16} />
+                    </button>
+                    <span className="text-[20px] mb-1">🌳</span>
+                    <span className="text-[13px] font-black text-text leading-tight mb-1">AdGate Forest</span>
+                    <span className="text-[11px] font-bold text-textMid mb-3">12,450 trees planted</span>
+                    <div className="w-full h-1.5 bg-surfaceAlt rounded-full overflow-hidden">
+                        <div className="h-full bg-success w-[45%]" />
+                    </div>
+                </div>
             )}
         </div>
     );

@@ -59,17 +59,7 @@ export const ExplorePage = () => {
     };
 
     return (
-        <div className="w-full min-h-screen bg-bg flex flex-col items-center animate-fadeIn pb-24">
-
-            {/* Header */}
-            <header className="w-full h-14 flex items-center px-4 sm:px-6 shrink-0 bg-white border-b border-border sticky top-0 z-30 shadow-sm">
-                <Link to="/" className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-md bg-brand flex items-center justify-center text-white font-black text-[11px] leading-none">
-                        AG
-                    </div>
-                    <span className="font-black text-[16px] tracking-tight">AdGate</span>
-                </Link>
-            </header>
+        <div className="w-full min-h-screen bg-bg flex flex-col items-center animate-fadeIn pb-0">
 
             <div className="w-full max-w-[800px] px-4 pt-8 sm:pt-12 pb-6">
                 <h1 className="text-[28px] sm:text-[36px] font-black leading-tight text-text mb-2">Explore Free Resources</h1>
@@ -221,6 +211,29 @@ export const ExplorePage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Standard Footer */}
+            <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center mt-12">
+                <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-2 opacity-80">
+                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                            AG
+                        </div>
+                        <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>
+                    </div>
+
+                    <div className="flex items-center gap-6 text-[13px] font-bold text-textMid">
+                        <Link to="/explore" className="hover:text-text transition-colors">Explore</Link>
+                        <a href="#" className="hover:text-text transition-colors">Terms of Service</a>
+                        <a href="#" className="hover:text-text transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-text transition-colors">Contact</a>
+                    </div>
+
+                    <div className="text-[12px] font-bold text-textLight">
+                        © {new Date().getFullYear()} AdGate Inc. All rights reserved.
+                    </div>
+                </div>
+            </footer>
 
         </div>
     );

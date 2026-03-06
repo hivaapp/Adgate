@@ -92,7 +92,10 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
             <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col bg-gradient-to-t from-black/90 to-transparent pt-12">
                 <div className="px-4 sm:px-6 pb-6 flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span className="text-white font-black text-[18px] drop-shadow-md">{ad.brand}</span>
+                        <span className="text-white font-black text-[18px] drop-shadow-md flex items-center gap-2">
+                            {ad.brand}
+                            <span className="text-[11px] bg-[#BBF7D0]/20 text-[#BBF7D0] px-1.5 py-0.5 rounded font-bold tracking-tight">🌱 + trees</span>
+                        </span>
                         <span className="text-white/80 font-bold text-[13px]">{ad.tagline}</span>
                     </div>
                     <button

@@ -100,7 +100,7 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path="/explore" element={<ExplorePage />} />
+              <Route path="/explore" element={<AppLayout><ExplorePage /></AppLayout>} />
               <Route path="/r/:slug" element={<ResourceUnlock />} />
               <Route path="/@:username" element={<CreatorProfile />} />
               <Route path="*" element={<NotFound />} />

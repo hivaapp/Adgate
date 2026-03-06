@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, TrendingUp, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
 import { AdTypeSelector } from '../components/AdTypeSelector';
 import { TreesLandingSection } from '../components/TreesLandingSection';
@@ -45,9 +45,11 @@ export const Landing = () => {
     const [isCopied, setIsCopied] = useState(false);
 
     // Calc state
-    const [calcViews, setCalcViews] = useState(5000);
-    const [calcAds, setCalcAds] = useState(2);
-    const [calcAdType, setCalcAdType] = useState<"click" | "video">("click");
+    const [calcViews, setCalcViews] = useState(2000);
+    const [calcAds, setCalcAds] = useState(1);
+    const [calcAdType, setCalcAdType] = useState<"click" | "video">("video");
+    const [calcDonateOn, setCalcDonateOn] = useState(false);
+    const [calcShowFormula, setCalcShowFormula] = useState(false);
 
     // FAQ state
     const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -63,14 +65,10 @@ export const Landing = () => {
     };
     const activeEstimate = getAdEstimates(adCount);
 
-    const cpmRate = calcAdType === 'video' ? 0.065 : 0.035;
-    const calcEarningsValue = calcViews * (calcAds * cpmRate);
-    const calcEarnings = calcEarningsValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    const otherRate = calcAdType === 'video' ? 0.035 : 0.065;
-    const otherEarningsValue = calcViews * (calcAds * otherRate);
-    const diffAmount = Math.abs(calcEarningsValue - otherEarningsValue);
-    const showDiff = diffAmount > 0;
-    const isMore = calcAdType === 'video';
+    const calcRate = calcAdType === 'video' ? 0.065 : 0.035;
+    const calcGross = Math.round(calcViews * 0.6 * calcAds * calcRate);
+    const calcNet = calcGross * 0.95;
+    const calcFinal = calcDonateOn ? calcNet - (calcNet * 0.05) : calcNet;
 
     // Handlers
     const handleDragOver = (e: React.DragEvent) => {
@@ -393,93 +391,136 @@ export const Landing = () => {
             </div>
 
             {/* Earnings Calculator */}
+            {/* Earnings Calculator */}
             <div className="w-full bg-bg py-24 flex flex-col items-center">
-                <div className="w-full max-w-[800px] px-4 flex flex-col md:flex-row gap-12 items-center">
-                    <div className="flex-1">
-                        <span className="text-success font-black text-[12px] uppercase tracking-widest mb-2 inline-block">Calculator</span>
-                        <h2 className="text-[32px] sm:text-[40px] font-black text-text leading-tight mb-4">Calculate your potential.</h2>
-                        <p className="text-[16px] text-textMid font-bold mb-8">See how much you could earn compared to traditional URL shorteners.</p>
-
-                        <div className="flex flex-col gap-6 w-full max-w-[400px]">
-                            <div className="flex flex-col gap-3">
-                                <div className="flex justify-between font-bold">
-                                    <span className="text-[14px] text-text">Expected Unlocks</span>
-                                    <span className="text-[14px] text-brand">{calcViews.toLocaleString()}</span>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="100" max="50000" step="100"
-                                    value={calcViews}
-                                    onChange={(e) => setCalcViews(Number(e.target.value))}
-                                    className="w-full h-2 bg-border rounded-lg appearance-none cursor-pointer accent-brand"
-                                />
-                            </div>
-
-                            <div className="flex flex-col gap-3">
-                                <div className="flex justify-between font-bold">
-                                    <span className="text-[14px] text-text">Ad Type</span>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => setCalcAdType("video")}
-                                        className={`flex-1 py-1.5 text-[14px] font-bold rounded-[30px] transition-colors border-2 ${calcAdType === "video" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-[#E8E8E8] text-[#888] bg-transparent'}`}
-                                    >
-                                        Video Ads
-                                    </button>
-                                    <button
-                                        onClick={() => setCalcAdType("click")}
-                                        className={`flex-1 py-1.5 text-[14px] font-bold rounded-[30px] transition-colors border-2 ${calcAdType === "click" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-[#E8E8E8] text-[#888] bg-transparent'}`}
-                                    >
-                                        Click Ads
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-3">
-                                <div className="flex justify-between font-bold">
-                                    <span className="text-[14px] text-text">Ads per Unlock</span>
-                                    <span className="text-[14px] text-brand">{calcAds} Ads</span>
-                                </div>
-                                <div className="flex gap-2 bg-surfaceAlt p-1 rounded-lg border border-border">
-                                    {[1, 2, 3].map(num => (
-                                        <button
-                                            key={num}
-                                            onClick={() => setCalcAds(num)}
-                                            className={`flex-1 py-1.5 text-[14px] font-bold rounded-md transition-colors ${calcAds === num ? 'bg-white shadow-sm text-brand' : 'text-textMid hover:text-text'}`}
-                                        >
-                                            {num}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                <div className="w-full max-w-[600px] px-4 flex flex-col items-center">
+                    <div className="flex flex-col items-center text-center mb-10">
+                        <h2 className="text-[20px] font-black text-text mb-1">Calculate Your Earnings</h2>
+                        <p className="text-[14px] text-textMid font-bold">See what your content could earn you every month</p>
                     </div>
 
-                    <div className="w-full md:w-[320px] bg-white rounded-[24px] border border-border p-6 shadow-xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand blur-[60px] opacity-10 rounded-full" />
-                        <h3 className="text-[14px] font-bold text-textMid mb-2 uppercase tracking-wide">Estimated Earnings</h3>
-                        <div className="text-[48px] font-black text-text leading-none mb-6">
-                            {calcEarnings}
+                    <div className="w-full bg-white rounded-[18px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-border">
+                        {/* Input Row 1 - Monthly Link Clicks */}
+                        <div className="flex flex-col gap-3 mb-6">
+                            <label className="text-[13px] font-[800] text-[#333]">Monthly link clicks</label>
+                            <input
+                                type="range"
+                                min="100" max="100000" step="100"
+                                value={calcViews}
+                                onChange={(e) => setCalcViews(Number(e.target.value))}
+                                className="w-full h-2 bg-border rounded-lg appearance-none cursor-pointer accent-[#E8312A]"
+                            />
+                            <div className="text-[18px] font-[900] text-[#E8312A] -mt-1">
+                                {calcViews.toLocaleString()} clicks
+                            </div>
+                            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                                {[500, 1000, 5000, 10000, 50000].map(val => (
+                                    <button
+                                        key={val}
+                                        onClick={() => setCalcViews(val)}
+                                        className="h-[34px] px-4 rounded-[50px] border border-border text-textMid font-bold text-[13px] hover:bg-surfaceAlt whitespace-nowrap shrink-0"
+                                    >
+                                        {val >= 1000 ? `${val / 1000}K` : val}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-6 border-t border-border mt-6">
-                            {showDiff && (
-                                <div className="text-[12px] font-bold text-textMid text-center">
-                                    Switch to {calcAdType === 'video' ? 'click' : 'video'} to earn {isMore ? 'less' : 'more'} est. {otherEarningsValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                                </div>
-                            )}
-                            <div className="flex justify-between text-[13px] mt-2">
-                                <span className="font-bold text-textLight">Traditional Shortener</span>
-                                <span className="font-bold text-text">~${((calcViews / 1000) * 1.5).toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between text-[13px]">
-                                <span className="font-bold text-textLight flex items-center gap-1"><TrendingUp size={14} /> Revenue Diff</span>
-                                <span className="font-bold text-success">+{((calcEarningsValue) / ((calcViews / 1000) * 1.5)).toFixed(1)}x</span>
+                        {/* Input Row 2 - Ad Type */}
+                        <div className="flex flex-col gap-3 mb-6">
+                            <label className="text-[13px] font-[800] text-[#333]">Ad type</label>
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <button
+                                    onClick={() => setCalcAdType("video")}
+                                    className={`flex-1 h-[44px] text-[14px] font-[800] rounded-[6px] transition-colors border flex justify-center items-center gap-2 ${calcAdType === "video" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-border text-textMid bg-white hover:border-textLight'}`}
+                                >
+                                    🎬 Video Ads
+                                </button>
+                                <button
+                                    onClick={() => setCalcAdType("click")}
+                                    className={`flex-1 h-[44px] text-[14px] font-[800] rounded-[6px] transition-colors border flex justify-center items-center gap-2 ${calcAdType === "click" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-border text-textMid bg-white hover:border-textLight'}`}
+                                >
+                                    👆 Click Ads
+                                </button>
                             </div>
                         </div>
-                        <button className="w-full mt-6 h-[44px] bg-bg border border-border rounded-lg text-text font-black text-[14px] hover:bg-surfaceAlt transition-colors">
-                            Start Earning
-                        </button>
+
+                        {/* Input Row 3 - Ads per Unlock */}
+                        <div className="flex flex-col gap-3 mb-6">
+                            <label className="text-[13px] font-[800] text-[#333]">Ads per unlock</label>
+                            <div className="flex flex-row gap-2 items-stretch">
+                                {[1, 2, 3].map(num => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setCalcAds(num)}
+                                        className={`w-14 h-14 rounded-[12px] font-black text-[20px] transition-all flex items-center justify-center border-2 ${calcAds === num
+                                            ? 'bg-brand text-white border-brand'
+                                            : 'bg-white border-border text-textMid hover:border-brandTint'
+                                            }`}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Input Row 4 - Donate To Trees Toggle */}
+                        <div className="flex items-center justify-between mb-6">
+                            <label className="text-[13px] font-[700] text-[#111]">Donate 5% to trees 🌱</label>
+                            <button
+                                onClick={() => setCalcDonateOn(!calcDonateOn)}
+                                className={`w-[44px] h-[24px] rounded-full p-1 transition-colors relative shrink-0 ${calcDonateOn ? 'bg-success' : 'bg-textLight'}`}
+                            >
+                                <div className={`w-[16px] h-[16px] bg-white rounded-full transition-transform absolute top-1 ${calcDonateOn ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                            </button>
+                        </div>
+
+                        <div className="h-px w-full bg-border mb-6" />
+
+                        {/* Results Block */}
+                        <div className="flex flex-col mb-4">
+                            <span className="text-[11px] font-[800] text-textMid uppercase tracking-wide">Estimated Monthly Earnings</span>
+                            <div className="text-[40px] font-[900] text-[#E8312A] leading-tight mb-3">
+                                ${calcGross.toLocaleString('en-US')}
+                            </div>
+
+                            <span className="text-[11px] text-textMid mb-1 font-bold">After 5% Platform Fee</span>
+                            <div className="text-[24px] font-[900] text-[#111] mb-2 leading-tight">
+                                ${calcNet.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                            </div>
+
+                            <div className={`flex flex-col overflow-hidden transition-all duration-300 ${calcDonateOn ? 'max-h-[80px] opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'}`}>
+                                <span className="text-[11px] text-success font-bold mb-1">After Tree Donation (5% of yours)</span>
+                                <div className="text-[20px] font-[800] text-success leading-tight">
+                                    ${calcFinal.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Disclosure */}
+                        <div className="w-full bg-surfaceAlt border border-border rounded-[12px] overflow-hidden">
+                            <button
+                                onClick={() => setCalcShowFormula(!calcShowFormula)}
+                                className="w-full h-[40px] px-4 flex items-center justify-between hover:bg-border/50 transition-colors"
+                            >
+                                <span className="text-[12px] font-[700] text-[#666]">How is this calculated?</span>
+                                <ChevronDown size={16} className={`text-textMid transition-transform ${calcShowFormula ? 'rotate-180' : ''}`} />
+                            </button>
+                            {calcShowFormula && (
+                                <div className="px-4 pb-4 pt-1">
+                                    <p className="text-[11px] font-mono text-textMid leading-relaxed">
+                                        clicks &times; 60% unlock rate &times; {calcAds} ads &times; ${calcRate.toFixed(3)} per unlock = gross. Gross &times; 95% = your earnings.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Annual Projection */}
+                        <div className="mt-6 text-center">
+                            <span className="text-[14px] font-[800] text-[#333]">
+                                That's est. ${(calcFinal * 12).toLocaleString('en-US', { maximumFractionDigits: 0 })} per year 🎯
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

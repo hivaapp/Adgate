@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import { SignInModal } from './SignInModal';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Lightbulb, Briefcase, Compass, Tag, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
     const { isLoggedIn, currentUser } = useAuth();
@@ -11,18 +12,27 @@ export const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const isDashboard = location.pathname === '/dashboard';
+    const navigate = useNavigate();
+
+    const handleMobileNav = (href: string) => {
+        setIsMenuOpen(false);
+        setTimeout(() => {
+            navigate(href);
+        }, 50);
+    };
 
     const DESKTOP_LINKS = [
         { label: 'How It Works', href: '/how-it-works' },
+        { label: 'Use Cases', href: '/use-cases' },
+        { label: 'Explore', href: '/explore' },
         { label: 'Pricing', href: '/pricing' },
-        { label: 'For Creators', href: '/use-cases' },
     ];
 
     const MOBILE_LINKS = [
-        { label: 'How It Works', href: '/how-it-works' },
-        { label: 'Pricing', href: '/pricing' },
-        { label: 'For Creators', href: '/use-cases' },
-        { label: 'Use Cases', href: '/use-cases' },
+        { label: 'How It Works', href: '/how-it-works', icon: <Lightbulb size={20} className="text-textMid absolute left-0" /> },
+        { label: 'Use Cases', href: '/use-cases', icon: <Briefcase size={20} className="text-textMid absolute left-0" /> },
+        { label: 'Explore', href: '/explore', icon: <Compass size={20} className="text-textMid absolute left-0" /> },
+        { label: 'Pricing', href: '/pricing', icon: <Tag size={20} className="text-textMid absolute left-0" /> },
     ];
 
     const isMarketingPage = ['/pricing', '/how-it-works', '/use-cases'].includes(location.pathname);
@@ -107,14 +117,17 @@ export const Navbar = () => {
                     <div className="w-[80%] max-w-[320px] h-full bg-bg shadow-xl animate-slideInRight flex flex-col pt-20 relative z-50">
                         <div className="flex flex-col flex-1 px-4">
                             {MOBILE_LINKS.map(link => (
-                                <Link
+                                <button
                                     key={link.label}
-                                    to={link.href}
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full h-[56px] border-b border-border flex items-center font-extrabold text-[16px] text-text hover:text-brand transition-colors"
+                                    onClick={() => handleMobileNav(link.href)}
+                                    className="w-full h-[56px] border-b border-border flex items-center justify-between font-extrabold text-[15px] text-[#111] hover:text-brand transition-colors relative pl-[40px] pr-2"
                                 >
-                                    {link.label}
-                                </Link>
+                                    <div className="absolute left-0 w-[40px] h-[40px] flex items-center justify-center">
+                                        {link.icon}
+                                    </div>
+                                    <span>{link.label}</span>
+                                    <ChevronRight size={20} className="text-textMid" />
+                                </button>
                             ))}
                             {isLoggedIn && (
                                 <Link
