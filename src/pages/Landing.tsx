@@ -515,6 +515,42 @@ export const Landing = () => {
                 </div>
             </div>
 
+            {/* Use Cases Teaser */}
+            <div className="w-full bg-white border-b border-border py-20 flex flex-col items-center overflow-hidden">
+                <div className="w-full flex flex-col items-center">
+                    <h2 className="text-[20px] font-black text-text leading-tight text-center mb-1">What Creators Are Sharing</h2>
+                    <p className="text-[14px] text-textMid text-center mb-10">Any content your audience wants is content you can monetize.</p>
+
+                    <div className="w-full overflow-x-auto no-scrollbar px-4 pb-4 flex justify-start sm:justify-center mb-8">
+                        <div className="flex gap-4">
+                            {[
+                                { emoji: '🤖', name: 'AI & Prompts', desc: 'up to $375/mo' },
+                                { emoji: '📚', name: 'Education', desc: 'up to $500/mo' },
+                                { emoji: '🎨', name: 'Design', desc: 'up to $600/mo' },
+                                { emoji: '💼', name: 'Business', desc: 'up to $700/mo' },
+                                { emoji: '💻', name: 'Coding', desc: 'up to $520/mo' },
+                                { emoji: '📷', name: 'Photography', desc: 'up to $760/mo' }
+                            ].map((card, i) => (
+                                <Link
+                                    to={`/use-cases?category=${encodeURIComponent(card.name)}`}
+                                    key={i}
+                                    className="w-[160px] h-[180px] shrink-0 bg-white rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-border p-4 flex flex-col items-center justify-center hover:-translate-y-1 transition-transform"
+                                >
+                                    <div className="text-[40px] mb-4">{card.emoji}</div>
+                                    <h3 className="text-[14px] font-black text-[#111] text-center mb-1">{card.name}</h3>
+                                    <span className="text-[12px] font-extrabold text-success text-center">{card.desc}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <Link to="/use-cases" className="h-[44px] w-full sm:w-[160px] max-w-[200px] border-2 border-[#E8312A] text-[#E8312A] font-black text-[14px] rounded-full flex items-center justify-center hover:bg-[#FFF0EF] transition-colors mb-3 px-4">
+                        See All 18 Use Cases →
+                    </Link>
+                    <span className="text-[12px] text-textMid text-center">Estimated monthly earnings based on 10K monthly link clicks.</span>
+                </div>
+            </div>
+
             {/* FAQ */}
             <div className="w-full bg-bg py-20 flex flex-col items-center">
                 <div className="w-full max-w-[600px] px-4">

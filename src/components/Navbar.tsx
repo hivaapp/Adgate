@@ -12,11 +12,20 @@ export const Navbar = () => {
 
     const isDashboard = location.pathname === '/dashboard';
 
-    const NAV_LINKS = [
-        { label: 'Explore', href: '/explore' },
-        { label: 'How it Works', href: '/#how-it-works' },
-        { label: 'Pricing', href: '/#pricing' },
+    const DESKTOP_LINKS = [
+        { label: 'How It Works', href: '/how-it-works' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'For Creators', href: '/use-cases' },
     ];
+
+    const MOBILE_LINKS = [
+        { label: 'How It Works', href: '/how-it-works' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'For Creators', href: '/use-cases' },
+        { label: 'Use Cases', href: '/use-cases' },
+    ];
+
+    const isMarketingPage = ['/pricing', '/how-it-works', '/use-cases'].includes(location.pathname);
 
     return (
         <>
@@ -25,12 +34,20 @@ export const Navbar = () => {
                     <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-black text-[12px] leading-none shrink-0 cursor-pointer">
                         AG
                     </div>
-                    <span className="font-black text-[18px] tracking-tight text-text">AdGate</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                        <span className="font-black text-[18px] tracking-tight text-text">AdGate</span>
+                        {isMarketingPage && (
+                            <span className="text-[11px] font-bold text-textMid flex sm:hidden hover:text-text transition-colors mt-0.5">← Back to Home</span>
+                        )}
+                    </div>
                 </Link>
 
                 {/* Desktop Nav */}
                 <div className="hidden sm:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-                    {NAV_LINKS.map(link => (
+                    {isMarketingPage && (
+                        <Link to="/" className="text-[11px] font-bold text-textMid hover:text-text transition-colors mr-2">← Back to Home</Link>
+                    )}
+                    {DESKTOP_LINKS.map(link => (
                         <Link key={link.label} to={link.href} className="text-[14px] font-bold text-textMid hover:text-text transition-colors">
                             {link.label}
                         </Link>
@@ -89,7 +106,7 @@ export const Navbar = () => {
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn" onClick={() => setIsMenuOpen(false)} />
                     <div className="w-[80%] max-w-[320px] h-full bg-bg shadow-xl animate-slideInRight flex flex-col pt-20 relative z-50">
                         <div className="flex flex-col flex-1 px-4">
-                            {NAV_LINKS.map(link => (
+                            {MOBILE_LINKS.map(link => (
                                 <Link
                                     key={link.label}
                                     to={link.href}

@@ -11,6 +11,11 @@ import { CreatorProfile } from './pages/CreatorProfile';
 import { ExplorePage } from './pages/ExplorePage';
 import { JoinPage } from './pages/JoinPage';
 
+import { Pricing } from './pages/Pricing';
+import { HowItWorks } from './pages/HowItWorks';
+import { UseCases } from './pages/UseCases';
+import { ScrollToTop } from './components/ScrollToTop';
+
 const AppLayout = ({ children, hideNav = false }: { children: ReactNode, hideNav?: boolean }) => (
   <>
     {!hideNav && <Navbar />}
@@ -57,10 +62,14 @@ const NotFound = () => (
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <ToastProvider>
         <AuthProvider>
           <ProgressProvider>
             <Routes>
+              <Route path="/pricing" element={<AppLayout><Pricing /></AppLayout>} />
+              <Route path="/how-it-works" element={<AppLayout><HowItWorks /></AppLayout>} />
+              <Route path="/use-cases" element={<AppLayout><UseCases /></AppLayout>} />
               <Route
                 path="/"
                 element={
