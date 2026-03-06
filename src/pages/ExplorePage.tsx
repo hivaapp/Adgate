@@ -1,0 +1,227 @@
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, Grid, List as ListIcon, ChevronRight } from 'lucide-react';
+import { mockExploreResources } from '../lib/mockData';
+
+const CATEGORIES = ['All', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
+const SORTS = ['Most Unlocked', 'Newest', 'Trending'];
+
+export const ExplorePage = () => {
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [sortBy, setSortBy] = useState('Most Unlocked');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [visibleCount, setVisibleCount] = useState(6);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+    const filteredResources = useMemo(() => {
+        let res = [...mockExploreResources];
+        if (selectedCategory !== 'All') {
+            res = res.filter(r => r.category === selectedCategory);
+        }
+        if (searchQuery.trim()) {
+            res = res.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        }
+        // Mock sort implementation
+        if (sortBy === 'Newest') res.reverse();
+        return res;
+    }, [selectedCategory, searchQuery, sortBy]);
+
+    const visibleResources = filteredResources.slice(0, visibleCount);
+
+    const handleLoadMore = () => {
+        setIsLoadingMore(true);
+        setTimeout(() => {
+            setVisibleCount(prev => prev + 6);
+            setIsLoadingMore(false);
+        }, 800);
+    };
+
+    const getFileBgClass = (type: string) => {
+        switch (type) {
+            case 'ZIP': return 'bg-[#f4ecf7] text-[#8e44ad]';
+            case 'PDF': return 'bg-[#fdedec] text-[#e74c3c]';
+            case 'DOC': return 'bg-[#ebf5fb] text-[#2980b9]';
+            case 'IMAGES': return 'bg-[#e9f7ef] text-[#27ae60]';
+            default: return 'bg-surfaceAlt text-textMid';
+        }
+    };
+
+    const getFileEmoji = (type: string) => {
+        switch (type) {
+            case 'ZIP': return '📦';
+            case 'PDF': return '📄';
+            case 'DOC': return '📝';
+            case 'IMAGES': return '🖼️';
+            case 'LINK': return '🔗';
+            default: return '📁';
+        }
+    };
+
+    return (
+        <div className="w-full min-h-screen bg-bg flex flex-col items-center animate-fadeIn pb-24">
+
+            {/* Header */}
+            <header className="w-full h-14 flex items-center px-4 sm:px-6 shrink-0 bg-white border-b border-border sticky top-0 z-30 shadow-sm">
+                <Link to="/" className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-md bg-brand flex items-center justify-center text-white font-black text-[11px] leading-none">
+                        AG
+                    </div>
+                    <span className="font-black text-[16px] tracking-tight">AdGate</span>
+                </Link>
+            </header>
+
+            <div className="w-full max-w-[800px] px-4 pt-8 sm:pt-12 pb-6">
+                <h1 className="text-[28px] sm:text-[36px] font-black leading-tight text-text mb-2">Explore Free Resources</h1>
+                <p className="text-[15px] font-semibold text-textMid">Discover files, prompts, and guides — free with a quick ad click.</p>
+            </div>
+
+            {/* Sticky Search bar on scroll simulation */}
+            <div className="w-full max-w-[800px] px-4 mb-6 sticky top-14 z-20 bg-bg pt-2 pb-2">
+                <div className="relative w-full">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-textLight" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Search for resources..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full h-[48px] bg-white border border-border rounded-[14px] pl-10 pr-4 font-bold text-[14px] outline-none focus:border-brand focus:ring-1 focus:ring-brand shadow-sm"
+                    />
+                </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="w-full max-w-[800px] px-4 mb-6 relative">
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                    {CATEGORIES.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={`h-[36px] px-[14px] rounded-full font-extrabold text-[13px] whitespace-nowrap shrink-0 transition-colors snap-start
+                                ${selectedCategory === cat ? 'bg-brand text-white border-brand border' : 'bg-white text-text border border-border hover:bg-surfaceAlt'}
+                            `}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Sort Row */}
+            <div className="w-full max-w-[800px] px-4 mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <span className="text-[12px] font-bold text-textMid">Sort by</span>
+                    <select
+                        value={sortBy}
+                        onChange={e => setSortBy(e.target.value)}
+                        className="bg-transparent font-black text-[14px] text-text outline-none focus:ring-0 cursor-pointer"
+                    >
+                        {SORTS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                </div>
+                <div className="flex bg-white rounded-lg p-0.5 border border-border">
+                    <button
+                        onClick={() => setViewMode('grid')}
+                        className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
+                    >
+                        <Grid size={18} />
+                    </button>
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
+                    >
+                        <ListIcon size={18} />
+                    </button>
+                </div>
+            </div>
+
+            {/* Resources Container */}
+            <div className="w-full max-w-[800px] px-4 flex flex-col items-center">
+                {viewMode === 'grid' ? (
+                    <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+                        {visibleResources.map(r => (
+                            <Link to={`/r/${r.slug}`} key={r.id} className="bg-white rounded-[14px] border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col group">
+                                <div className={`h-[100px] w-full ${getFileBgClass(r.fileType)} flex items-center justify-center text-[40px] group-hover:scale-105 transition-transform duration-500`}>
+                                    {getFileEmoji(r.fileType)}
+                                </div>
+                                <div className="p-3 sm:p-4 flex flex-col flex-1">
+                                    <h3 className="font-extrabold text-[13px] sm:text-[14px] leading-tight mb-1 line-clamp-2 min-h-[40px]">{r.title}</h3>
+                                    <span className="text-[11px] font-bold text-textMid mb-3 truncate">by @{r.creatorHandle}</span>
+
+                                    <div className="flex items-center gap-1.5 mb-3">
+                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
+                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded">{r.adCount} Ads</span>
+                                    </div>
+
+                                    <div className="mt-auto flex items-center justify-between">
+                                        <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
+                                    </div>
+
+                                    <button className="w-full h-10 mt-3 bg-brand text-white font-black text-[13px] rounded-lg group-hover:bg-brand-hover transition-colors shadow-sm">
+                                        Unlock Free
+                                    </button>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="w-full flex justify-center w-full mb-8 flex-col gap-3">
+                        {visibleResources.map(r => (
+                            <Link to={`/r/${r.slug}`} key={r.id} className="w-full h-[72px] bg-white rounded-[14px] border border-border p-3 flex items-center hover:bg-surfaceAlt transition-colors group">
+                                <div className={`w-12 h-12 rounded-[10px] shrink-0 ${getFileBgClass(r.fileType)} flex items-center justify-center text-[24px] mr-3`}>
+                                    {getFileEmoji(r.fileType)}
+                                </div>
+                                <div className="flex flex-col flex-1 min-w-0 pr-2">
+                                    <h3 className="font-extrabold text-[14px] leading-tight truncate">{r.title}</h3>
+                                    <span className="text-[12px] font-bold text-textMid truncate mt-0.5">by @{r.creatorHandle}</span>
+                                </div>
+                                <div className="flex flex-col items-end shrink-0 mr-3">
+                                    <span className="text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adCount} Ads</span>
+                                    <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
+                                </div>
+                                <ChevronRight className="text-textLight group-hover:text-text transition-colors" size={20} />
+                            </Link>
+                        ))}
+                    </div>
+                )}
+
+                {filteredResources.length === 0 && (
+                    <div className="py-12 flex flex-col items-center">
+                        <div className="text-[32px] mb-4 opacity-50">🔍</div>
+                        <h3 className="text-[16px] font-black text-text mb-1">No resources found</h3>
+                        <p className="text-[14px] text-textMid font-medium">Try adjusting your search or category filter</p>
+                    </div>
+                )}
+
+                {visibleCount < filteredResources.length && (
+                    <button
+                        onClick={handleLoadMore}
+                        disabled={isLoadingMore}
+                        className="h-[44px] px-8 border border-brand text-brand font-black text-[14px] rounded-full hover:bg-brandTint transition-colors flex items-center justify-center"
+                    >
+                        {isLoadingMore ? <div className="w-5 h-5 border-2 border-brand/30 border-t-brand rounded-full animate-spin" /> : "Load More"}
+                    </button>
+                )}
+            </div>
+
+            {/* Creator Leaderboard Section */}
+            <div className="w-full bg-white border-y border-border py-8 mt-12 overflow-hidden flex flex-col items-center">
+                <div className="w-full max-w-[800px] px-4">
+                    <h2 className="text-[20px] font-black text-text mb-6">Top Creators This Week</h2>
+                    <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="w-[140px] shrink-0 bg-surfaceAlt border border-border rounded-[16px] p-4 flex flex-col items-center text-center snap-start snap-always">
+                                <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-black text-[20px] mb-2">{['A', 'M', 'S', 'D', 'C'][i - 1]}</div>
+                                <span className="text-[13px] font-black leading-tight mb-0.5 line-clamp-1">{['Alex Creator', 'Marc Dev', 'Sarah M.', 'Design Guy', 'Creative Co'][i - 1]}</span>
+                                <span className="text-[11px] font-bold text-textMid mb-2 truncate max-w-full">@{['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}</span>
+                                <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
+                                <Link to={`/@${['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}`} className="mt-auto text-[12px] font-bold text-brand hover:underline">View Profile</Link>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    );
+};

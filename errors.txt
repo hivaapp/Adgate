@@ -1,0 +1,24 @@
+﻿src/components/AdInterstitial.tsx(2,10): error TS1484: 'MockAd' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/dashboard/tabs/AccountTab.tsx(1,20): error TS6133: 'useCallback' is declared but its value is never read.
+src/components/dashboard/tabs/AccountTab.tsx(10,34): error TS6133: 'updateProfile' is declared but its value is never read.
+src/components/dashboard/tabs/AccountTab.tsx(10,49): error TS6133: 'isLoggingIn' is declared but its value is never read.
+src/components/dashboard/tabs/HomeTab.tsx(7,13): error TS2339: Property 'user' does not exist on type 'AuthContextType'.
+src/components/Navbar.tsx(5,10): error TS6133: 'Settings' is declared but its value is never read.
+src/context/AuthContext.tsx(1,47): error TS1484: 'ReactNode' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/context/AuthContext.tsx(2,10): error TS1484: 'User' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/context/AuthContext.tsx(70,26): error TS6133: 'provider' is declared but its value is never read.
+src/hooks/useAdSession.ts(2,23): error TS1484: 'MockAd' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/Landing.tsx(3,113): error TS6133: 'Users' is declared but its value is never read.
+src/pages/Landing.tsx(339,34): error TS2304: Cannot find name 'DollarSign'.
+src/pages/ResourceUnlock.tsx(50,44): error TS2339: Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.
+src/pages/ResourceUnlock.tsx(52,72): error TS2339: Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.
+src/pages/ResourceUnlock.tsx(166,39): error TS2339: Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'description' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.
+src/pages/ResourceUnlock.tsx(172,45): error TS2339: Property 'fileSize' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'fileSize' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.
+src/pages/ResourceUnlock.tsx(202,35): error TS2339: Property 'donateEnabled' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'donateEnabled' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.
+src/pages/ResourceUnlock.tsx(281,43): error TS2339: Property 'fileSize' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; } | { ...; }'.
+  Property 'fileSize' does not exist on type '{ id: string; slug: string; title: string; creatorName: string; creatorHandle: string; creatorAvatar: string; verified: boolean; fileType: string; adCount: number; unlockCount: string; category: string; }'.

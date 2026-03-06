@@ -4,7 +4,7 @@ import { Copy, Plus, ArrowRight } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 
 export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) => {
-    const { user } = useAuth();
+    const { currentUser: user } = useAuth();
     const { showToast } = useToast();
 
     // Mock Data

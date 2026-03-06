@@ -11,6 +11,7 @@ interface ToastOptions {
 
 interface ToastContextType {
     showToast: (options: ToastOptions | string) => void;
+    addToast: (message: string, type?: ToastType) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -51,8 +52,12 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [toast, isExiting]);
 
+    const addToast = useCallback((message: string, type: ToastType = 'default') => {
+        showToast({ message, type });
+    }, [showToast]);
+
     return (
-        <ToastContext.Provider value={{ showToast }}>
+        <ToastContext.Provider value={{ showToast, addToast }}>
             {children}
             {toast && (
                 <div
