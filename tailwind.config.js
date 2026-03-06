@@ -7,10 +7,11 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                sans: ['Söhne', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                nunito: ['Nunito', 'sans-serif'], // For specific uses like toasts
             },
             colors: {
-                bg: '#F5F5F5',
+                bg: '#FAF9F7',
                 surface: '#FFFFFF',
                 surfaceAlt: '#F3F1EC',
                 border: '#E6E2D9',
@@ -18,23 +19,29 @@ export default {
                 textMid: '#6B6860',
                 textLight: '#AAA49C',
                 brand: {
-                    DEFAULT: '#E8312A',
-                    hover: '#C22620',
-                    tint: '#FCEAE9'
+                    DEFAULT: '#D97757',
+                    hover: '#C4663F',
+                    tint: '#FAF0EB'
                 },
-                eco: {
-                    DEFAULT: '#1E9E5E',
-                    hover: '#18824D',
-                    tint: '#E8F5EF'
+                success: {
+                    DEFAULT: '#417A55',
+                    bg: '#EBF5EE',
+                },
+                warning: {
+                    DEFAULT: '#A0622A',
+                    bg: '#FDF4EC',
+                },
+                error: {
+                    DEFAULT: '#C0392B',
+                    bg: '#FDECEA',
                 }
             },
             boxShadow: {
                 DEFAULT: '0 1px 3px rgba(0,0,0,0.06)',
-                red: '0 4px 14px rgba(232,49,42,0.3)',
             },
             borderRadius: {
-                'button': '12px',
-                'card': '18px',
+                'button': '6px', // "rounded-md" is default tailwind ~6px, but let's leave default or config specific
+                'card': '8px',   // "rounded-lg" is 8px
                 'badge': '10px',
                 'pill': '50px'
             }
