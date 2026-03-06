@@ -177,7 +177,7 @@ export const ResourceUnlock = () => {
             {isComplete && (
                 <div className="w-full h-16 bg-success flex flex-col items-center justify-center animate-slide-down shadow-md z-20">
                     <div className="flex items-center gap-2 text-white font-black text-[16px]">
-                        <CheckCircle2 size={20} /> Unlocked!
+                        <CheckCircle2 size={20} /> {resource.donateEnabled ? 'Unlocked! And you helped plant a tree.' : 'Unlocked!'}
                     </div>
                     <span className="text-white/90 text-[13px] font-bold">Your free resource is ready to download</span>
                 </div>
@@ -241,8 +241,14 @@ export const ResourceUnlock = () => {
                         </div>
 
                         {resource.donateEnabled && (
-                            <div className="mt-4 px-3 py-1 bg-successBg rounded-full text-[12px] font-bold text-success inline-flex">
-                                🌱 This creator donates 5% to plant trees
+                            <div className="mt-5 w-full bg-[#EBF5EE] border border-[#BBF7D0] rounded-[16px] p-4 flex items-start gap-4">
+                                <span className="text-[24px] shrink-0 mt-0.5">🌳</span>
+                                <div>
+                                    <h4 className="text-[14px] font-[900] text-[#166534] leading-tight mb-1">Make an Impact</h4>
+                                    <p className="text-[13px] font-[600] text-[#166534]/80 leading-relaxed">
+                                        5% of earnings from your unlock go to planting trees in Kenya.
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>

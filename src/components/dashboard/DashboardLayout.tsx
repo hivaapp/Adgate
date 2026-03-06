@@ -1,10 +1,10 @@
-import { Home, LinkIcon, DollarSign, User } from 'lucide-react';
+import { Home, LinkIcon, DollarSign, User, UserPlus } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
-    currentTab: 'home' | 'links' | 'earnings' | 'account';
-    onTabChange: (tab: 'home' | 'links' | 'earnings' | 'account') => void;
+    currentTab: 'home' | 'links' | 'earnings' | 'referrals' | 'account';
+    onTabChange: (tab: 'home' | 'links' | 'earnings' | 'referrals' | 'account') => void;
 }
 
 export const DashboardLayout = ({ children, currentTab, onTabChange }: DashboardLayoutProps) => {
@@ -12,6 +12,7 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
         { id: 'home', icon: Home, label: 'Home' },
         { id: 'links', icon: LinkIcon, label: 'Links' },
         { id: 'earnings', icon: DollarSign, label: 'Earnings' },
+        { id: 'referrals', icon: UserPlus, label: 'Referrals' },
         { id: 'account', icon: User, label: 'Account' },
     ] as const;
 

@@ -9,6 +9,7 @@ import { Dashboard } from './pages/Dashboard';
 import { ResourceUnlock } from './pages/ResourceUnlock';
 import { CreatorProfile } from './pages/CreatorProfile';
 import { ExplorePage } from './pages/ExplorePage';
+import { JoinPage } from './pages/JoinPage';
 
 const AppLayout = ({ children, hideNav = false }: { children: ReactNode, hideNav?: boolean }) => (
   <>
@@ -66,6 +67,16 @@ function App() {
                   <PublicOnlyRoute>
                     <AppLayout>
                       <Landing />
+                    </AppLayout>
+                  </PublicOnlyRoute>
+                }
+              />
+              <Route
+                path="/join/:code"
+                element={
+                  <PublicOnlyRoute>
+                    <AppLayout hideNav>
+                      <JoinPage />
                     </AppLayout>
                   </PublicOnlyRoute>
                 }

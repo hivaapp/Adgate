@@ -25,26 +25,37 @@ export const CreatorProfile = () => {
                         <span className="-rotate-3">{username?.[0]?.toUpperCase() || 'C'}</span>
                     </div>
 
-                    <h1 className="text-[28px] font-black tracking-tight text-text leading-tight mb-2 flex items-center gap-2">
-                        @{username || 'creator'}
-                        <div className="bg-brand/10 text-brand p-1 rounded-full shrink-0">
-                            <Sparkles size={16} strokeWidth={3} />
+                    <div className="flex flex-col items-center gap-2 mb-4">
+                        <h1 className="text-[28px] font-black tracking-tight text-text leading-tight flex items-center gap-2">
+                            @{username || 'creator'}
+                            <div className="bg-brand/10 text-brand p-1 rounded-full shrink-0">
+                                <Sparkles size={16} strokeWidth={3} />
+                            </div>
+                        </h1>
+                        <div className="flex items-center gap-1.5 px-3 py-1 bg-[#EBF5EE] border border-[#BBF7D0] rounded-full">
+                            <span className="text-[14px]">🌳</span>
+                            <span className="text-[11px] font-[800] text-[#166534] uppercase tracking-wide">Planting Trees</span>
                         </div>
-                    </h1>
+                    </div>
 
                     <p className="text-[16px] font-bold text-textMid max-w-[360px] leading-relaxed">
                         Digital designer sharing free resources, templates, and assets. Support my work by unlocking links.
                     </p>
 
-                    <div className="mt-4 flex gap-4">
-                        <div className="flex items-center gap-1.5 text-textMid font-bold text-[13px]">
+                    <div className="mt-4 flex gap-4 overflow-x-auto w-full max-w-full pb-2 hide-scrollbar justify-center sm:justify-center">
+                        <div className="flex items-center gap-1.5 text-textMid font-bold text-[13px] shrink-0">
                             <FileIcon size={16} strokeWidth={2.5} />
                             {links.length} Resources
                         </div>
-                        <div className="w-[1px] h-4 bg-border my-auto" />
-                        <div className="flex items-center gap-1.5 text-textMid font-bold text-[13px]">
+                        <div className="w-[1px] h-4 bg-border my-auto shrink-0" />
+                        <div className="flex items-center gap-1.5 text-textMid font-bold text-[13px] shrink-0">
                             <User2 size={16} strokeWidth={2.5} />
                             5.6K Unlocks
+                        </div>
+                        <div className="w-[1px] h-4 bg-border my-auto shrink-0" />
+                        <div className="flex items-center gap-1.5 text-[#166534] font-bold text-[13px] shrink-0">
+                            <span className="text-[16px]">🌳</span>
+                            240 Trees Planted
                         </div>
                     </div>
                 </div>
@@ -82,6 +93,11 @@ export const CreatorProfile = () => {
                                             <ShieldAlert size={12} strokeWidth={3} />
                                             {link.adCount} {link.adType === 'video' ? 'Video' : 'Ad'}{link.adCount > 1 ? 's' : ''}
                                         </div>
+                                        {link.donate && (
+                                            <div className="flex items-center gap-1 text-[11px] font-[800] text-[#166534] bg-[#EBF5EE] px-1.5 py-0.5 rounded-md ml-auto sm:ml-2 shrink-0">
+                                                🌳 5% to trees
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

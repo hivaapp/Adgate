@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, TrendingUp, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
 import { AdTypeSelector } from '../components/AdTypeSelector';
+import { TreesLandingSection } from '../components/TreesLandingSection';
 import { useNavigate, Link } from 'react-router-dom';
 
 const FAQS = [
@@ -539,6 +540,9 @@ export const Landing = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Trees Section */}
+            <TreesLandingSection />
 
             {/* CTA Pre-Footer */}
             <div className="w-full bg-brand py-24 px-4 flex flex-col items-center text-center">

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, UserPlus, Coins } from 'lucide-react';
 
-type ToastType = 'success' | 'error' | 'default';
+type ToastType = 'success' | 'error' | 'default' | 'referral_join' | 'referral_earn';
 
 interface ToastOptions {
     message: string;
@@ -70,13 +70,16 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                         {/* Status border indicator */}
                         <div className={`absolute left-0 top-0 bottom-0 w-1 ${toast.type === 'success' ? 'bg-success' :
                             toast.type === 'error' ? 'bg-error' :
-                                'bg-brand'
+                                toast.type === 'referral_join' || toast.type === 'referral_earn' ? 'bg-[#D97757]' :
+                                    'bg-brand'
                             }`} />
 
                         <div className="pl-1 flex-shrink-0">
                             {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-success" />}
                             {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-error" />}
                             {toast.type === 'default' && <CheckCircle2 className="w-5 h-5 text-brand" />}
+                            {toast.type === 'referral_join' && <UserPlus className="w-5 h-5 text-[#D97757]" />}
+                            {toast.type === 'referral_earn' && <Coins className="w-5 h-5 text-[#D97757]" />}
                         </div>
                         <p className="font-nunito font-bold text-[13px] text-text leading-tight m-0">
                             {toast.message}

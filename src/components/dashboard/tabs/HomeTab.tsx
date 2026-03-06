@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { CountUp } from '../../ui/CountUp';
-import { Copy, Plus, ArrowRight } from 'lucide-react';
+import { Copy, Plus, ArrowRight, ChevronRight } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
+import { TreesDetailScreen } from './TreesDetailScreen';
 
 export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) => {
     const { currentUser: user } = useAuth();
     const { showToast } = useToast();
+    const [showTreesDetail, setShowTreesDetail] = useState(false);
 
     // Mock Data
     const totalEarned = 142.50;
+    const hasDonationLink = true; // mocking that creator has at least one donateEnabled link
+    const myTrees = user?.myTrees;
     const latestLink = { url: 'adga.te/r/design-system', exists: true };
     const activities = [
         { id: 1, type: 'unlock', title: 'design-system locked unlocked', time: '2 mins ago', amount: 0.15, icon: '🔓', bg: 'bg-brand/10' },
@@ -22,6 +27,10 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
         navigator.clipboard.writeText(latestLink.url);
         showToast({ message: 'Link copied to clipboard', type: 'success' });
     };
+
+    if (showTreesDetail) {
+        return <TreesDetailScreen onClose={() => setShowTreesDetail(false)} />;
+    }
 
     return (
         <div className="flex flex-col gap-6 px-4 pt-4 sm:pt-8 w-full">
@@ -109,6 +118,32 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
                     </button>
                 )}
             </div>
+
+            {/* Trees Card */}
+            {(hasDonationLink || (myTrees && myTrees.totalTreesPlanted > 0)) && (
+                <div
+                    onClick={() => setShowTreesDetail(true)}
+                    className="bg-white rounded-[18px] p-4 w-full flex items-center gap-4 cursor-pointer hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-shadow border border-border"
+                >
+                    <div className="w-12 h-12 bg-[#EDFAF3] rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-[24px]">🌳</span>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center">
+                        <div className="flex items-center justify-between">
+                            <span className="text-[18px] font-[900] text-[#111] leading-tight">
+                                {myTrees?.totalTreesPlanted || 0} Trees Planted
+                            </span>
+                            <ChevronRight className="w-5 h-5 text-textMid" />
+                        </div>
+                        <span className="text-[12px] font-[700] text-success leading-tight mt-0.5">
+                            = {myTrees?.co2OffsetKg || 0}kg CO₂ offset
+                        </span>
+                        <span className="text-[11px] font-[600] text-[#888] mt-1">
+                            Including {myTrees?.treesFromReferrals || 0} from your referred creators
+                        </span>
+                    </div>
+                </div>
+            )}
 
             {/* Recent Activity Feed */}
             <div className="flex flex-col w-full">

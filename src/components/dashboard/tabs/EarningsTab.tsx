@@ -4,15 +4,20 @@ import { Building2, Calendar, PiggyBank } from 'lucide-react';
 import { BottomSheet } from '../../ui/BottomSheet';
 import { useProgress } from '../../../context/ProgressContext';
 import { useToast } from '../../../context/ToastContext';
+import { currentUser } from '../../../lib/mockData';
 
 export const EarningsTab = () => {
     const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
 
     // Mock Data
+    const referralEarned = currentUser?.referral?.totalReferralEarnings || 0;
+    const pendingReferral = currentUser?.referral?.pendingReferralEarnings || 0;
     const balance = {
-        total: 1245.50,
-        thisMonth: 340.20,
-        available: 125.00
+        total: 1245.50 + referralEarned,
+        thisMonth: 340.20 + (currentUser?.referral?.thisMonthReferralEarnings || 0),
+        available: 125.00 + pendingReferral,
+        availableAd: 125.00,
+        availableReferral: pendingReferral
     };
 
     // Mock 14 days earnings data
@@ -50,6 +55,11 @@ export const EarningsTab = () => {
                     <span className="text-[20px] font-black text-white leading-tight mt-0.5">
                         $<CountUp end={balance.total} decimals={2} />
                     </span>
+                    {referralEarned > 0 && (
+                        <div className="mt-1 flex items-center gap-1 bg-[#FFFBEB] px-1.5 py-0.5 rounded text-[10px] font-[800] text-[#D97757] w-fit">
+                            <span>+ ${referralEarned.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Referral Bonus</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col relative z-10 border-b border-white/20 pb-3 sm:border-0 sm:pb-0">
@@ -167,12 +177,14 @@ export const EarningsTab = () => {
                 isOpen={isWithdrawOpen}
                 onClose={() => setIsWithdrawOpen(false)}
                 availableAmount={balance.available}
+                availableAd={balance.availableAd}
+                availableReferral={balance.availableReferral}
             />
         </div>
     );
 };
 
-const WithdrawSheet = ({ isOpen, onClose, availableAmount }: { isOpen: boolean, onClose: () => void, availableAmount: number }) => {
+const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availableReferral }: { isOpen: boolean, onClose: () => void, availableAmount: number, availableAd: number, availableReferral: number }) => {
     const [amount, setAmount] = useState(availableAmount.toString());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { showToast } = useToast();
@@ -219,6 +231,15 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount }: { isOpen: boolean, 
                 </div>
 
                 <div className="card shadow-none p-4 flex flex-col gap-3 bg-surface border-border">
+                    <div className="flex justify-between items-center text-[13px] font-bold text-textMid">
+                        <span>Ad Revenue</span>
+                        <span>${availableAd.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-bold text-[#D97757]">
+                        <span>Referral Bonus</span>
+                        <span>+${availableReferral.toFixed(2)}</span>
+                    </div>
+                    <div className="h-[1px] w-full bg-border" />
                     <div className="flex justify-between items-center text-[13px] font-bold text-textMid">
                         <span>Withdraw amount</span>
                         <span>${val.toFixed(2)}</span>
