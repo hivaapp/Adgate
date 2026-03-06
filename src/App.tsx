@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import { ProgressProvider } from './context/ProgressContext';
 import { Navbar } from './components/Navbar';
 import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
@@ -38,37 +40,41 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PublicOnlyRoute>
-                <AppLayout>
-                  <Landing />
-                </AppLayout>
-              </PublicOnlyRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <AppLayout hideNav>
-                  <Dashboard />
-                </AppLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/r/:slug"
-            element={<ResourceUnlock />}
-          />
-          <Route
-            path="/@:username"
-            element={<CreatorProfile />}
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ProgressProvider>
+          <ToastProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PublicOnlyRoute>
+                    <AppLayout>
+                      <Landing />
+                    </AppLayout>
+                  </PublicOnlyRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <AppLayout hideNav>
+                      <Dashboard />
+                    </AppLayout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/r/:slug"
+                element={<ResourceUnlock />}
+              />
+              <Route
+                path="/@:username"
+                element={<CreatorProfile />}
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ToastProvider>
+        </ProgressProvider>
       </AuthProvider>
     </Router>
   );
