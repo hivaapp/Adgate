@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
-import { UploadCloud, CheckCircle2, TreeDeciduous } from 'lucide-react';
-import { useProgress } from '../../../context/ProgressContext';
+import { UploadCloud, TreeDeciduous } from 'lucide-react';
+import { useProgress } from '../../context/ProgressContext';
 
 interface CreateLinkSheetProps {
     isOpen: boolean;

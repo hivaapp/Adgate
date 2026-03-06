@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
-import { FileIcon, ShieldAlert, TreeDeciduous } from 'lucide-react';
-import { useProgress } from '../../../context/ProgressContext';
+import { FileIcon, TreeDeciduous } from 'lucide-react';
+import { useProgress } from '../../context/ProgressContext';
 
 interface EditLinkSheetProps {
     isOpen: boolean;

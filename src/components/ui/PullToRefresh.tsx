@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { useState, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
 

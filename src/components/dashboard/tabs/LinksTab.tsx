@@ -4,7 +4,6 @@ import { LinkCard } from '../LinkCard';
 import { CreateLinkSheet } from '../CreateLinkSheet';
 import { EditLinkSheet } from '../EditLinkSheet';
 import { MoreActionSheet } from '../MoreActionSheet';
-import { useProgress } from '../../../context/ProgressContext';
 import { useToast } from '../../../context/ToastContext';
 
 export const LinksTab = () => {
@@ -13,9 +12,7 @@ export const LinksTab = () => {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [editLinkData, setEditLinkData] = useState<any>(null);
     const [moreActionLink, setMoreActionLink] = useState<any>(null);
-    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const { startProgress, stopProgress } = useProgress();
     const { showToast } = useToast();
 
     const [links, setLinks] = useState([
@@ -58,12 +55,6 @@ export const LinksTab = () => {
     ]);
 
     const sorts = ['All', 'Most Viewed', 'Most Earned', 'Newest', 'Disabled'];
-
-    const handlePullToRefresh = (e: React.TouchEvent) => {
-        // Implement real pull to refresh logic with touch events if possible or just use a button
-        // For simplicity we will skip full touch drag math unless it's strictly needed, but let's just 
-        // add a mock refresh on top for now or use the generic implementation later.
-    };
 
     const handleDelete = (id: string) => {
         setLinks(prev => prev.map(l => l.id === id ? { ...l, status: 'deleting' } : l));
@@ -137,8 +128,8 @@ export const LinksTab = () => {
                                 key={sort}
                                 onClick={() => setActiveSort(sort)}
                                 className={`flex-shrink-0 h-[36px] px-3.5 rounded-pill text-[12px] font-extrabold transition-colors border ${activeSort === sort
-                                        ? 'bg-brand text-white border-brand'
-                                        : 'bg-white text-textMid border-border hover:border-textLight'
+                                    ? 'bg-brand text-white border-brand'
+                                    : 'bg-white text-textMid border-border hover:border-textLight'
                                     }`}
                             >
                                 {sort}

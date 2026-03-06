@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Home, LinkIcon, DollarSign, User } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -34,8 +34,8 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
                             key={tab.id}
                             onClick={() => onTabChange(tab.id as any)}
                             className={`flex items-center gap-3 px-4 h-12 rounded-md font-bold text-sm transition-colors ${currentTab === tab.id
-                                    ? 'bg-brand text-white'
-                                    : 'text-textMid hover:bg-white hover:text-text'
+                                ? 'bg-brand text-white'
+                                : 'text-textMid hover:bg-white hover:text-text'
                                 }`}
                         >
                             <tab.icon className="w-5 h-5" />

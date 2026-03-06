@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CountUp } from '../../ui/CountUp';
 import { Building2, Calendar, PiggyBank } from 'lucide-react';
-import { BottomSheet } from '../ui/BottomSheet';
+import { BottomSheet } from '../../ui/BottomSheet';
 import { useProgress } from '../../../context/ProgressContext';
 import { useToast } from '../../../context/ToastContext';
 
@@ -72,8 +72,8 @@ export const EarningsTab = () => {
                 onClick={() => setIsWithdrawOpen(true)}
                 disabled={balance.available < 10}
                 className={`w-full h-[52px] rounded-[14px] flex items-center justify-center gap-2 font-black text-[16px] transition-all shadow-[0_4px_14px_rgba(65,122,85,0.2)] ${balance.available >= 10
-                        ? 'bg-success text-white hover:bg-[#346344] hover:-translate-y-0.5'
-                        : 'bg-surfaceAlt text-textLight shadow-none cursor-not-allowed border border-border'
+                    ? 'bg-success text-white hover:bg-[#346344] hover:-translate-y-0.5'
+                    : 'bg-surfaceAlt text-textLight shadow-none cursor-not-allowed border border-border'
                     }`}
             >
                 <Building2 size={20} />
@@ -116,7 +116,7 @@ export const EarningsTab = () => {
             <div className="flex flex-col gap-3">
                 <h3 className="text-[14px] font-extrabold text-text">Earnings by Link</h3>
                 <div className="card p-0 shadow-none overflow-hidden flex flex-col">
-                    {linksEarnings.map((link, idx) => (
+                    {linksEarnings.map((link) => (
                         <div key={link.id} className="flex items-center px-4 h-[48px] border-b border-border last:border-0 gap-3 group cursor-pointer hover:bg-surfaceAlt transition-colors">
                             <span className="text-[13px] font-extrabold text-text truncate max-w-[40%] sm:max-w-[50%]">{link.title}</span>
                             <div className="flex-1 flex items-center">

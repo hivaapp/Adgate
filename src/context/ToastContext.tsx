@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'default';
@@ -63,8 +64,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                     >
                         {/* Status border indicator */}
                         <div className={`absolute left-0 top-0 bottom-0 w-1 ${toast.type === 'success' ? 'bg-success' :
-                                toast.type === 'error' ? 'bg-error' :
-                                    'bg-brand'
+                            toast.type === 'error' ? 'bg-error' :
+                                'bg-brand'
                             }`} />
 
                         <div className="pl-1 flex-shrink-0">

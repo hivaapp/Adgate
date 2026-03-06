@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import { ArrowRight, Circle, Coins, File, Link as LinkIcon, TreePine } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export const OnboardingCarousel = ({ onComplete }: { onComplete: () => void }) => {
     const [step, setStep] = useState(0);
-    const { user } = useAuth();
 
     // Carousel content
     const slides = [

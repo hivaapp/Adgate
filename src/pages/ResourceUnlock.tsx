@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { ShieldAlert, FileIcon, X, CheckCircle2 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 
 export const ResourceUnlock = () => {
-    const { slug } = useParams();
     const [status, setStatus] = useState<'initial' | 'ad_loading' | 'ad_playing' | 'success'>('initial');
     const [currentAdIndex, setCurrentAdIndex] = useState(0);
     const [canSkip, setCanSkip] = useState(false);
@@ -17,9 +15,9 @@ export const ResourceUnlock = () => {
     const { startProgress, stopProgress } = useProgress();
 
     useEffect(() => {
-        let timer: NodeJS.Timeout;
+        let timer: ReturnType<typeof setTimeout>;
         if (status === 'ad_playing' && timeLeft > 0) {
-            timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
+            timer = setTimeout(() => setTimeLeft((prev: number) => prev - 1), 1000);
         } else if (status === 'ad_playing' && timeLeft === 0) {
             setCanSkip(true);
         }
@@ -39,7 +37,7 @@ export const ResourceUnlock = () => {
 
     const handleSkipAd = () => {
         if (currentAdIndex + 1 < targetAds) {
-            setCurrentAdIndex(prev => prev + 1);
+            setCurrentAdIndex((prev: number) => prev + 1);
             setStatus('ad_loading');
             startProgress();
             setTimeout(() => {
