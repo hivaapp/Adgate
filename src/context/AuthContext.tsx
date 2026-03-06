@@ -99,6 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 createdAt: new Date().toISOString(),
                 geography: [],
                 deviceSplit: { mobile: 0, desktop: 0, tablet: 0 },
+                adType: "click",
                 ...linkData,
             };
             setLinks([newLink, ...links]);
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const updateLink = async (id: string, data: Partial<LinkData>) => {
         await simulateNetwork(() => {
-            setLinks(links.map(l => l.id === id ? { ...l, ...data } : l));
+            setLinks(links.map(l => l.id === id ? { adType: "click", ...l, ...data } : l));
         });
     };
 

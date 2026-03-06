@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, TrendingUp, DollarSign, ArrowRight } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, TrendingUp, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
+import { AdTypeSelector } from '../components/AdTypeSelector';
 import { useNavigate, Link } from 'react-router-dom';
 
 const FAQS = [
@@ -30,6 +31,9 @@ export const Landing = () => {
     // Ad count state
     const [adCount, setAdCount] = useState<number>(1);
 
+    // Ad type state
+    const [adType, setAdType] = useState<"click" | "video">("click");
+
     // Donate toggle state
     const [isDonateOn, setIsDonateOn] = useState(true);
 
@@ -42,6 +46,7 @@ export const Landing = () => {
     // Calc state
     const [calcViews, setCalcViews] = useState(5000);
     const [calcAds, setCalcAds] = useState(2);
+    const [calcAdType, setCalcAdType] = useState<"click" | "video">("click");
 
     // FAQ state
     const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -57,7 +62,14 @@ export const Landing = () => {
     };
     const activeEstimate = getAdEstimates(adCount);
 
-    const calcEarnings = (calcViews * (calcAds * 0.02)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    const cpmRate = calcAdType === 'video' ? 0.065 : 0.035;
+    const calcEarningsValue = calcViews * (calcAds * cpmRate);
+    const calcEarnings = calcEarningsValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    const otherRate = calcAdType === 'video' ? 0.035 : 0.065;
+    const otherEarningsValue = calcViews * (calcAds * otherRate);
+    const diffAmount = Math.abs(calcEarningsValue - otherEarningsValue);
+    const showDiff = diffAmount > 0;
+    const isMore = calcAdType === 'video';
 
     // Handlers
     const handleDragOver = (e: React.DragEvent) => {
@@ -214,7 +226,22 @@ export const Landing = () => {
                     {/* Step 2 */}
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 bg-text text-white rounded-full flex items-center justify-center font-black text-[12px]">2</div>
+                            <div className="w-6 h-6 bg-[#E8312A] text-white rounded-full flex items-center justify-center font-black text-[12px]">2</div>
+                            <h3 className="font-black text-text text-[18px] tracking-tight">Choose your ad type</h3>
+                        </div>
+                        <p className="text-[12px] text-textMid -mt-2 ml-9">This determines how your viewers unlock your content.</p>
+
+                        <div className="ml-9">
+                            <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
+                        </div>
+                    </div>
+
+                    <div className="h-px w-full bg-border" />
+
+                    {/* Step 3 */}
+                    <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 bg-text text-white rounded-full flex items-center justify-center font-black text-[12px]">3</div>
                             <h3 className="font-black text-text text-[18px] tracking-tight">Set ad requirement</h3>
                         </div>
 
@@ -244,7 +271,7 @@ export const Landing = () => {
                         </div>
                     </div>
 
-                    {/* Step 3 / Donate */}
+                    {/* Step 4 / Donate */}
                     <div className={`flex items-center justify-between p-3 rounded-[12px] border transition-colors ${isDonateOn ? 'bg-successBg border-success/30' : 'bg-surfaceAlt border-border'}`}>
                         <div className="flex items-center gap-3">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[16px] ${isDonateOn ? 'bg-success/20 text-success' : 'bg-border text-textLight'}`}>
@@ -297,6 +324,25 @@ export const Landing = () => {
                                             {isCopied ? <Check size={24} /> : <LinkIcon size={24} />}
                                         </button>
                                     )}
+                                </div>
+                                <div className="flex items-center gap-2 mt-3 flex-wrap">
+                                    {adType === 'video' ? (
+                                        <div className="h-[24px] px-2 rounded-full bg-[#E8312A] flex items-center gap-1.5 text-white shadow-sm">
+                                            <Play size={10} fill="currentColor" />
+                                            <span className="text-[12px] font-[700] uppercase tracking-wider">Video</span>
+                                        </div>
+                                    ) : (
+                                        <div className="h-[24px] px-2 rounded-full bg-[#333333] flex items-center gap-1.5 text-white shadow-sm">
+                                            <MousePointerClick size={10} />
+                                            <span className="text-[12px] font-[700] uppercase tracking-wider">Click</span>
+                                        </div>
+                                    )}
+                                    <div className="h-[24px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid shadow-sm">
+                                        <span className="text-[12px] font-[700] uppercase">{files.length > 0 ? files[0].name : "Resource"}</span>
+                                    </div>
+                                    <div className="h-[24px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid shadow-sm">
+                                        <span className="text-[12px] font-[700] uppercase">{adCount} Ad{adCount > 1 ? 's' : ''}</span>
+                                    </div>
                                 </div>
                                 {!isLoggedIn && (
                                     <p className="text-[12px] font-bold text-brand mt-2 flex items-center gap-1.5 bg-brandTint p-2 rounded-lg">
@@ -370,6 +416,26 @@ export const Landing = () => {
 
                             <div className="flex flex-col gap-3">
                                 <div className="flex justify-between font-bold">
+                                    <span className="text-[14px] text-text">Ad Type</span>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setCalcAdType("video")}
+                                        className={`flex-1 py-1.5 text-[14px] font-bold rounded-[30px] transition-colors border-2 ${calcAdType === "video" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-[#E8E8E8] text-[#888] bg-transparent'}`}
+                                    >
+                                        Video Ads
+                                    </button>
+                                    <button
+                                        onClick={() => setCalcAdType("click")}
+                                        className={`flex-1 py-1.5 text-[14px] font-bold rounded-[30px] transition-colors border-2 ${calcAdType === "click" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-[#E8E8E8] text-[#888] bg-transparent'}`}
+                                    >
+                                        Click Ads
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                                <div className="flex justify-between font-bold">
                                     <span className="text-[14px] text-text">Ads per Unlock</span>
                                     <span className="text-[14px] text-brand">{calcAds} Ads</span>
                                 </div>
@@ -395,14 +461,19 @@ export const Landing = () => {
                             {calcEarnings}
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-6 border-t border-border">
-                            <div className="flex justify-between text-[13px]">
+                        <div className="flex flex-col gap-3 pt-6 border-t border-border mt-6">
+                            {showDiff && (
+                                <div className="text-[12px] font-bold text-textMid text-center">
+                                    Switch to {calcAdType === 'video' ? 'click' : 'video'} to earn {isMore ? 'less' : 'more'} est. {otherEarningsValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                </div>
+                            )}
+                            <div className="flex justify-between text-[13px] mt-2">
                                 <span className="font-bold text-textLight">Traditional Shortener</span>
                                 <span className="font-bold text-text">~${((calcViews / 1000) * 1.5).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-[13px]">
                                 <span className="font-bold text-textLight flex items-center gap-1"><TrendingUp size={14} /> Revenue Diff</span>
-                                <span className="font-bold text-success">+{((calcViews * (calcAds * 0.02)) / ((calcViews / 1000) * 1.5)).toFixed(1)}x</span>
+                                <span className="font-bold text-success">+{((calcEarningsValue) / ((calcViews / 1000) * 1.5)).toFixed(1)}x</span>
                             </div>
                         </div>
                         <button className="w-full mt-6 h-[44px] bg-bg border border-border rounded-lg text-text font-black text-[14px] hover:bg-surfaceAlt transition-colors">

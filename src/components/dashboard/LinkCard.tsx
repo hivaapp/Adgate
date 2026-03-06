@@ -1,4 +1,4 @@
-import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert } from 'lucide-react';
+import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointerClick } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 interface LinkCardProps {
@@ -52,6 +52,16 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                 ) : (
                     <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
                         <FileIcon size={12} strokeWidth={3} /> {link.type}
+                    </span>
+                )}
+
+                {link.adType === 'video' ? (
+                    <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#E8312A] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
+                        <Play size={10} fill="currentColor" /> Video
+                    </span>
+                ) : (
+                    <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#333333] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
+                        <MousePointerClick size={10} /> Click
                     </span>
                 )}
 

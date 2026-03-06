@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check } from 'lucide-react';
+import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play } from 'lucide-react';
 import { useAdSession } from '../hooks/useAdSession';
 import { useToast } from '../context/ToastContext';
 import { AdInterstitial } from '../components/AdInterstitial';
+import { VideoAdViewer } from '../components/VideoAdViewer';
 import { mockExploreResources } from '../lib/mockData';
 
 export const ResourceUnlock = () => {
@@ -15,6 +16,7 @@ export const ResourceUnlock = () => {
     const [currentAd, setCurrentAd] = useState<any>(null);
     const [isRevealing, setIsRevealing] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [nextAdCountdown, setNextAdCountdown] = useState<number | null>(null);
 
     // Mock resource fetch
     const resource = mockExploreResources.find(r => r.slug === slug) || {
@@ -30,11 +32,14 @@ export const ResourceUnlock = () => {
         description: "A complete professional design system for Figma with 1000+ components. Built for scale.",
         fileSize: "24.5 MB",
         donateEnabled: true,
+        adType: "click",
     };
+
+    const isVideo = resource.adType === 'video';
 
     useEffect(() => {
         // Initialize session on mount or slug change
-        startSession(slug || 'default', resource.adCount);
+        startSession(slug || 'default', resource.adType || 'click', resource.adCount);
         // Set open graph tags (mock implementation via DOM)
         document.title = `${resource.title} - AdGate`;
         const setMeta = (property: string, content: string) => {
@@ -54,8 +59,19 @@ export const ResourceUnlock = () => {
     useEffect(() => {
         if (isComplete && !isRevealing) {
             setIsRevealing(true);
+            setNextAdCountdown(null);
         }
     }, [isComplete]);
+
+    useEffect(() => {
+        if (nextAdCountdown !== null && nextAdCountdown > 0) {
+            const timer = setTimeout(() => setNextAdCountdown(c => (c as number) - 1), 1000);
+            return () => clearTimeout(timer);
+        } else if (nextAdCountdown === 0) {
+            setNextAdCountdown(null);
+            handleUnlockClick();
+        }
+    }, [nextAdCountdown]);
 
 
     const handleUnlockClick = () => {
@@ -75,6 +91,30 @@ export const ResourceUnlock = () => {
             addToast(`Ad clicked! ${remaining} more to go`, 'success');
         } else {
             addToast('Last ad done! Revealing your content...', 'success');
+        }
+    };
+
+    const handleVideoComplete = () => {
+        registerClick(currentAd.id);
+        setIsShowingAd(false);
+        const remaining = totalAdsRequired - adsClicked - 1;
+        if (remaining > 0) {
+            addToast(`Video completed! ${remaining} more to go`, 'success');
+            setNextAdCountdown(3);
+        } else {
+            addToast('All videos complete! Revealing your content...', 'success');
+        }
+    };
+
+    const handleVideoSkip = () => {
+        registerClick(currentAd.id);
+        setIsShowingAd(false);
+        const remaining = totalAdsRequired - adsClicked - 1;
+        if (remaining > 0) {
+            addToast(`Video skipped! ${remaining} more to go`, 'success');
+            setNextAdCountdown(3);
+        } else {
+            addToast('All videos complete! Revealing your content...', 'success');
         }
     };
 
@@ -108,13 +148,14 @@ export const ResourceUnlock = () => {
 
     // Button text dynamic logic
     const remainingAds = totalAdsRequired - adsClicked;
-    let buttonText = "Click Ad to Unlock";
+    let buttonText = isVideo ? "Watch Video to Unlock" : "Click Ad to Unlock";
+
     if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
-        buttonText = `Click ${remainingAds} Ads to Unlock`;
+        buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
     } else if (remainingAds === 1 && totalAdsRequired > 1) {
-        buttonText = "One More Ad — Almost There";
+        buttonText = isVideo ? "One More Video — Almost There" : "One More Ad — Almost There";
     } else if (remainingAds > 1) {
-        buttonText = `Click ${remainingAds} Ads to Unlock`;
+        buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
     }
 
     return (
@@ -226,30 +267,48 @@ export const ResourceUnlock = () => {
                                                     isActive ? 'bg-white border-brand text-brand animate-pulseRing' :
                                                         'bg-white border-border text-border'}
                                             `}>
-                                                {isDone ? <Check size={18} strokeWidth={3} /> : <MousePointer2 size={16} />}
+                                                {isDone ? <Check size={18} strokeWidth={3} /> : (isVideo ? <Play size={16} fill={isActive ? "currentColor" : "none"} /> : <MousePointer2 size={16} />)}
                                             </div>
-                                            <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>Ad {idx + 1}</span>
+                                            <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>
+                                                {isVideo ? 'Video' : 'Ad'} {idx + 1}
+                                            </span>
                                         </div>
                                     );
                                 })}
                             </div>
 
                             <div className="text-center mb-5">
-                                <p className="text-[14px] font-bold text-text mb-1">Click on each ad below to unlock your free resource.</p>
-                                <p className="text-[12px] font-semibold text-textMid">Each click opens the ad in a new tab. Come back here after each one.</p>
+                                {isVideo ? (
+                                    <>
+                                        <p className="text-[14px] font-bold text-text mb-1">Watch short videos below to unlock your free resource.</p>
+                                        <p className="text-[12px] font-semibold text-textMid">Enjoy {totalAdsRequired} quick videos.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-[14px] font-bold text-text mb-1">Click on each ad below to unlock your free resource.</p>
+                                        <p className="text-[12px] font-semibold text-textMid">Each click opens the ad in a new tab. Come back here after each one.</p>
+                                    </>
+                                )}
                             </div>
 
-                            <button
-                                onClick={handleUnlockClick}
-                                className="w-full h-[54px] bg-brand hover:bg-brand-hover text-white font-black text-[15px] rounded-[14px] flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-[0.98]"
-                            >
-                                <MousePointer2 size={18} />
-                                {buttonText}
-                            </button>
+                            {nextAdCountdown !== null ? (
+                                <div className="w-full h-[54px] bg-surfaceAlt border border-border text-text font-black text-[15px] rounded-[14px] flex items-center justify-center gap-2">
+                                    <div className="w-5 h-5 border-2 border-border border-t-brand rounded-full animate-spin" />
+                                    Next video starting in {nextAdCountdown}...
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleUnlockClick}
+                                    className="w-full h-[54px] bg-brand hover:bg-brand-hover text-white font-black text-[15px] rounded-[14px] flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-[0.98]"
+                                >
+                                    {isVideo ? <Play size={18} fill="currentColor" /> : <MousePointer2 size={18} />}
+                                    {buttonText}
+                                </button>
+                            )}
 
-                            {adsClicked > 0 && adsClicked < totalAdsRequired && (
+                            {adsClicked > 0 && adsClicked < totalAdsRequired && nextAdCountdown === null && (
                                 <p className="text-center text-[13px] font-bold text-brand mt-4 animate-popIn">
-                                    Great! Just {totalAdsRequired - adsClicked} more ad{totalAdsRequired - adsClicked > 1 ? 's' : ''} to unlock your free resource.
+                                    Great! Just {totalAdsRequired - adsClicked} more {isVideo ? 'video' : 'ad'}{totalAdsRequired - adsClicked > 1 ? 's' : ''} to unlock your free resource.
                                 </p>
                             )}
 
@@ -324,11 +383,19 @@ export const ResourceUnlock = () => {
             </main>
 
             {isShowingAd && currentAd && (
-                <AdInterstitial
-                    ad={currentAd}
-                    onClose={handleAdClose}
-                    onClick={handleAdClick}
-                />
+                isVideo ? (
+                    <VideoAdViewer
+                        ad={currentAd}
+                        onCompleted={handleVideoComplete}
+                        onSkip={handleVideoSkip}
+                    />
+                ) : (
+                    <AdInterstitial
+                        ad={currentAd}
+                        onClose={handleAdClose}
+                        onClick={handleAdClick}
+                    />
+                )
             )}
         </div>
     );

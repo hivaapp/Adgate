@@ -26,7 +26,8 @@ export const LinksTab = () => {
             views: 1243,
             unlocks: 842,
             earned: 142.50,
-            status: 'active'
+            status: 'active',
+            adType: 'video'
         },
         {
             id: '2',
@@ -38,7 +39,8 @@ export const LinksTab = () => {
             views: 450,
             unlocks: 120,
             earned: 8.50,
-            status: 'active'
+            status: 'active',
+            adType: 'click'
         },
         {
             id: '3',
@@ -50,11 +52,12 @@ export const LinksTab = () => {
             views: 3220,
             unlocks: 1560,
             earned: 195.20,
-            status: 'disabled'
+            status: 'disabled',
+            adType: 'video'
         }
     ]);
 
-    const sorts = ['All', 'Most Viewed', 'Most Earned', 'Newest', 'Disabled'];
+    const sorts = ['All', 'Video Ads', 'Click Ads', 'Most Viewed', 'Most Earned', 'Newest', 'Disabled'];
 
     const handleDelete = (id: string) => {
         setLinks(prev => prev.map(l => l.id === id ? { ...l, status: 'deleting' } : l));
@@ -77,6 +80,8 @@ export const LinksTab = () => {
         .filter(l => {
             if (activeSort === 'All') return true;
             if (activeSort === 'Disabled') return l.status === 'disabled';
+            if (activeSort === 'Video Ads') return l.adType === 'video';
+            if (activeSort === 'Click Ads') return l.adType === 'click';
             return true;
         })
         .sort((a, b) => {
@@ -175,7 +180,8 @@ export const LinksTab = () => {
                         views: 0,
                         unlocks: 0,
                         earned: 0,
-                        status: 'active'
+                        status: 'active',
+                        adType: 'click'
                     }, ...links]);
                 }}
             />

@@ -39,8 +39,8 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
                 </div>
             </div>
 
-            {/* Stats Row (2x2 on mobile) */}
-            <div className="grid grid-cols-2 gap-[10px] w-full">
+            {/* Stats Row (2x2 on mobile, 3x2 desktop) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-[10px] w-full">
                 <div className="card h-auto p-4 flex gap-1 flex-col shadow-none">
                     <span className="text-[20px] leading-none mb-1">🔗</span>
                     <span className="text-[24px] font-black leading-none text-text">
@@ -68,6 +68,20 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
                         $<CountUp end={totalEarned} decimals={2} />
                     </span>
                     <span className="text-[11px] font-bold text-textMid">Total Earned</span>
+                </div>
+                <div className="card h-auto p-4 flex gap-1 flex-col shadow-none">
+                    <span className="text-[20px] leading-none mb-1">▶️</span>
+                    <span className="text-[24px] font-black leading-none text-text">
+                        <CountUp end={541} />
+                    </span>
+                    <span className="text-[11px] font-bold text-textMid">Video Unlocks</span>
+                </div>
+                <div className="card h-auto p-4 flex gap-1 flex-col shadow-none">
+                    <span className="text-[20px] leading-none mb-1">🖱️</span>
+                    <span className="text-[24px] font-black leading-none text-text">
+                        <CountUp end={301} />
+                    </span>
+                    <span className="text-[11px] font-bold text-textMid">Click Unlocks</span>
                 </div>
             </div>
 

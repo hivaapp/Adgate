@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
 import { FileIcon, TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
+import { useAuth } from '../../context/AuthContext';
+import { AdTypeSelector } from '../AdTypeSelector';
 
 interface EditLinkSheetProps {
     isOpen: boolean;
@@ -14,24 +16,35 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
     const [title, setTitle] = useState(link?.title || '');
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(link?.adCount || 1);
-    const [donate, setDonate] = useState(link?.donate || false);
+    const [adType, setAdType] = useState<"click" | "video">(link?.adType || 'click');
+    const [donate, setDonate] = useState(link?.donateEnabled || link?.donate || false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { startProgress, stopProgress } = useProgress();
+    const { updateLink } = useAuth();
 
     useEffect(() => {
         if (link) {
             setTitle(link.title);
+            setDesc(link.description || '');
             setAdCount(link.adCount);
-            setDonate(link.donate);
+            setAdType(link.adType || 'click');
+            setDonate(link.donateEnabled || link.donate || false);
         }
     }, [link]);
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
         startProgress();
-        // Mock API call
-        await new Promise(res => setTimeout(res, 800));
+
+        await updateLink(link.id, {
+            title,
+            description: desc,
+            adCount,
+            donateEnabled: donate,
+            adType
+        });
+
         setIsSubmitting(false);
         stopProgress();
         onSuccess();
@@ -91,6 +104,12 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
                             {desc.length}/150
                         </span>
                     </div>
+                </div>
+
+                {/* Ad Type */}
+                <div className="flex flex-col gap-3">
+                    <label className="text-[13px] font-extrabold text-textMid uppercase tracking-wide">Ad Type</label>
+                    <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
                 </div>
 
                 {/* Ad Count */}

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Grid, List as ListIcon, ChevronRight } from 'lucide-react';
+import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick } from 'lucide-react';
 import { mockExploreResources } from '../lib/mockData';
 
 const CATEGORIES = ['All', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
@@ -148,9 +148,9 @@ export const ExplorePage = () => {
                                     <h3 className="font-extrabold text-[13px] sm:text-[14px] leading-tight mb-1 line-clamp-2 min-h-[40px]">{r.title}</h3>
                                     <span className="text-[11px] font-bold text-textMid mb-3 truncate">by @{r.creatorHandle}</span>
 
-                                    <div className="flex items-center gap-1.5 mb-3">
+                                    <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                                         <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
-                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded">{r.adCount} Ads</span>
+                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                     </div>
 
                                     <div className="mt-auto flex items-center justify-between">
@@ -176,7 +176,7 @@ export const ExplorePage = () => {
                                     <span className="text-[12px] font-bold text-textMid truncate mt-0.5">by @{r.creatorHandle}</span>
                                 </div>
                                 <div className="flex flex-col items-end shrink-0 mr-3">
-                                    <span className="text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adCount} Ads</span>
+                                    <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                     <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
                                 </div>
                                 <ChevronRight className="text-textLight group-hover:text-text transition-colors" size={20} />

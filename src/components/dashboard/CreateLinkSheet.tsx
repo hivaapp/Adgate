@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
 import { UploadCloud, TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
+import { useAuth } from '../../context/AuthContext';
+import { AdTypeSelector } from '../AdTypeSelector';
 
 interface CreateLinkSheetProps {
     isOpen: boolean;
@@ -14,16 +16,27 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(1);
+    const [adType, setAdType] = useState<"click" | "video">("click");
     const [donate, setDonate] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { startProgress, stopProgress } = useProgress();
+    const { createLink } = useAuth();
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
         startProgress();
-        // Mock API call
-        await new Promise(res => setTimeout(res, 1200));
+
+        await createLink({
+            title,
+            description: desc,
+            adCount,
+            donateEnabled: donate,
+            adType,
+            fileType: file?.name.split('.').pop()?.toUpperCase() || 'FILE',
+            fileName: file?.name,
+        });
+
         setIsSubmitting(false);
         stopProgress();
         onSuccess();
@@ -34,6 +47,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
             setTitle('');
             setDesc('');
             setAdCount(1);
+            setAdType('click');
             setDonate(false);
         }, 300);
     };
@@ -104,6 +118,12 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                             {desc.length}/150
                         </span>
                     </div>
+                </div>
+
+                {/* Ad Type */}
+                <div className="flex flex-col gap-3">
+                    <label className="text-[13px] font-extrabold text-textMid uppercase tracking-wide">Ad Type</label>
+                    <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
                 </div>
 
                 {/* Ad Count */}
