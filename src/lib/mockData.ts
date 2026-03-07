@@ -278,171 +278,77 @@ export const mockCreatorProfile = { ...currentUser, links: mockLinks.filter(l =>
 
 export const mockExploreResources: any[] = [
     {
-        id: "exp_1",
-        slug: "design-system-pro",
-        title: "Pro Design System UI Kit",
-        creatorName: "Alex Creator",
-        creatorHandle: "alexcreator",
-        creatorAvatar: "A",
-        verified: true,
-        fileType: "ZIP",
-        adCount: 3,
-        unlockCount: "1.2K",
-        category: "Templates",
-        adType: "video",
-        isCustomSponsor: true,
-        sponsorName: "Figma",
-        requiresClick: true
+        id: "exp_1", slug: "100-chatgpt-prompts-marketers", title: "100 ChatGPT Prompts for Marketers", description: "Boost your marketing with these prompts.", creatorName: "Prompt Lab", creatorUsername: "promptlab", creatorAvatarInitial: "P", creatorAvatarColor: "#F59E0B", category: "AI & Prompts", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "video", adCount: 2, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 4820, fileSize: "2.1 MB", createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), isNew: true, isTrending: true, isFeatured: false
     },
     {
-        id: "exp_2",
-        slug: "ai-prompt-pack",
-        title: "500+ ChatGPT Prompts for Marketing",
-        creatorName: "Sarah M.",
-        creatorHandle: "sarahmarket",
-        creatorAvatar: "S",
-        verified: false,
-        fileType: "PDF",
-        adCount: 2,
-        unlockCount: "840",
-        category: "Prompts",
-        adType: "click",
+        id: "exp_2", slug: "figma-mobile-ui-kit-2025", title: "Figma Mobile UI Kit 2025", description: "Modern UI components for Figma apps.", creatorName: "UI Designs", creatorUsername: "uidesigns", creatorAvatarInitial: "U", creatorAvatarColor: "#8B5CF6", category: "Design", fileType: "ZIP", fileEmoji: "📦", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Notion", ctaText: "Try Notion Free", donateEnabled: false, unlockCount: 3240, fileSize: "45 MB", createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: true
     },
     {
-        id: "exp_3",
-        slug: "freelance-notion",
-        title: "Freelance OS Notion Template",
-        creatorName: "Dev Dave",
-        creatorHandle: "devdave",
-        creatorAvatar: "D",
-        verified: true,
-        fileType: "LINK",
-        adCount: 2,
-        unlockCount: "2.1K",
-        category: "Templates",
-        adType: "video",
+        id: "exp_3", slug: "30-day-fitness-plan", title: "30-Day Fitness Plan PDF", description: "A simple plan to get fit in 30 days.", creatorName: "Fit Coach", creatorUsername: "fitcoach", creatorAvatarInitial: "F", creatorAvatarColor: "#10B981", category: "Fitness", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "click", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 2190, fileSize: "3.5 MB", createdAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_4",
-        slug: "luts-pack",
-        title: "Cinematic Video LUTs Pack",
-        creatorName: "Video Creator",
-        creatorHandle: "vidcreator",
-        creatorAvatar: "V",
-        verified: false,
-        fileType: "ZIP",
-        adCount: 3,
-        unlockCount: "350",
-        category: "Videos",
-        adType: "video", // Change adType from click to video because Custom Sponsor are always video now
-        isCustomSponsor: true,
-        sponsorName: "Adobe",
-        requiresClick: false
+        id: "exp_4", slug: "python-cheat-sheet", title: "Python Cheat Sheet Pack", description: "Learn Python syntax fast.", creatorName: "Dev Hints", creatorUsername: "devhints", creatorAvatarInitial: "D", creatorAvatarColor: "#3B82F6", category: "Coding", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "video", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 6750, fileSize: "1.2 MB", createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: true, isFeatured: true
     },
     {
-        id: "exp_5",
-        slug: "resume-template",
-        title: "Modern Minimalist Resume Template",
-        creatorName: "Career Coach",
-        creatorHandle: "careercoach",
-        creatorAvatar: "C",
-        verified: false,
-        fileType: "DOC",
-        adCount: 1,
-        unlockCount: "5.4K",
-        category: "Guides",
+        id: "exp_5", slug: "lightroom-preset-collection", title: "Lightroom Preset Collection", description: "Professional filters for Lightroom.", creatorName: "Lens Works", creatorUsername: "lens.works", creatorAvatarInitial: "L", creatorAvatarColor: "#EC4899", category: "Photography", fileType: "ZIP", fileEmoji: "📦", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Adobe", ctaText: "Explore Adobe", donateEnabled: true, unlockCount: 1830, fileSize: "12 MB", createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_6",
-        slug: "procreate-brushes",
-        title: "Watercolor Procreate Brushes",
-        creatorName: "Artist Anna",
-        creatorHandle: "annaart",
-        creatorAvatar: "A",
-        verified: true,
-        fileType: "ZIP",
-        adCount: 2,
-        unlockCount: "920",
-        category: "Tools",
+        id: "exp_6", slug: "notion-business-template", title: "Notion Business Template", description: "Organize your business in Notion.", creatorName: "Workflow Pro", creatorUsername: "workflowpro", creatorAvatarInitial: "W", creatorAvatarColor: "#6B7280", category: "Business", fileType: "ZIP", fileEmoji: "📦", adSource: "platform", adType: "click", adCount: 2, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 987, fileSize: "5.5 MB", createdAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_7",
-        slug: "startup-pitch",
-        title: "Startup Pitch Deck Template",
-        creatorName: "Founder Joe",
-        creatorHandle: "founderjoe",
-        creatorAvatar: "F",
-        verified: false,
-        fileType: "PDF",
-        adCount: 3,
-        unlockCount: "135",
-        category: "Templates",
+        id: "exp_7", slug: "ai-art-midjourney-prompts", title: "AI Art Midjourney Prompt Pack", description: "Beautiful AI art prompts.", creatorName: "AI Artist", creatorUsername: "aiartist", creatorAvatarInitial: "A", creatorAvatarColor: "#EF4444", category: "AI & Prompts", fileType: "TXT", fileEmoji: "📝", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Canva", ctaText: "Try Canva Free", donateEnabled: true, unlockCount: 5610, fileSize: "15 KB", createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: true, isFeatured: false
     },
     {
-        id: "exp_8",
-        slug: "code-snippets",
-        title: "100 Useful JS Code Snippets",
-        creatorName: "JS Ninja",
-        creatorHandle: "jsninja",
-        creatorAvatar: "J",
-        verified: true,
-        fileType: "PDF",
-        adCount: 2,
-        unlockCount: "3.2K",
-        category: "Guides",
+        id: "exp_8", slug: "guitar-chord-chart", title: "Guitar Chord Chart PDF", description: "Essential chords for beginners.", creatorName: "Chord Daily", creatorUsername: "chord.daily", creatorAvatarInitial: "C", creatorAvatarColor: "#14B8A6", category: "Music", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "video", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 1120, fileSize: "2.8 MB", createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), isNew: true, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_9",
-        slug: "photo-presets",
-        title: "Moody Moodroom Presets",
-        creatorName: "Photo Pro",
-        creatorHandle: "photopro",
-        creatorAvatar: "P",
-        verified: false,
-        fileType: "ZIP",
-        adCount: 2,
-        unlockCount: "420",
-        category: "Images",
+        id: "exp_9", slug: "email-marketing-playbook", title: "Email Marketing Playbook", description: "The ultimate playbook for email ROI.", creatorName: "Growth Hack", creatorUsername: "growthhack", creatorAvatarInitial: "G", creatorAvatarColor: "#F59E0B", category: "Business", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "click", adCount: 3, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 743, fileSize: "4 MB", createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_10",
-        slug: "budget-tracker",
-        title: "Monthly Budget Excel Sheet",
-        creatorName: "Finance Guy",
-        creatorHandle: "financeguy",
-        creatorAvatar: "F",
-        verified: true,
-        fileType: "DOC",
-        adCount: 1,
-        unlockCount: "8.1K",
-        category: "Templates",
+        id: "exp_10", slug: "canva-instagram-templates", title: "Canva Instagram Templates", description: "Ready to use templates.", creatorName: "Design Spark", creatorUsername: "designspark", creatorAvatarInitial: "D", creatorAvatarColor: "#8B5CF6", category: "Design", fileType: "ZIP", fileEmoji: "📦", adSource: "platform", adType: "video", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 8930, fileSize: "18 MB", createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: true
     },
     {
-        id: "exp_11",
-        slug: "seo-checklist",
-        title: "Ultimate 2024 SEO Checklist",
-        creatorName: "SEO Master",
-        creatorHandle: "seomas",
-        creatorAvatar: "S",
-        verified: false,
-        fileType: "PDF",
-        adCount: 2,
-        unlockCount: "1.1K",
-        category: "Guides",
+        id: "exp_11", slug: "keto-meal-prep-guide", title: "Keto Meal Prep Guide", description: "Meal prepping recipes and plans.", creatorName: "Keto Life", creatorUsername: "ketolife", creatorAvatarInitial: "K", creatorAvatarColor: "#10B981", category: "Fitness", fileType: "PDF", fileEmoji: "📄", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "MyFitnessPal", ctaText: "Track With MFP", donateEnabled: true, unlockCount: 2450, fileSize: "8 MB", createdAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
     },
     {
-        id: "exp_12",
-        slug: "fonts-pack",
-        title: "3 Premium Serif Fonts",
-        creatorName: "Type Co",
-        creatorHandle: "typeco",
-        creatorAvatar: "T",
-        verified: true,
-        fileType: "ZIP",
-        adCount: 3,
-        unlockCount: "670",
-        category: "Other",
+        id: "exp_12", slug: "javascript-interview-questions", title: "JavaScript Interview Questions", description: "Ace your next tech interview.", creatorName: "JS Master", creatorUsername: "jsmaster", creatorAvatarInitial: "J", creatorAvatarColor: "#FBBF24", category: "Coding", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "video", adCount: 2, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 3870, fileSize: "5.5 MB", createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: true, isFeatured: false
     },
+    {
+        id: "exp_13", slug: "fantasy-story-templates", title: "Fantasy Story Writing Templates", description: "Worldbuilding and plotting templates.", creatorName: "Story Craft", creatorUsername: "storycraft", creatorAvatarInitial: "S", creatorAvatarColor: "#EC4899", category: "Writing", fileType: "PDF", fileEmoji: "📄", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Grammarly", ctaText: "Write Better Free", donateEnabled: true, unlockCount: 890, fileSize: "3.2 MB", createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), isNew: true, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_14", slug: "stock-trading-cheat-sheet", title: "Stock Trading Cheat Sheet", description: "Quick reference guide for traders.", creatorName: "Trade Wise", creatorUsername: "tradewise", creatorAvatarInitial: "T", creatorAvatarColor: "#10B981", category: "Finance", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "click", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 1560, fileSize: "1.5 MB", createdAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_15", slug: "language-learning-vocab-pack", title: "Language Learning Vocabulary Pack", description: "Flashcards and vocab lists.", creatorName: "Polyglot AI", creatorUsername: "polyglot.ai", creatorAvatarInitial: "P", creatorAvatarColor: "#3B82F6", category: "Education", fileType: "ZIP", fileEmoji: "📦", adSource: "platform", adType: "video", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 4120, fileSize: "15 MB", createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_16", slug: "minecraft-build-blueprint", title: "Minecraft Build Blueprint Pack", description: "Awesome house and castle blueprints.", creatorName: "Block Vault", creatorUsername: "blockvault", creatorAvatarInitial: "B", creatorAvatarColor: "#14B8A6", category: "Gaming", fileType: "ZIP", fileEmoji: "📦", adSource: "custom", adType: "video", adCount: 1, requiresClick: false, brandName: "Discord", ctaText: "Join Discord", donateEnabled: false, unlockCount: 2780, fileSize: "32 MB", createdAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_17", slug: "procreate-brush-collection", title: "Procreate Brush Collection", description: "Watercolor and ink brushes.", creatorName: "Art Brush", creatorUsername: "artbrush", creatorAvatarInitial: "A", creatorAvatarColor: "#F43F5E", category: "Design", fileType: "ZIP", fileEmoji: "📦", adSource: "platform", adType: "video", adCount: 3, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 1340, fileSize: "60 MB", createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), isNew: true, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_18", slug: "freelance-contract-template", title: "Freelance Contract Template", description: "A simple boilerplate contract.", creatorName: "Freelance Pro", creatorUsername: "freelancepro", creatorAvatarInitial: "F", creatorAvatarColor: "#6B7280", category: "Business", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "click", adCount: 2, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 670, fileSize: "1.2 MB", createdAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_19", slug: "claude-ai-system-prompts", title: "Claude AI System Prompts", description: "Advanced system prompt setups.", creatorName: "AI Builder", creatorUsername: "aibuilder", creatorAvatarInitial: "A", creatorAvatarColor: "#8B5CF6", category: "AI & Prompts", fileType: "TXT", fileEmoji: "📝", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Notion", ctaText: "Get Notion Free", donateEnabled: true, unlockCount: 3320, fileSize: "25 KB", createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: true, isFeatured: false
+    },
+    {
+        id: "exp_20", slug: "home-workout-no-equipment", title: "Home Workout No Equipment Guide", description: "Get fit anywhere, anytime.", creatorName: "Home Gym", creatorUsername: "homegym", creatorAvatarInitial: "H", creatorAvatarColor: "#F97316", category: "Fitness", fileType: "PDF", fileEmoji: "📄", adSource: "custom", adType: "video", adCount: 1, requiresClick: false, brandName: "Whoop", ctaText: "Try Whoop", donateEnabled: true, unlockCount: 1890, fileSize: "6.5 MB", createdAt: new Date(Date.now() - 17 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_21", slug: "react-component-library", title: "React Component Library", description: "A fully built UI component library for React.", creatorName: "React Dev", creatorUsername: "reactdev", creatorAvatarInitial: "R", creatorAvatarColor: "#0EA5E9", category: "Coding", fileType: "ZIP", fileEmoji: "📦", adSource: "platform", adType: "video", adCount: 2, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 2140, fileSize: "22 MB", createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_22", slug: "wedding-photo-presets", title: "Wedding Photo Editing Presets", description: "Beautiful presets for lightroom.", creatorName: "Wedding Frame", creatorUsername: "weddingframe", creatorAvatarInitial: "W", creatorAvatarColor: "#EC4899", category: "Photography", fileType: "ZIP", fileEmoji: "📦", adSource: "custom", adType: "video", adCount: 1, requiresClick: true, brandName: "Pixlr", ctaText: "Edit Free on Pixlr", donateEnabled: true, unlockCount: 760, fileSize: "4.5 MB", createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), isNew: true, isTrending: false, isFeatured: false
+    },
+    {
+        id: "exp_23", slug: "viral-tweet-templates", title: "Viral Tweet Templates", description: "Formats for guaranteed engagement.", creatorName: "Twitter Growth", creatorUsername: "twittergrowth", creatorAvatarInitial: "T", creatorAvatarColor: "#3B82F6", category: "Writing", fileType: "TXT", fileEmoji: "📝", adSource: "platform", adType: "click", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: false, unlockCount: 5240, fileSize: "12 KB", createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: true, isFeatured: false
+    },
+    {
+        id: "exp_24", slug: "dnd-character-sheet", title: "Dungeons & Dragons Character Sheet Pack", description: "Customizable character sheets.", creatorName: "RPG Vault", creatorUsername: "rpgvault", creatorAvatarInitial: "R", creatorAvatarColor: "#EF4444", category: "Gaming", fileType: "PDF", fileEmoji: "📄", adSource: "platform", adType: "video", adCount: 1, requiresClick: false, brandName: null, ctaText: null, donateEnabled: true, unlockCount: 1050, fileSize: "2.5 MB", createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), isNew: false, isTrending: false, isFeatured: false
+    }
 ];
 
 export const referredCreators = [

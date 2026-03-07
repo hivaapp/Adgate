@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const createLink = async (linkData: Partial<LinkData>) => {
         await simulateNetwork(() => {
-            let finalLinkData = { ...linkData };
+            const finalLinkData = { ...linkData };
 
             if (finalLinkData.adSource === "custom" && finalLinkData.customAd) {
                 if (!finalLinkData.customAd.redirectUrl || (!finalLinkData.customAd.brandName && !finalLinkData.customAd.fileName)) {
@@ -129,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const updateLink = async (id: string, data: Partial<LinkData>) => {
         await simulateNetwork(() => {
-            let finalData = { ...data };
+            const finalData = { ...data };
             if (finalData.adSource === "custom" && finalData.customAd) {
                 if (!finalData.customAd.redirectUrl || (!finalData.customAd.brandName && !finalData.customAd.fileName)) {
                     throw new Error("Validation failed for custom ad");
