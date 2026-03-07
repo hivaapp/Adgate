@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick } from 'lucide-react';
+import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick, Sparkles } from 'lucide-react';
 import { mockExploreResources } from '../lib/mockData';
 
 const CATEGORIES = ['All', '✨ Sponsored', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
@@ -161,7 +161,7 @@ export const ExplorePage = () => {
                                         <div className="flex items-center gap-1.5 mb-3 flex-wrap">
                                             <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
                                             {r.isCustomSponsor ? (
-                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded">Custom · {r.sponsorName}</span>
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded flex items-center gap-1"><Sparkles size={10} /> {r.requiresClick ? 'Two-Step' : 'Video'} · {r.sponsorName}</span>
                                             ) : (
                                                 <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                             )}
@@ -196,7 +196,7 @@ export const ExplorePage = () => {
                                     </div>
                                     <div className="flex flex-col items-end shrink-0 mr-3">
                                         {r.isCustomSponsor ? (
-                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded mb-1">Custom · {r.sponsorName}</span>
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded mb-1"><Sparkles size={10} /> {r.requiresClick ? 'Two-Step' : 'Video'} · {r.sponsorName}</span>
                                         ) : (
                                             <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                         )}

@@ -291,7 +291,8 @@ export const mockExploreResources: any[] = [
         category: "Templates",
         adType: "video",
         isCustomSponsor: true,
-        sponsorName: "Figma"
+        sponsorName: "Figma",
+        requiresClick: true
     },
     {
         id: "exp_2",
@@ -333,9 +334,10 @@ export const mockExploreResources: any[] = [
         adCount: 3,
         unlockCount: "350",
         category: "Videos",
-        adType: "click",
+        adType: "video", // Change adType from click to video because Custom Sponsor are always video now
         isCustomSponsor: true,
-        sponsorName: "Adobe"
+        sponsorName: "Adobe",
+        requiresClick: false
     },
     {
         id: "exp_5",
