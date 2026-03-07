@@ -6,14 +6,19 @@ interface VideoAdViewerProps {
     ad: MockVideoAd;
     onCompleted: () => void;
     onSkip: () => void;
+    isCustom?: boolean;
+    customAd?: any;
 }
 
-export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
+export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd }: VideoAdViewerProps) {
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
 
-    const canSkip = currentTime >= ad.skipAfter;
-    const isCompleted = currentTime >= ad.duration;
+    const skipAfterVal = isCustom && customAd ? (parseInt(customAd.skipAfter) || 5) : ad.skipAfter;
+    const durationVal = isCustom && customAd ? (parseInt(customAd.displayDuration) || 15) : ad.duration;
+
+    const canSkip = currentTime >= skipAfterVal;
+    const isCompleted = currentTime >= durationVal;
 
     useEffect(() => {
         if (!isPlaying || isCompleted) return;
@@ -21,7 +26,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
         const timer = setInterval(() => {
             setCurrentTime(prev => {
                 const next = prev + 1;
-                if (next >= ad.duration) {
+                if (next >= durationVal) {
                     clearInterval(timer);
                     onCompleted();
                 }
@@ -29,7 +34,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [isPlaying, isCompleted, ad.duration, onCompleted]);
+    }, [isPlaying, isCompleted, durationVal, onCompleted]);
 
     const handleSkip = () => {
         if (canSkip) {
@@ -38,15 +43,23 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
     };
 
     const handleCtaClick = () => {
-        window.open(ad.destinationUrl, '_blank');
+        const dest = isCustom && customAd ? customAd.redirectUrl : ad.destinationUrl;
+        if (dest) window.open(dest, '_blank');
         setIsPlaying(false);
     };
+
+    const brand = isCustom && customAd ? customAd.brandName : ad.brand;
+    const logoEmoji = isCustom ? '✨' : ad.logoEmoji;
+    const tagline = isCustom ? 'Supported by our partner' : ad.tagline;
+    const headline = isCustom && customAd ? customAd.brandName : (ad.videoSimulation?.headline || ad.tagline);
+    const subtext = isCustom && customAd ? 'Sponsor Message' : (ad.videoSimulation?.subtext || ad.brand);
+    const ctaText = isCustom && customAd ? customAd.ctaText : ad.ctaText;
 
     return (
         <div className="fixed inset-0 z-50 flex flex-col bg-black animate-fadeIn" role="dialog" aria-modal="true">
             {/* Top Bar with Skip/Timer */}
             <div className="h-14 w-full flex items-center justify-between px-4 sm:px-6 bg-gradient-to-b from-black/80 to-transparent shrink-0 absolute top-0 left-0 right-0 z-20">
-                <span className="text-[12px] text-white/90 font-bold bg-white/20 px-2 py-1 rounded">Ad • {ad.brand}</span>
+                <span className="text-[12px] text-white/90 font-bold bg-white/20 px-2 py-1 rounded">{isCustom ? 'Sponsor' : 'Ad'} • {brand}</span>
 
                 {canSkip ? (
                     <button
@@ -57,7 +70,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
                     </button>
                 ) : (
                     <span className="h-9 px-4 flex items-center justify-center bg-black/40 text-white rounded-full font-bold text-[13px] backdrop-blur-md">
-                        Skip in {ad.skipAfter - currentTime}s
+                        Skip in {Math.max(0, skipAfterVal - currentTime)}s
                     </span>
                 )}
             </div>
@@ -78,12 +91,12 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
 
                 {/* Simulated visuals */}
                 <div className="relative z-0 flex flex-col items-center text-center p-8 scale-110 sm:scale-100 transition-transform duration-[10s] ease-linear" style={{ transform: `scale(${1 + (currentTime * 0.05)})` }}>
-                    <div className="text-[80px] leading-none mb-6 drop-shadow-2xl">{ad.logoEmoji}</div>
+                    <div className="text-[80px] leading-none mb-6 drop-shadow-2xl">{logoEmoji}</div>
                     <h2 className="text-[32px] sm:text-[40px] font-black tracking-tight leading-tight max-w-[400px]" style={{ color: ad.textColor }}>
-                        {ad.videoSimulation?.headline || ad.tagline}
+                        {headline}
                     </h2>
                     <p className="mt-4 text-[18px] sm:text-[20px] font-bold opacity-90 max-w-[360px]" style={{ color: ad.videoSimulation?.accentColor || ad.textColor }}>
-                        {ad.videoSimulation?.subtext || ad.brand}
+                        {subtext}
                     </p>
                 </div>
             </div>
@@ -93,21 +106,21 @@ export function VideoAdViewer({ ad, onCompleted, onSkip }: VideoAdViewerProps) {
                 <div className="px-4 sm:px-6 pb-6 flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-white font-black text-[18px] drop-shadow-md flex items-center gap-2">
-                            {ad.brand}
-                            <span className="text-[11px] bg-[#BBF7D0]/20 text-[#BBF7D0] px-1.5 py-0.5 rounded font-bold tracking-tight">🌱 + trees</span>
+                            {brand}
+                            {(!isCustom) && <span className="text-[11px] bg-[#BBF7D0]/20 text-[#BBF7D0] px-1.5 py-0.5 rounded font-bold tracking-tight">🌱 + trees</span>}
                         </span>
-                        <span className="text-white/80 font-bold text-[13px]">{ad.tagline}</span>
+                        <span className="text-white/80 font-bold text-[13px]">{tagline}</span>
                     </div>
                     <button
                         onClick={handleCtaClick}
                         className="h-10 px-5 bg-brand text-white font-black text-[14px] rounded-full hover:bg-brand-hover shadow-lg drop-shadow-md transition-colors"
                     >
-                        {ad.ctaText}
+                        {ctaText}
                     </button>
                 </div>
                 {/* Progress bar line */}
                 <div className="h-1 w-full bg-white/20">
-                    <div className="h-full bg-brand transition-all duration-1000 ease-linear" style={{ width: `${(currentTime / ad.duration) * 100}%` }}></div>
+                    <div className="h-full bg-brand transition-all duration-1000 ease-linear" style={{ width: `${(currentTime / durationVal) * 100}%` }}></div>
                 </div>
             </div>
         </div>

@@ -210,6 +210,7 @@ const ScreenNotifications = ({ onSave }: { onSave: () => void }) => {
             <div className="bg-white rounded-[16px] border border-border px-4 flex flex-col mb-6">
                 <ToggleRow label="New unlock notification" />
                 <ToggleRow label="Weekly earnings summary" />
+                <ToggleRow label="Custom sponsor ad milestones" initial={false} />
                 <ToggleRow label="Payout sent confirmation" />
                 <ToggleRow label="New follower on profile" initial={false} />
                 <ToggleRow label="Platform announcements" />

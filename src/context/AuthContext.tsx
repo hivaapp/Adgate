@@ -89,7 +89,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const createLink = async (linkData: Partial<LinkData>) => {
         await simulateNetwork(() => {
-            const newLink = {
+            let finalLinkData = { ...linkData };
+
+            if (finalLinkData.adSource === "custom" && finalLinkData.customAd) {
+                if (!finalLinkData.customAd.redirectUrl || (!finalLinkData.customAd.brandName && !finalLinkData.customAd.fileName)) {
+                    throw new Error("Validation failed for custom ad");
+                }
+            } else {
+                finalLinkData.adSource = "platform";
+            }
+
+            const newLink: any = {
                 id: `link_${Date.now()}`,
                 isActive: true,
                 viewCount: 0,
@@ -99,9 +109,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 createdAt: new Date().toISOString(),
                 geography: [],
                 deviceSplit: { mobile: 0, desktop: 0, tablet: 0 },
-                adType: "click",
-                ...linkData,
+                ...finalLinkData,
             };
+            if (!newLink.adType) newLink.adType = "click";
+            if (!newLink.adSource) newLink.adSource = "platform";
             setLinks([newLink, ...links]);
 
             const newActivity = {
@@ -118,7 +129,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const updateLink = async (id: string, data: Partial<LinkData>) => {
         await simulateNetwork(() => {
-            setLinks(links.map(l => l.id === id ? { adType: "click", ...l, ...data } : l));
+            let finalData = { ...data };
+            if (finalData.adSource === "custom" && finalData.customAd) {
+                if (!finalData.customAd.redirectUrl || (!finalData.customAd.brandName && !finalData.customAd.fileName)) {
+                    throw new Error("Validation failed for custom ad");
+                }
+            }
+            setLinks(links.map(l => l.id === id ? { ...l, ...finalData } : l));
         });
     };
 

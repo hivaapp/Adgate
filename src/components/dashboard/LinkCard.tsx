@@ -1,4 +1,4 @@
-import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointerClick } from 'lucide-react';
+import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointerClick, Sparkles } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 interface LinkCardProps {
@@ -55,7 +55,11 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                     </span>
                 )}
 
-                {link.adType === 'video' ? (
+                {link.adSource === 'custom' ? (
+                    <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#6366F1] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
+                        <Sparkles size={10} /> Sponsor
+                    </span>
+                ) : link.adType === 'video' ? (
                     <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#E8312A] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
                         <Play size={10} fill="currentColor" /> Video
                     </span>
@@ -65,9 +69,15 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                     </span>
                 )}
 
-                <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
-                    <ShieldAlert size={12} strokeWidth={3} /> {link.adCount} Ad{link.adCount > 1 ? 's' : ''}
-                </span>
+                {link.adSource === 'custom' ? (
+                    <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
+                        <ShieldAlert size={12} strokeWidth={3} /> {link.customAd?.type === 'video' ? 'Video' : 'Image'} Ad
+                    </span>
+                ) : (
+                    <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
+                        <ShieldAlert size={12} strokeWidth={3} /> {link.adCount} Ad{link.adCount > 1 ? 's' : ''}
+                    </span>
+                )}
 
                 {link.donate && (
                     <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-successBg border border-success/20 text-[11px] font-black tracking-wide text-success uppercase flex items-center justify-center gap-1">

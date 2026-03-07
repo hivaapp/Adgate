@@ -27,17 +27,24 @@ export const Dashboard = () => {
     useEffect(() => {
         // Simulate referral activity toasts
         const interval = setInterval(() => {
-            const isJoin = Math.random() > 0.5;
+            const isJoin = Math.random() > 0.6;
+            const isSponsor = !isJoin && Math.random() > 0.5;
+
             if (isJoin) {
                 showToast({
                     message: "A new creator joined using your referral code!",
-                    type: "referral_join"
+                    type: "success"
+                });
+            } else if (isSponsor) {
+                showToast({
+                    message: "A viewer unlocked your resource via your Sponsor Ad!",
+                    type: "success"
                 });
             } else {
                 const amount = (Math.random() * 5 + 0.5).toFixed(2);
                 showToast({
                     message: `You earned $${amount} from your referrals!`,
-                    type: "referral_earn"
+                    type: "success"
                 });
             }
         }, 120000); // Every 2 minutes

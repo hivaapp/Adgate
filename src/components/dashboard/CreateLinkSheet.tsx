@@ -3,7 +3,8 @@ import { BottomSheet } from '../ui/BottomSheet';
 import { UploadCloud, TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
 import { useAuth } from '../../context/AuthContext';
-import { AdTypeSelector } from '../AdTypeSelector';
+import { AdSourceSelector, type AdSourceType } from '../AdSourceSelector';
+import { type CustomAdData } from '../CustomSponsorForm';
 
 interface CreateLinkSheetProps {
     isOpen: boolean;
@@ -17,6 +18,10 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(1);
     const [adType, setAdType] = useState<"click" | "video">("click");
+    const [adSource, setAdSource] = useState<AdSourceType>("platform");
+    const [customAd, setCustomAd] = useState<CustomAdData | null>(null);
+    const [hasCustomAdErrors, setHasCustomAdErrors] = useState(true);
+
     const [donate, setDonate] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,9 +35,11 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
         await createLink({
             title,
             description: desc,
-            adCount,
+            adCount: adSource === 'custom' ? 1 : adCount,
             donateEnabled: donate,
             adType,
+            adSource,
+            customAd,
             fileType: file?.name.split('.').pop()?.toUpperCase() || 'FILE',
             fileName: file?.name,
         });
@@ -120,35 +127,51 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                     </div>
                 </div>
 
-                {/* Ad Type */}
+                {/* Ad Setup */}
                 <div className="flex flex-col gap-3">
-                    <label className="text-[13px] font-extrabold text-textMid uppercase tracking-wide">Ad Type</label>
-                    <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
+                    <label className="text-[13px] font-extrabold text-textMid uppercase tracking-wide">Ad Setup</label>
+                    <AdSourceSelector
+                        value={adSource}
+                        onChange={setAdSource}
+                        adType={adType}
+                        onAdTypeChange={setAdType}
+                        customAd={customAd}
+                        onCustomAdChange={setCustomAd}
+                        onErrorStateChange={setHasCustomAdErrors}
+                        adCount={adCount}
+                    />
                 </div>
 
                 {/* Ad Count */}
-                <div className="flex flex-col gap-3">
-                    <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Ads required to unlock</label>
-                    <div className="flex items-center gap-3">
-                        <div className="flex gap-2 bg-surfaceAlt p-1.5 rounded-[16px] border border-border shrink-0">
-                            {[1, 2, 3].map(num => (
-                                <button
-                                    key={num}
-                                    onClick={() => setAdCount(num)}
-                                    className={`w-[48px] h-[48px] rounded-[10px] flex items-center justify-center text-[16px] font-black transition-all ${adCount === num ? 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-brand scale-105 z-10' : 'text-textMid hover:text-text'
-                                        }`}
-                                >
-                                    {num}
-                                </button>
-                            ))}
+                {adSource === 'platform' ? (
+                    <div className="flex flex-col gap-3">
+                        <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Ads required to unlock</label>
+                        <div className="flex items-center gap-3">
+                            <div className="flex gap-2 bg-surfaceAlt p-1.5 rounded-[16px] border border-border shrink-0">
+                                {[1, 2, 3].map(num => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setAdCount(num)}
+                                        className={`w-[48px] h-[48px] rounded-[10px] flex items-center justify-center text-[16px] font-black transition-all ${adCount === num ? 'bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-brand scale-105 z-10' : 'text-textMid hover:text-text'
+                                            }`}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="text-[12px] font-bold leading-tight text-textLight">
+                                {adCount === 1 && "Highest conversion. Best for new creators."}
+                                {adCount === 2 && "Balanced earnings and user experience."}
+                                {adCount === 3 && "Maximum revenue. May lower conversions."}
+                            </p>
                         </div>
-                        <p className="text-[12px] font-bold leading-tight text-textLight">
-                            {adCount === 1 && "Highest conversion. Best for new creators."}
-                            {adCount === 2 && "Balanced earnings and user experience."}
-                            {adCount === 3 && "Maximum revenue. May lower conversions."}
-                        </p>
                     </div>
-                </div>
+                ) : (
+                    <div className="w-full bg-[#FAFAFF] border border-[#E8E8E8] rounded-[12px] p-3 flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-[#E6E2D9] flex items-center justify-center text-[#666] font-bold text-[12px]">i</div>
+                        <span className="text-[12px] text-textMid font-bold">Ad count determined by your sponsor creative.</span>
+                    </div>
+                )}
 
                 {/* Donate Toggle */}
                 <div
@@ -174,7 +197,13 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
             {/* Sticky Action Bar */}
             <div className="fixed bottom-0 left-0 w-full bg-white border-t border-border/60 p-4 pb-[env(safe-area-inset-bottom,16px)] sm:absolute z-20">
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => {
+                        if (adSource === 'custom' && hasCustomAdErrors) {
+                            window.dispatchEvent(new Event('CUSTOM_SPONSOR_VALIDATE'));
+                            return;
+                        }
+                        handleSubmit();
+                    }}
                     disabled={!file || !title || isSubmitting}
                     className="btn-primary w-full h-[52px] rounded-[14px] text-[16px]"
                 >

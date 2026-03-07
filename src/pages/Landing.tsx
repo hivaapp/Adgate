@@ -2,7 +2,8 @@ import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
-import { AdTypeSelector } from '../components/AdTypeSelector';
+import { AdSourceSelector, type AdSourceType } from '../components/AdSourceSelector';
+import { type CustomAdData } from '../components/CustomSponsorForm';
 import { TreesLandingSection } from '../components/TreesLandingSection';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -34,6 +35,10 @@ export const Landing = () => {
 
     // Ad type state
     const [adType, setAdType] = useState<"click" | "video">("click");
+    // Ad Source State
+    const [adSource, setAdSource] = useState<AdSourceType>("platform");
+    const [customAd, setCustomAd] = useState<CustomAdData | null>(null);
+    const [hasCustomAdErrors, setHasCustomAdErrors] = useState(true); // default true since empty form
 
     // Donate toggle state
     const [isDonateOn, setIsDonateOn] = useState(true);
@@ -97,6 +102,14 @@ export const Landing = () => {
 
     const handleGenerate = () => {
         if (files.length === 0) return;
+        if (adSource === 'custom') {
+            if (hasCustomAdErrors) {
+                // Trigger validation UI
+                window.dispatchEvent(new Event('CUSTOM_SPONSOR_VALIDATE'));
+                alert("Please complete your sponsor details before generating.");
+                return;
+            }
+        }
         setIsGenerating(true);
         setTimeout(() => {
             setIsGenerating(false);
@@ -223,28 +236,42 @@ export const Landing = () => {
                     <div className="h-px w-full bg-border" />
 
                     {/* Step 2 */}
-                    <div className="flex flex-col gap-3">
+                    <div className={`flex flex-col gap-3 min-h-[0px] p-4 -m-4 rounded-[20px] transition-colors border-2 ${adSource === 'custom' ? 'border-[#6366F1]/40' : 'border-transparent'}`}>
                         <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 bg-[#E8312A] text-white rounded-full flex items-center justify-center font-black text-[12px]">2</div>
-                            <h3 className="font-black text-text text-[18px] tracking-tight">Choose your ad type</h3>
+                            <div className="w-6 h-6 bg-[#E8312A] text-white rounded-full flex items-center justify-center font-black text-[12px] transition-transform active:scale-110">2</div>
+                            <h3 className="font-black text-text text-[18px] tracking-tight">Choose how you want ads to work</h3>
                         </div>
-                        <p className="text-[12px] text-textMid -mt-2 ml-9">This determines how your viewers unlock your content.</p>
+                        <p className="text-[12px] text-textMid -mt-2 ml-9">AdGate can serve ads for you, or you can use your own sponsor.</p>
 
                         <div className="ml-9">
-                            <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
+                            <AdSourceSelector
+                                value={adSource}
+                                onChange={setAdSource}
+                                adType={adType}
+                                onAdTypeChange={setAdType}
+                                customAd={customAd}
+                                onCustomAdChange={setCustomAd}
+                                onErrorStateChange={setHasCustomAdErrors}
+                                adCount={adCount}
+                            />
+                            {adSource === 'custom' && (
+                                <div className="mt-4 p-3 rounded-lg bg-surfaceAlt/50 border border-border text-[12px] text-textMid">
+                                    Ad count set by your creative duration.
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     <div className="h-px w-full bg-border" />
 
                     {/* Step 3 */}
-                    <div className="flex flex-col gap-3">
+                    <div className={`flex flex-col gap-3 overflow-hidden transition-all duration-300 ${adSource === 'custom' ? 'opacity-0 max-h-0' : 'opacity-100 max-h-[500px]'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-6 h-6 bg-text text-white rounded-full flex items-center justify-center font-black text-[12px]">3</div>
                             <h3 className="font-black text-text text-[18px] tracking-tight">Set ad requirement</h3>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+                        <div className="flex flex-col sm:flex-row gap-3 items-stretch ml-9">
                             <div className="flex gap-2 shrink-0">
                                 {[1, 2, 3].map(num => (
                                     <button
@@ -268,25 +295,32 @@ export const Landing = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="h-px w-full bg-border mt-3" />
                     </div>
 
                     {/* Step 4 / Donate */}
-                    <div className={`flex items-center justify-between p-3 rounded-[12px] border transition-colors ${isDonateOn ? 'bg-successBg border-success/30' : 'bg-surfaceAlt border-border'}`}>
+                    <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[16px] ${isDonateOn ? 'bg-success/20 text-success' : 'bg-border text-textLight'}`}>
-                                🌱
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-black text-[14px] text-text">Donate 5% to plant trees</span>
-                                <span className="font-bold text-[11px] text-textMid">Boost viewer trust & conversion rates.</span>
-                            </div>
+                            <div className="w-6 h-6 bg-text text-white rounded-full flex items-center justify-center font-black text-[12px] transition-transform">{adSource === 'custom' ? '3' : '4'}</div>
+                            <h3 className="font-black text-text text-[18px] tracking-tight">Donate (Optional)</h3>
                         </div>
-                        <button
-                            onClick={() => setIsDonateOn(!isDonateOn)}
-                            className={`w-[44px] h-[24px] rounded-full p-1 transition-colors relative shrink-0 ${isDonateOn ? 'bg-success' : 'bg-textLight'}`}
-                        >
-                            <div className={`w-[16px] h-[16px] bg-white rounded-full transition-transform absolute top-1 ${isDonateOn ? 'translate-x-[20px]' : 'translate-x-0'}`} />
-                        </button>
+                        <div className={`ml-9 flex items-center justify-between p-3 rounded-[12px] border transition-colors ${isDonateOn ? 'bg-successBg border-success/30' : 'bg-surfaceAlt border-border'}`}>
+                            <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[16px] ${isDonateOn ? 'bg-success/20 text-success' : 'bg-border text-textLight'}`}>
+                                    🌱
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="font-black text-[14px] text-text">Donate 5% to plant trees</span>
+                                    <span className="font-bold text-[11px] text-textMid">Boost viewer trust & conversion rates.</span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsDonateOn(!isDonateOn)}
+                                className={`w-[44px] h-[24px] rounded-full p-1 transition-colors relative shrink-0 ${isDonateOn ? 'bg-success' : 'bg-textLight'}`}
+                            >
+                                <div className={`w-[16px] h-[16px] bg-white rounded-full transition-transform absolute top-1 ${isDonateOn ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Generate Action */}
@@ -384,7 +418,7 @@ export const Landing = () => {
                                 <DollarSign size={32} className="text-success" />
                             </div>
                             <h3 className="text-[18px] font-black text-text mb-2">3. Earn Revenue</h3>
-                            <p className="text-[14px] text-textMid font-bold">Users click ad(s) to automatically unlock. You get paid for every click.</p>
+                            <p className="text-[14px] text-textMid font-bold">{adSource === 'custom' ? '✨ Views your sponsor' : 'Users click ad(s) to automatically unlock. You get paid for every click.'}</p>
                         </div>
                     </div>
                 </div>
@@ -442,6 +476,14 @@ export const Landing = () => {
                                 >
                                     👆 Click Ads
                                 </button>
+                            </div>
+                            <div className="mt-1 relative group flex items-start flex-col">
+                                <button className="text-[12px] font-[700] text-[#6366F1] underline decoration-1 underline-offset-2 hover:text-[#4F46E5]">
+                                    Using your own sponsor? Your rate may vary.
+                                </button>
+                                <div className="mt-2 bg-[#F5F3FF] p-3 rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity absolute top-[20px] w-full text-left pointer-events-none z-10 shadow-sm border border-[#E0D8FE]">
+                                    <span className="text-[12px] text-textMid font-[600]">With a custom sponsor your earnings depend on your deal. AdGate still charges 5% at payout.</span>
+                                </div>
                             </div>
                         </div>
 

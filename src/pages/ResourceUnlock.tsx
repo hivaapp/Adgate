@@ -34,13 +34,21 @@ export const ResourceUnlock = () => {
         fileSize: "24.5 MB",
         donateEnabled: true,
         adType: "click",
+        adSource: "custom",
+        customAd: {
+            type: "video",
+            brandName: "FlowDesk Tools",
+            redirectUrl: "https://flowdesk.example.com",
+            ctaText: "Get Access Now"
+        }
     };
 
-    const isVideo = resource.adType === 'video';
+    const isCustom = resource.adSource === 'custom';
+    const isVideo = isCustom ? resource.customAd?.type === 'video' : resource.adType === 'video';
 
     useEffect(() => {
         // Initialize session on mount or slug change
-        startSession(slug || 'default', resource.adType || 'click', resource.adCount);
+        startSession(slug || 'default', isVideo ? 'video' : 'click', resource.adCount);
         // Set open graph tags (mock implementation via DOM)
         document.title = `${resource.title} - AdGate`;
         const setMeta = (property: string, content: string) => {
@@ -151,12 +159,18 @@ export const ResourceUnlock = () => {
     const remainingAds = totalAdsRequired - adsClicked;
     let buttonText = isVideo ? "Watch Video to Unlock" : "Click Ad to Unlock";
 
-    if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
-        buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
-    } else if (remainingAds === 1 && totalAdsRequired > 1) {
-        buttonText = isVideo ? "One More Video — Almost There" : "One More Ad — Almost There";
-    } else if (remainingAds > 1) {
-        buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
+    if (isCustom) {
+        buttonText = "View Sponsor Message";
+    }
+
+    if (!isCustom) {
+        if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
+            buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
+        } else if (remainingAds === 1 && totalAdsRequired > 1) {
+            buttonText = isVideo ? "One More Video — Almost There" : "One More Ad — Almost There";
+        } else if (remainingAds > 1) {
+            buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
+        }
     }
 
     return (
@@ -299,7 +313,14 @@ export const ResourceUnlock = () => {
                             </div>
 
                             <div className="text-center mb-5">
-                                {isVideo ? (
+                                {isCustom ? (
+                                    <>
+                                        <p className="text-[14px] font-bold text-text mb-1">A brief message from our sponsor to unlock your resource.</p>
+                                        <p className="text-[12px] font-semibold text-textMid flex items-center justify-center gap-1">
+                                            Sponsored by {resource.customAd?.brandName || 'Partner'}
+                                        </p>
+                                    </>
+                                ) : isVideo ? (
                                     <>
                                         <p className="text-[14px] font-bold text-text mb-1">Watch short videos below to unlock your free resource.</p>
                                         <p className="text-[12px] font-semibold text-textMid">Enjoy {totalAdsRequired} quick videos.</p>
@@ -420,12 +441,16 @@ export const ResourceUnlock = () => {
                         ad={currentAd}
                         onCompleted={handleVideoComplete}
                         onSkip={handleVideoSkip}
+                        isCustom={isCustom}
+                        customAd={resource.customAd}
                     />
                 ) : (
                     <AdInterstitial
                         ad={currentAd}
                         onClose={handleAdClose}
                         onClick={handleAdClick}
+                        isCustom={isCustom}
+                        customAd={resource.customAd}
                     />
                 )
             )}

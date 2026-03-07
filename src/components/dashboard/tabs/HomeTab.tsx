@@ -92,6 +92,13 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
                     </span>
                     <span className="text-[11px] font-bold text-textMid">Click Unlocks</span>
                 </div>
+                <div className="card h-auto p-4 flex gap-1 flex-col shadow-none sm:col-span-3 lg:col-span-1">
+                    <span className="text-[20px] leading-none mb-1">✨</span>
+                    <span className="text-[24px] font-black leading-none text-text">
+                        <CountUp end={89} />
+                    </span>
+                    <span className="text-[11px] font-bold text-textMid">Sponsor Unlocks</span>
+                </div>
             </div>
 
             {/* Quick Share Strip */}
