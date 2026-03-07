@@ -503,8 +503,8 @@ export const Landing = () => {
                                 {adSource === 'custom' && hasConfiguredAdSetup.current && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#6366F1]" />}
                             </div>
                             {hasConfiguredAdSetup.current ? (
-                                <span className="text-[12px] font-[800] text-[#111] truncate px-1 max-w-[100px]">
-                                    {adSource === 'platform' ? `Platform · ${adType === 'click' ? 'Click' : 'Video'}` : `Custom · ${customAd?.brandName || 'Sponsor'}`}
+                                <span className="text-[11px] sm:text-[12px] font-[800] text-[#111] truncate px-1 max-w-[140px]">
+                                    {adSource === 'platform' ? `Platform \u00B7 ${adType === 'click' ? 'Click' : 'Video'}` : `Custom \u00B7 ${(customAd?.redirectUrl) ? 'Watch \u2192 Click' : 'Video'} \u00B7 ${customAd?.brandName || 'Sponsor'}`}
                                 </span>
                             ) : (
                                 <span className="text-[12px] italic text-[#BBBBBB]">Tap to set</span>

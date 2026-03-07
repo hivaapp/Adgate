@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick } from 'lucide-react';
+import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick, ArrowRight } from 'lucide-react';
 import { useAdSession } from '../hooks/useAdSession';
 import { useToast } from '../context/ToastContext';
 import { AdInterstitial } from '../components/AdInterstitial';
@@ -179,13 +179,13 @@ export const ResourceUnlock = () => {
 
     if (isCustom) {
         if (customSponsorStep === "watch") {
-            buttonText = requiresClick ? "Watch + Click to Unlock" : "Watch to Unlock";
+            buttonText = requiresClick ? "Watch Then Click Free" : "Watch to Unlock";
         } else if (customSponsorStep === "click") {
             buttonText = "Visit Sponsor to Unlock";
             buttonIcon = <MousePointerClick size={18} />;
             buttonBg = "bg-[#6366F1] hover:bg-[#4F46E5]";
         } else {
-            buttonText = requiresClick ? "Watch + Click to Unlock" : "Watch to Unlock";
+            buttonText = requiresClick ? "Watch Then Click Free" : "Watch to Unlock";
         }
     } else {
         if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
@@ -257,9 +257,27 @@ export const ResourceUnlock = () => {
                             <span className="px-2 py-0.5 bg-surfaceAlt rounded-md text-[11px]">{resource.fileType}</span>
 
                             {isCustom ? (
-                                <span className="px-2 py-0.5 bg-[#EEF2FF] text-[#4F46E5] rounded-md text-[11px] flex items-center gap-1 font-bold">
-                                    ✨ Sponsor: {requiresClick ? 'Watch + Click' : 'Video Only'}
-                                </span>
+                                <div className="h-[40px] px-3 bg-[#EDE9FE] text-[#6366F1] rounded-[10px] flex items-center gap-2 ml-1 shadow-[0_1px_2px_rgba(99,102,241,0.1)]">
+                                    {requiresClick ? (
+                                        <div className="flex items-center gap-1 opacity-90 shrink-0 mr-1">
+                                            <Play size={10} fill="currentColor" />
+                                            <ArrowRight size={10} strokeWidth={3} />
+                                            <MousePointerClick size={10} />
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-1 opacity-90 shrink-0 mr-1">
+                                            <Play size={10} fill="currentColor" />
+                                        </div>
+                                    )}
+                                    <div className="flex flex-col justify-center text-left">
+                                        <span className="text-[12px] font-black leading-none mb-0.5 tracking-tight text-[#4C1D95]">
+                                            {requiresClick ? 'Watch \u2192 Then Click' : 'Video Only'}
+                                        </span>
+                                        <span className="text-[10px] font-bold opacity-70 leading-none">
+                                            Sponsored \u00B7 {resource.customAd?.brandName || 'Partner'}
+                                        </span>
+                                    </div>
+                                </div>
                             ) : (
                                 <span className="px-2 py-0.5 bg-brandTint text-brand rounded-md text-[11px] flex items-center gap-1">
                                     {isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}
@@ -543,35 +561,51 @@ export const ResourceUnlock = () => {
 const SponsorClickInterstitial = ({ customAd, onClick, onClose }: any) => {
     return (
         <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-md animate-fadeIn p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true">
-            {/* Deliberately no close button as per specs: "No close button on Step 2; encourages click or abandonment via browser controls" */}
-            <div className="w-full max-w-[400px] bg-white rounded-[24px] overflow-hidden flex flex-col items-center">
-                <div className="w-full h-12 bg-successBg flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center">
-                        <Check size={12} className="text-white" strokeWidth={4} />
-                    </div>
-                    <span className="text-[13px] font-black text-success uppercase tracking-wide">Step 1 Complete</span>
+            {/* Deliberately no close button on Step 2; encourages click or abandonment */}
+            <div className="w-full max-w-[400px] bg-white rounded-[24px] overflow-hidden flex flex-col items-center border border-border shadow-2xl relative pb-6">
+                <div className="w-full h-12 bg-[#EDE9FE] flex items-center justify-center gap-2 border-b border-[#C4B5FD] mb-6 shadow-sm">
+                    <span className="text-[13px] font-black text-[#6366F1] uppercase tracking-wider">Step 2 Required</span>
                 </div>
 
-                <div className="p-8 flex flex-col items-center w-full">
-                    <div className="w-20 h-20 bg-surfaceAlt rounded-full mb-4 flex items-center justify-center">
-                        <span className="text-4xl font-black text-brand">
-                            {customAd?.brandName ? customAd.brandName[0].toUpperCase() : "B"}
-                        </span>
+                <div className="px-6 flex flex-col items-center w-full">
+                    <div className="w-16 h-16 bg-surfaceAlt rounded-[16px] mb-4 flex items-center justify-center border border-border shadow-sm text-3xl font-black text-brand">
+                        {customAd?.brandName ? customAd.brandName[0].toUpperCase() : "B"}
                     </div>
-                    <h2 className="text-[24px] font-black tracking-tight leading-tight text-center mb-2">
-                        Thanks for watching!
+                    <h2 className="text-[22px] font-black tracking-tight leading-tight text-center mb-4">
+                        Almost there. One last step!
                     </h2>
-                    <p className="text-[15px] font-medium text-textMid text-center mb-8 px-2 leading-snug">
-                        Click below to visit <span className="text-text font-bold">{customAd?.brandName}</span> and instantly unlock your link.
-                    </p>
+
+                    <div className="w-full bg-surfaceAlt rounded-[16px] p-4 flex flex-col gap-4 mb-6 border border-border">
+                        <div className="flex items-start gap-3 opacity-50">
+                            <div className="w-6 h-6 rounded-full bg-success flex items-center justify-center shrink-0 mt-0.5">
+                                <Check size={12} className="text-white" strokeWidth={3} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[14px] font-bold text-text line-through">1. Watch the sponsor video</span>
+                                <span className="text-[11px] font-[600] text-textMid mt-0.5">Completed</span>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-full bg-[#6366F1] flex items-center justify-center shrink-0 mt-0.5 text-white font-black text-[12px] shadow-sm">
+                                2
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[14px] font-bold text-text">Click below to visit the sponsor</span>
+                                <span className="text-[12px] font-[600] text-textMid mt-1 leading-relaxed">
+                                    This supports <span className="font-bold text-text">{customAd?.brandName}</span> who made this resource free for you. It opens in a new tab.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
                     <button
                         onClick={onClick}
                         className="w-full h-[56px] rounded-[16px] bg-[#6366F1] hover:bg-[#4F46E5] flex items-center justify-center text-white font-black text-[16px] shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        {customAd?.ctaText || "Visit Sponsor"} <MousePointerClick size={18} className="ml-2" />
+                        {customAd?.ctaText || "Visit Sponsor"} <ArrowRight size={18} className="ml-2" />
                     </button>
-                    <button onClick={onClose} className="mt-6 text-textLight hover:text-textMid text-[12px] font-bold underline transition-colors">
-                        I'll do this later
+                    <button onClick={onClose} className="mt-5 text-textLight hover:text-textMid text-[12px] font-bold hover:underline transition-colors w-full h-[32px]">
+                        I don't want the free resource anymore
                     </button>
                 </div>
             </div>
