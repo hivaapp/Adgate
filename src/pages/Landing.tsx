@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
@@ -58,6 +58,46 @@ export const Landing = () => {
 
     // FAQ state
     const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+    // Mobile UI state
+    const [isAdSetupSheetOpen, setAdSetupSheetOpen] = useState(false);
+    const [isTreesSheetOpen, setTreesSheetOpen] = useState(false);
+    const [showTextInput, setShowTextInput] = useState(false);
+    const [textInputValue, setTextInputValue] = useState("");
+    const [hasPulsed, setHasPulsed] = useState(false);
+    const hasConfiguredAdSetup = useRef(false);
+    const outputCardRef = useRef<HTMLDivElement>(null);
+
+    // How It Works state
+    const [howTab, setHowTab] = useState<'platform' | 'custom'>('platform');
+
+    useEffect(() => {
+        if (isGenerated && outputCardRef.current) {
+            outputCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, [isGenerated]);
+
+    useEffect(() => {
+        if (files.length > 0 && !hasPulsed && !hasConfiguredAdSetup.current) {
+            const timer = setTimeout(() => {
+                if (!hasConfiguredAdSetup.current) setHasPulsed(true);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [files, hasPulsed]);
+
+    useEffect(() => {
+        if (hasPulsed) {
+            const timer = setTimeout(() => setHasPulsed(false), 600);
+            return () => clearTimeout(timer);
+        }
+    }, [hasPulsed]);
+
+    const handleAdSetupApply = () => {
+        hasConfiguredAdSetup.current = true;
+        setHasPulsed(false);
+        setAdSetupSheetOpen(false);
+    };
 
     // Computed Values
     const getAdEstimates = (count: number) => {
@@ -177,7 +217,8 @@ export const Landing = () => {
 
             {/* Generator Component */}
             <div className="w-full max-w-[600px] px-4 mb-24 relative z-10" id="generator">
-                <div className="bg-white rounded-[24px] border border-border shadow-md p-4 sm:p-6 flex flex-col gap-6">
+                {/* Desktop Step Layout */}
+                <div className="hidden sm:flex bg-white rounded-[24px] border border-border shadow-md p-4 sm:p-6 flex-col gap-6">
 
                     {/* Step 1 */}
                     <div className="flex flex-col gap-3">
@@ -386,29 +427,238 @@ export const Landing = () => {
                         )}
                     </div>
                 </div>
-            </div>
 
-            {/* How It Works */}
-            <div id="how-it-works" className="w-full bg-white border-y border-border py-20 flex flex-col items-center">
-                <div className="w-full max-w-[800px] px-4">
-                    <div className="flex flex-col items-center text-center mb-16">
-                        <span className="text-brand font-black text-[12px] uppercase tracking-widest mb-2">Simple Process</span>
-                        <h2 className="text-[32px] sm:text-[40px] font-black text-text leading-tight">Create, share, earn.</h2>
-                        <p className="text-[16px] text-textMid font-bold mt-3 max-w-[400px]">The easiest way to monetize free resources. No user sign-ups required.</p>
+                {/* Mobile Compact Layout */}
+                <div className="sm:hidden flex flex-col w-full -mx-4 px-4">
+                    {/* The Main Drop Zone Card */}
+                    <div
+                        className={`w-full h-[180px] bg-white rounded-[18px] transition-all relative shadow-[0_1px_3px_rgba(0,0,0,0.06)] 
+                        ${files.length > 0 || showTextInput ? 'border-2 border-[#E8312A]' : isDragging ? 'border-2 border-dashed border-[#E8312A] bg-[#FFF0EF]' : 'border-2 border-dashed border-[#E8E8E8]'}`}
+                        onClick={() => { if (files.length === 0 && !showTextInput) fileInputRef.current?.click() }}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
+                        {(files.length === 0 && !showTextInput) ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                                <div className="w-12 h-12 rounded-[12px] bg-[#FFF0EF] text-[#E8312A] flex items-center justify-center mb-3">
+                                    <UploadCloud size={24} />
+                                </div>
+                                <h4 className="font-[900] text-[16px] text-[#111] mb-0.5">Drop your file here</h4>
+                                <p className="font-[600] text-[14px] text-[#999] mb-3">or tap to browse</p>
+                                <div className="flex gap-2">
+                                    {["PDF", "ZIP", "MP4", "PNG", "TXT"].map(k => (
+                                        <div key={k} className="h-6 px-2.5 rounded-full bg-surfaceAlt text-[11px] font-[700] text-[#666] flex items-center">
+                                            {k}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : showTextInput ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                                <input
+                                    type="text"
+                                    autoFocus
+                                    value={textInputValue}
+                                    onChange={(e) => setTextInputValue(e.target.value)}
+                                    placeholder="Paste a URL or type your prompt here..."
+                                    className="w-full h-[44px] rounded-lg border border-[#E8E8E8] px-3 text-[14px] outline-none focus:border-[#E8312A]"
+                                />
+                            </div>
+                        ) : (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                                <div className="w-full h-[60px] flex items-center justify-between mb-3">
+                                    <div className="flex items-center flex-1 min-w-0 pr-3">
+                                        <div className="w-12 h-12 bg-[#F5F5F5] text-text rounded-[10px] flex items-center justify-center shrink-0">
+                                            <File size={24} />
+                                        </div>
+                                        <div className="ml-3 flex flex-col min-w-0">
+                                            <span className="font-[800] text-[14px] text-[#111] truncate">{files[0]?.name}</span>
+                                            <span className="text-[12px] text-[#666]">{(files[0]?.size / 1024 / 1024).toFixed(2)} MB</span>
+                                        </div>
+                                    </div>
+                                    <button onClick={(e) => { e.stopPropagation(); removeFile(0); }} className="w-8 h-8 rounded-full flex items-center justify-center text-[#E8312A] bg-[#FFF0EF] shrink-0">
+                                        <X size={16} strokeWidth={3} />
+                                    </button>
+                                </div>
+                                <button onClick={(e) => { e.stopPropagation(); setShowTextInput(true); removeFile(0); }} className="text-[12px] font-[700] text-[#999] hover:text-[#666]">
+                                    No file? Share a link or text prompt instead
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    {/* The Settings Summary Bar */}
+                    <div className="w-full h-[52px] bg-white rounded-[14px] mt-[8px] flex overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-[#E6E2D9]">
+                        {/* Ad Setup Item */}
+                        <button onClick={() => setAdSetupSheetOpen(true)} className={`flex-1 flex flex-col justify-center items-center relative ${hasPulsed ? 'bg-[#FFF0EF] transition-colors duration-300' : 'bg-white'}`}>
+                            <div className="flex items-center gap-1">
+                                {hasConfiguredAdSetup.current ? (
+                                    adSource === 'platform' ? <Play size={10} className="text-[#E8312A]" /> : <Star size={10} className="text-[#6366F1]" />
+                                ) : (
+                                    <Settings size={10} className="text-[#AAA49C]" />
+                                )}
+                                <span className="text-[11px] text-textMid">Ad Setup</span>
+                                {adSource === 'custom' && hasConfiguredAdSetup.current && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#6366F1]" />}
+                            </div>
+                            {hasConfiguredAdSetup.current ? (
+                                <span className="text-[12px] font-[800] text-[#111] truncate px-1 max-w-[100px]">
+                                    {adSource === 'platform' ? `Platform · ${adType === 'click' ? 'Click' : 'Video'}` : `Custom · ${customAd?.brandName || 'Sponsor'}`}
+                                </span>
+                            ) : (
+                                <span className="text-[12px] italic text-[#BBBBBB]">Tap to set</span>
+                            )}
+                        </button>
+                        <div className="w-[1px] h-full bg-[#F0F0F0]" />
+
+                        {/* Trees Item */}
+                        <button onClick={() => setTreesSheetOpen(true)} className="flex-1 flex flex-col justify-center items-center">
+                            <div className="flex items-center gap-1">
+                                <span className="text-[10px]">🌱</span>
+                                <span className="text-[11px] text-textMid">Trees</span>
+                            </div>
+                            <span className={`text-[12px] font-[800] ${isDonateOn ? 'text-[#417A55]' : 'text-textMid'}`}>
+                                {isDonateOn ? 'On' : 'Off'}
+                            </span>
+                        </button>
+                        <div className="w-[1px] h-full bg-[#F0F0F0]" />
+
+                        {/* Options Item */}
+                        <button className="flex-1 flex flex-col justify-center items-center" onClick={() => alert("Options coming soon!")}>
+                            <div className="flex items-center gap-1">
+                                <Settings size={10} className="text-textLight" />
+                                <span className="text-[11px] text-textMid">Options</span>
+                            </div>
+                            <span className="text-[12px] italic text-[#BBBBBB] opacity-80">Coming soon</span>
+                        </button>
+                    </div>
+
+                    {/* Generate Button */}
+                    <div className="mt-[10px]">
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isGenerating || (files.length === 0 && !textInputValue)}
+                            className={`w-full h-[52px] rounded-[14px] font-[800] text-[16px] flex items-center justify-center gap-2 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06)]
+                            ${(files.length > 0 || textInputValue) ? 'bg-[#E8312A] text-white' : 'bg-[#E8312A]/50 text-white'}`}
+                        >
+                            {isGenerating ? (
+                                <>
+                                    <Loader2 size={20} className="animate-spin" />
+                                    Generating...
+                                </>
+                            ) : (files.length === 0 && !textInputValue) ? (
+                                "Add a file to get started"
+                            ) : (
+                                <>
+                                    <LinkIcon size={18} />
+                                    Generate Shareable Link
+                                </>
+                            )}
+                        </button>
+                    </div>
+
+                    {/* Generated Link Output (Mobile) */}
+                    {isGenerated && (
+                        <div ref={outputCardRef} className="mt-[10px] bg-white rounded-[14px] p-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-[#E6E2D9] animate-in slide-in-from-bottom-4 fade-in duration-300">
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <div className="w-4 h-4 rounded-full bg-[#EBF5EE] text-[#417A55] flex items-center justify-center">
+                                    <Check size={10} strokeWidth={4} />
+                                </div>
+                                <span className="text-[12px] font-[700] text-[#417A55]">Your link is ready</span>
+                            </div>
+
+                            <div className="flex gap-2">
+                                <div className={`flex-1 h-[40px] rounded-[10px] px-3 flex items-center relative overflow-hidden transition-colors ${isLoggedIn ? 'bg-[#F3F1EC]' : 'bg-[#F3F1EC]'}`}>
+                                    {!isLoggedIn && <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10" />}
+                                    <span className="font-bold font-mono text-[13px] truncate text-text">{fakeUrl}</span>
+                                </div>
+                                {!isLoggedIn ? (
+                                    <button onClick={() => setIsModalOpen(true)} className="h-[40px] px-4 bg-[#E8312A] text-white rounded-[10px] font-black text-[13px] flex items-center gap-1.5 shrink-0">
+                                        Sign In to reveal
+                                    </button>
+                                ) : (
+                                    <button onClick={copyToClipboard} className={`w-[40px] h-[40px] rounded-full flex items-center justify-center text-white transition-colors shrink-0 shadow-sm ${isCopied ? 'bg-success' : 'bg-[#E8312A]'}`}>
+                                        {isCopied ? <Check size={18} /> : <LinkIcon size={18} />}
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Ad Type Badges Mobile */}
+                            <div className="flex items-center gap-1.5 mt-3">
+                                {adSource === 'platform' ? (
+                                    <div className="h-[22px] px-2 rounded-full bg-[#FFF0EF] flex items-center gap-1 text-[#E8312A]">
+                                        {adType === 'video' ? <Play size={8} fill="currentColor" /> : <MousePointerClick size={8} />}
+                                        <span className="text-[10px] font-[800] uppercase pt-px">Platform</span>
+                                    </div>
+                                ) : (
+                                    <div className="h-[22px] px-2 rounded-full bg-[#F5F3FF] flex items-center gap-1 text-[#6366F1]">
+                                        <Star size={8} fill="currentColor" />
+                                        <span className="text-[10px] font-[800] uppercase pt-px">Custom</span>
+                                    </div>
+                                )}
+                                <div className="h-[22px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid">
+                                    <span className="text-[10px] font-[800] uppercase pt-px">{adCount} Ad{adCount > 1 ? 's' : ''}</span>
+                                </div>
+                            </div>
+
+                            {/* Mobile Compact How It Works Row */}
+                            <div className="mt-[12px] h-[48px] bg-[#F8F8F8] rounded-[10px] flex items-center">
+                                <div className="flex-1 flex flex-col items-center justify-center gap-0.5">
+                                    <span className="text-[18px]">🔗</span>
+                                    <span className="text-[10px] font-[700] text-textMid">Click link</span>
+                                </div>
+                                <div className="w-[1px] h-[24px] bg-[#E8E8E8]" />
+                                <div className="flex-1 flex flex-col items-center justify-center gap-0.5">
+                                    <span className="text-[18px]">{adSource === 'custom' ? '✨' : '📺'}</span>
+                                    <span className="text-[10px] font-[700] text-textMid">{adSource === 'custom' ? 'View sponsor' : 'Watch ad'}</span>
+                                </div>
+                                <div className="w-[1px] h-[24px] bg-[#E8E8E8]" />
+                                <div className="flex-1 flex flex-col items-center justify-center gap-0.5">
+                                    <span className="text-[18px]">🎁</span>
+                                    <span className="text-[10px] font-[700] text-textMid">Free content</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* How It Works Desktop Only */}
+            <div id="how-it-works" className="hidden sm:flex w-full bg-white border-y border-border py-20 flex-col items-center">
+                <div className="w-full max-w-[800px] px-4">
+                    <div className="flex flex-col items-center text-center mb-10">
+                        <span className="text-brand font-black text-[12px] uppercase tracking-widest mb-2">Simple Process</span>
+                        <h2 className="text-[32px] font-black text-text leading-tight">Create, share, earn.</h2>
+                        <p className="text-[16px] text-textMid font-bold mt-2 max-w-[400px]">The easiest way to monetize free resources.</p>
+                    </div>
+
+                    <div className="flex p-1 bg-surfaceAlt rounded-[12px] border border-border mb-10 mx-auto w-max max-w-full">
+                        <button
+                            onClick={() => setHowTab('platform')}
+                            className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors ${howTab === 'platform' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
+                        >
+                            Platform Ads
+                        </button>
+                        <button
+                            onClick={() => setHowTab('custom')}
+                            className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors flex items-center gap-2 ${howTab === 'custom' ? 'bg-white shadow-sm text-[#4F46E5]' : 'text-textMid hover:text-text'}`}
+                        >
+                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded text-[10px] uppercase font-black">0% Fee</span>
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
                         <div className="flex flex-col items-center text-center group">
                             <div className="w-20 h-20 bg-surfaceAlt rounded-[20px] flex items-center justify-center border border-border mb-6 group-hover:-translate-y-2 transition-transform shadow-sm">
-                                <UploadCloud size={32} className="text-brand" />
+                                <UploadCloud size={32} className={howTab === 'custom' ? 'text-[#4F46E5]' : 'text-brand'} />
                             </div>
                             <h3 className="text-[18px] font-black text-text mb-2">1. Upload Context</h3>
-                            <p className="text-[14px] text-textMid font-bold">Add your files, set title, description, and choose 1-3 ads for verification.</p>
+                            <p className="text-[14px] text-textMid font-bold">Add your files, set title, description, and {howTab === 'custom' ? 'link your own sponsor creative' : 'choose 1-3 ads'}.</p>
                         </div>
                         <div className="flex flex-col items-center text-center group">
                             <div className="w-20 h-20 bg-surfaceAlt rounded-[20px] flex items-center justify-center border border-border mb-6 group-hover:-translate-y-2 transition-transform shadow-sm relative">
                                 <LinkIcon size={32} className="text-text" />
-                                <div className="absolute -top-2 -right-2 bg-brand text-white text-[10px] font-black px-2 py-0.5 rounded-full">SHARE</div>
+                                <div className={`absolute -top-2 -right-2 text-white text-[10px] font-black px-2 py-0.5 rounded-full ${howTab === 'custom' ? 'bg-[#4F46E5]' : 'bg-brand'}`}>SHARE</div>
                             </div>
                             <h3 className="text-[18px] font-black text-text mb-2">2. Share Everywhere</h3>
                             <p className="text-[14px] text-textMid font-bold">Post your generated link on YouTube, X, Instagram, or your newsletter.</p>
@@ -418,7 +668,39 @@ export const Landing = () => {
                                 <DollarSign size={32} className="text-success" />
                             </div>
                             <h3 className="text-[18px] font-black text-text mb-2">3. Earn Revenue</h3>
-                            <p className="text-[14px] text-textMid font-bold">{adSource === 'custom' ? '✨ Views your sponsor' : 'Users click ad(s) to automatically unlock. You get paid for every click.'}</p>
+                            <p className="text-[14px] text-textMid font-bold">{howTab === 'custom' ? 'Direct viewers to your sponsor.' : 'Users click ad(s) to automatically unlock. You get paid for every click.'}</p>
+                        </div>
+                    </div>
+
+                    <div className="w-full max-w-[500px] mx-auto bg-surfaceAlt p-6 rounded-[16px] border border-border">
+                        <h4 className="font-[800] text-[15px] mb-4 border-b border-border pb-2">How earnings work</h4>
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-[14px] font-[700] text-textMid">{howTab === 'custom' ? 'Your Sponsorship Deal' : 'AdGate Ad Revenue'}</span>
+                            <span className="text-[14px] font-[800] text-text">{howTab === 'custom' ? '(negotiated)' : '100%'}</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-[14px] font-[700] text-textMid">Platform Fee</span>
+                            <span className={`text-[14px] font-[800] ${howTab === 'custom' ? 'text-success' : 'text-[#E8312A]'}`}>
+                                {howTab === 'custom' ? '$0.00 FREE' : '- 5%'}
+                            </span>
+                        </div>
+                        {isDonateOn && (
+                            <div className="flex justify-between items-start mb-3 bg-[#EBF5EE] p-2 rounded-lg">
+                                <div className="flex flex-col">
+                                    <span className="text-[13px] font-[700] text-[#417A55]">Tree Donation (Optional)</span>
+                                    {howTab === 'custom' && <span className="text-[11px] text-[#417A55]/80 mt-1 max-w-[200px]">You choose to donate 5% of your deal. This comes from your 100% and is your choice.</span>}
+                                </div>
+                                <span className="text-[13px] font-[800] text-[#417A55] whitespace-nowrap">- 5%</span>
+                            </div>
+                        )}
+                        <div className="h-px bg-border w-full my-3" />
+                        <div className="flex justify-between items-center">
+                            <span className="text-[16px] font-[900] text-text">Your Earnings</span>
+                            <span className="text-[20px] font-[900] text-success">
+                                {howTab === 'custom'
+                                    ? (isDonateOn ? '95% of your deal' : '100% of your deal')
+                                    : (isDonateOn ? '90%' : '95%')}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -482,7 +764,7 @@ export const Landing = () => {
                                     Using your own sponsor? Your rate may vary.
                                 </button>
                                 <div className="mt-2 bg-[#F5F3FF] p-3 rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity absolute top-[20px] w-full text-left pointer-events-none z-10 shadow-sm border border-[#E0D8FE]">
-                                    <span className="text-[12px] text-textMid font-[600]">With a custom sponsor your earnings depend on your deal. AdGate still charges 5% at payout.</span>
+                                    <span className="text-[12px] text-textMid font-[600]">With a custom sponsor you keep 100% of your deal. AdGate takes zero commission. Your earnings are entirely between you and your sponsor.</span>
                                 </div>
                             </div>
                         </div>
@@ -700,6 +982,69 @@ export const Landing = () => {
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={handleSignInSuccess}
             />
+
+            {/* Mobile Bottom Sheets */}
+            <BottomSheet isOpen={isAdSetupSheetOpen} onClose={() => setAdSetupSheetOpen(false)} title="Ad Setup">
+                <div className="flex flex-col gap-6 pt-2 pb-6">
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[14px] font-[800] text-[#111]">1. Ad Source</label>
+                        <AdSourceSelector
+                            value={adSource}
+                            onChange={setAdSource}
+                            adType={adType}
+                            onAdTypeChange={setAdType}
+                            customAd={customAd}
+                            onCustomAdChange={setCustomAd}
+                            onErrorStateChange={setHasCustomAdErrors}
+                            adCount={adCount}
+                        />
+                    </div>
+                    {adSource === 'platform' && (
+                        <div className="flex flex-col gap-3">
+                            <label className="text-[14px] font-[800] text-[#111]">2. Requirement</label>
+                            <div className="flex gap-2">
+                                {[1, 2, 3].map(num => (
+                                    <button
+                                        key={num}
+                                        onClick={() => setAdCount(num)}
+                                        className={`flex-1 h-12 rounded-[12px] font-[800] text-[16px] transition-all border-2 ${adCount === num
+                                            ? 'bg-brand text-white border-brand'
+                                            : 'bg-white border-[#E8E8E8] text-[#666] hover:border-brandTint'
+                                            }`}
+                                    >
+                                        {num} Ad{num > 1 ? 's' : ''}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <button onClick={handleAdSetupApply} className="w-full h-[52px] bg-brand text-white font-[800] text-[16px] rounded-[14px] mt-2">
+                        Apply Settings
+                    </button>
+                </div>
+            </BottomSheet>
+
+            <BottomSheet isOpen={isTreesSheetOpen} onClose={() => setTreesSheetOpen(false)} title="Trees">
+                <div className="flex flex-col gap-6 pt-2 pb-6">
+                    <div className="flex flex-col items-center text-center p-6 bg-[#EBF5EE] rounded-[18px]">
+                        <span className="text-[48px] mb-2 leading-none">🌱</span>
+                        <h4 className="font-[900] text-[20px] text-[#222]">Plant trees by sharing</h4>
+                        <p className="font-[600] text-[14px] text-success mt-2 leading-snug">
+                            Donate 5% of your earnings to plant trees. You'll get a special badge to show your audience.
+                        </p>
+
+                        <div className="w-full bg-white rounded-[12px] p-4 mt-6 flex items-center justify-between border border-success/20 shadow-sm">
+                            <span className="font-[800] text-[15px] text-[#111]">Donate 5%</span>
+                            <button
+                                onClick={() => setIsDonateOn(!isDonateOn)}
+                                className={`w-[52px] h-[28px] rounded-full p-1 transition-colors relative shrink-0 ${isDonateOn ? 'bg-success' : 'bg-[#E8E8E8]'}`}
+                            >
+                                <div className={`w-[20px] h-[20px] bg-white rounded-full transition-transform absolute top-1 ${isDonateOn ? 'translate-x-[24px]' : 'translate-x-0'}`} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </BottomSheet>
         </div>
     );
 };

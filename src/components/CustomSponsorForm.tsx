@@ -365,7 +365,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                         {acknowledged && <Check size={14} className="text-white" strokeWidth={3} />}
                     </div>
                     <span className="text-[13px] font-[600] text-[#444] leading-relaxed">
-                        I have the right to use this creative and redirect URL. I accept responsibility for my sponsor content.
+                        I have the right to use this creative and redirect URL. I accept responsibility for my sponsor content. You keep 100% of your sponsorship earnings. AdGate charges no commission on custom sponsor links.
                     </span>
                 </button>
                 {ackError && (

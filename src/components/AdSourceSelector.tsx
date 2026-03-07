@@ -61,12 +61,17 @@ export function AdSourceSelector({
                             <span className="text-[15px] font-[900] text-[#21201C]">Platform Ads</span>
                             <span className="text-[12px] font-[600] text-[#6B6860] mt-0.5">AdGate finds sponsors for you</span>
                         </div>
-                        <div className="ml-auto w-5 h-5 shrink-0 rounded-full flex items-center justify-center transition-colors duration-150 border-2 border-gray-300">
-                            {isPlatform && (
-                                <div className="w-5 h-5 rounded-full bg-[#E8312A] flex items-center justify-center -m-0.5">
-                                    <div className="w-2.5 h-2.5 bg-white rounded-full" />
-                                </div>
-                            )}
+                        <div className="ml-auto flex flex-col items-end gap-1.5 shrink-0">
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center transition-colors duration-150 border-2 border-gray-300">
+                                {isPlatform && (
+                                    <div className="w-5 h-5 rounded-full bg-[#E8312A] flex items-center justify-center -m-0.5">
+                                        <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="h-[22px] px-2 rounded-[50px] bg-[#FFF0EF] border border-[#FECACA] flex items-center justify-center text-[10px] font-[800] text-[#991B1B]">
+                                5% fee
+                            </div>
                         </div>
                     </div>
 
@@ -108,12 +113,17 @@ export function AdSourceSelector({
                             <span className="text-[15px] font-[900] text-[#21201C]">Custom Sponsor</span>
                             <span className="text-[12px] font-[600] text-[#6B6860] mt-0.5">Use your own sponsor's ad</span>
                         </div>
-                        <div className="ml-auto w-5 h-5 shrink-0 rounded-full flex items-center justify-center transition-colors duration-150 border-2 border-gray-300">
-                            {isCustom && (
-                                <div className="w-5 h-5 rounded-full bg-[#6366F1] flex items-center justify-center -m-0.5">
-                                    <div className="w-2.5 h-2.5 bg-white rounded-full" />
-                                </div>
-                            )}
+                        <div className="ml-auto flex flex-col items-end gap-1.5 shrink-0">
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center transition-colors duration-150 border-2 border-gray-300">
+                                {isCustom && (
+                                    <div className="w-5 h-5 rounded-full bg-[#6366F1] flex items-center justify-center -m-0.5">
+                                        <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="h-[22px] px-2 rounded-[50px] bg-[#EDFAF3] border border-[#BBF7D0] flex items-center justify-center text-[10px] font-[900] text-[#166534]">
+                                0% fee
+                            </div>
                         </div>
                     </div>
 
@@ -134,8 +144,8 @@ export function AdSourceSelector({
                         </div>
                     </div>
 
-                    <div className={`mt-3 pt-3 border-t border-transparent text-[12px] font-[700] transition-colors ${isCustom ? "text-[#6366F1]" : "text-[#AAA49C]"}`}>
-                        Earn your sponsorship rate — AdGate takes 5% at payout
+                    <div className={`mt-3 pt-3 border-t border-transparent transition-colors ${isCustom ? "text-[12px] font-[800] text-[#166534]" : "text-[12px] font-[700] text-[#AAA49C]"}`}>
+                        Keep 100% of your sponsorship — AdGate takes nothing.
                     </div>
                 </button>
             </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Check, Lock, CalendarX, CheckCircle2, CircleDollarSign, Percent, BadgeDollarSign, ChevronDown, ChevronUp } from 'lucide-react';
 
 const PRICING_FAQS = [
-    { q: "When exactly is the 5% fee taken?", a: "The 5% platform fee is deducted only when you request a payout to your Stripe account. Your dashboard will always show your gross earnings until that point." },
+    { q: "When exactly is the 5% fee taken?", a: "For platform ads, the 5% fee is deducted only when you request a payout. Your dashboard shows gross earnings until then. For Custom Sponsors, there is 0% fee — you keep 100% of your deal." },
     { q: "Is there a minimum payout threshold?", a: "Yes, you must have at least $10 in available balance to request a payout." },
     { q: "How often are payouts processed?", a: "Payouts are processed automatically every Monday for the earnings generated in the previous week." },
     { q: "What payment methods are supported?", a: "We currently support direct payouts to bank accounts via Stripe Connect in over 130 countries." },
@@ -14,6 +14,7 @@ const PRICING_FAQS = [
 export const Pricing = () => {
     const [isDonateOn, setIsDonateOn] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [mathTab, setMathTab] = useState<'platform' | 'custom'>('platform');
 
     // Set meta tags properly
     useEffect(() => {
@@ -125,60 +126,110 @@ export const Pricing = () => {
             {/* Visual Math Section */}
             <div className="w-full bg-white py-12 flex flex-col items-center">
                 <div className="w-full max-w-[600px] px-5 flex flex-col items-center">
-                    <h2 className="text-[20px] font-black text-[#111] text-center mb-8">See Exactly What You Earn</h2>
+                    <h2 className="text-[20px] font-black text-[#111] text-center mb-6">See Exactly What You Earn</h2>
+
+                    <div className="flex p-1 bg-surfaceAlt rounded-[12px] border border-border mb-8 mx-auto w-max max-w-full">
+                        <button
+                            onClick={() => setMathTab('platform')}
+                            className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors ${mathTab === 'platform' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
+                        >
+                            Platform Ads
+                        </button>
+                        <button
+                            onClick={() => setMathTab('custom')}
+                            className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors flex items-center gap-2 ${mathTab === 'custom' ? 'bg-white shadow-sm text-[#4F46E5]' : 'text-textMid hover:text-text'}`}
+                        >
+                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded text-[10px] uppercase font-black">0% Fee</span>
+                        </button>
+                    </div>
 
                     <div className="w-full bg-white rounded-[18px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-border flex flex-col items-center">
-                        <span className="text-[13px] font-bold text-textMid text-center mb-6">Example: 1,000 viewers unlock your resource</span>
+                        <span className="text-[13px] font-bold text-textMid text-center mb-6">{mathTab === 'platform' ? 'Example: 1,000 viewers unlock your resource' : 'Example: You negotiate a $500 sponsorship'}</span>
 
                         <div className="w-full flex flex-col gap-2 relative">
-                            {/* Row 1 */}
-                            <div className="w-full bg-[#F8F8F8] h-[48px] rounded-full px-5 flex items-center justify-between">
-                                <span className="text-[14px] font-bold text-text">Total Ad Revenue Generated</span>
-                                <span className="text-[16px] font-black text-[#111]">${calcTotal.toFixed(2)}</span>
-                            </div>
-
-                            <div className="flex justify-center -my-2 z-10">
-                                <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
-                            </div>
-
-                            {/* Row 2 */}
-                            <div className="w-full bg-white border-l-[3px] border-[#E8312A] h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
-                                <span className="text-[14px] font-bold text-text">Platform Fee (5%)</span>
-                                <span className="text-[16px] font-black text-[#E8312A]">- ${calcFee.toFixed(2)}</span>
-                            </div>
-
-                            <div className="flex justify-center -my-2 z-10">
-                                <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
-                            </div>
-
-                            {/* Row 3 */}
-                            <div className="w-full bg-[#F0FFF4] h-[48px] rounded-lg px-5 flex items-center justify-between border border-[#D1FADF]">
-                                <span className="text-[14px] font-bold text-text">Your Earnings Before Donation</span>
-                                <span className="text-[16px] font-black text-[#111]">= ${calcSubtotal.toFixed(2)}</span>
-                            </div>
-
-                            {/* Row 4 (Conditional) */}
-                            {isDonateOn && (
+                            {mathTab === 'platform' ? (
                                 <>
+                                    {/* Row 1 */}
+                                    <div className="w-full bg-[#F8F8F8] h-[48px] rounded-full px-5 flex items-center justify-between">
+                                        <span className="text-[14px] font-bold text-text">Total Ad Revenue Generated</span>
+                                        <span className="text-[16px] font-black text-[#111]">${calcTotal.toFixed(2)}</span>
+                                    </div>
+
                                     <div className="flex justify-center -my-2 z-10">
                                         <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
                                     </div>
-                                    <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
-                                        <span className="text-[14px] font-bold text-text">Tree Donation (5% of your share)</span>
-                                        <span className="text-[16px] font-black text-success">- ${calcDonate.toFixed(2)}</span>
+
+                                    {/* Row 2 */}
+                                    <div className="w-full bg-white border-l-[3px] border-[#E8312A] h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
+                                        <span className="text-[14px] font-bold text-text">Platform Fee (5%)</span>
+                                        <span className="text-[16px] font-black text-[#E8312A]">- ${calcFee.toFixed(2)}</span>
+                                    </div>
+
+                                    <div className="flex justify-center -my-2 z-10">
+                                        <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                    </div>
+
+                                    {/* Row 3 */}
+                                    <div className="w-full bg-[#F0FFF4] h-[48px] rounded-lg px-5 flex items-center justify-between border border-[#D1FADF]">
+                                        <span className="text-[14px] font-bold text-text">Your Earnings Before Donation</span>
+                                        <span className="text-[16px] font-black text-[#111]">= ${calcSubtotal.toFixed(2)}</span>
+                                    </div>
+
+                                    {/* Row 4 (Conditional) */}
+                                    {isDonateOn && (
+                                        <>
+                                            <div className="flex justify-center -my-2 z-10">
+                                                <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                            </div>
+                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
+                                                <span className="text-[14px] font-bold text-text">Tree Donation (5% of your share)</span>
+                                                <span className="text-[16px] font-black text-success">- ${calcDonate.toFixed(2)}</span>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <div className="flex justify-center -my-2 z-10">
+                                        <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                    </div>
+
+                                    {/* Row 5 */}
+                                    <div className="w-full bg-[#EDFAF3] h-[56px] rounded-[12px] px-5 flex items-center justify-between border border-[#D1FADF]">
+                                        <span className="text-[15px] font-black text-text">Your Final Take Home</span>
+                                        <span className="text-[22px] font-black text-success">${calcTakeHome}</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    {/* Custom Row 1 */}
+                                    <div className="w-full bg-[#F8F8F8] h-[48px] rounded-full px-5 flex items-center justify-between">
+                                        <span className="text-[14px] font-bold text-text">Your Deal (100%)</span>
+                                        <span className="text-[16px] font-black text-[#111]">$500.00</span>
+                                    </div>
+
+                                    {/* Custom Row 2 (Conditional) */}
+                                    {isDonateOn && (
+                                        <>
+                                            <div className="flex justify-center -my-2 z-10">
+                                                <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                            </div>
+                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
+                                                <span className="text-[14px] font-bold text-text">Tree Donation (5%)</span>
+                                                <span className="text-[16px] font-black text-success">- $25.00</span>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <div className="flex justify-center -my-2 z-10">
+                                        <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                    </div>
+
+                                    {/* Custom Row 3 */}
+                                    <div className="w-full bg-[#EDFAF3] h-[56px] rounded-[12px] px-5 flex items-center justify-between border border-[#D1FADF]">
+                                        <span className="text-[15px] font-black text-text">Your Final Take Home</span>
+                                        <span className="text-[22px] font-black text-success">${isDonateOn ? '475.00' : '500.00'}</span>
                                     </div>
                                 </>
                             )}
-
-                            <div className="flex justify-center -my-2 z-10">
-                                <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
-                            </div>
-
-                            {/* Row 5 */}
-                            <div className="w-full bg-[#EDFAF3] h-[56px] rounded-[12px] px-5 flex items-center justify-between border border-[#D1FADF]">
-                                <span className="text-[15px] font-black text-text">Your Final Take Home</span>
-                                <span className="text-[22px] font-black text-success">${calcTakeHome}</span>
-                            </div>
                         </div>
 
                         <div className="flex items-center gap-3 mt-8">
@@ -219,12 +270,20 @@ export const Pricing = () => {
                             <div className="w-full h-px bg-border mb-6" />
 
                             <div className="flex flex-col gap-0 mb-8 flex-1">
-                                {["Unlimited link creation", "Video and click ad types", "1–3 ads per unlock", "Supabase file storage up to 100MB", "Creator public profile page", "Referral program access", "Weekly payouts via Stripe", "Basic analytics per link"].map((feature, i) => (
+                                {["Unlimited link creation", "Video and click ad types", "1–3 ads per unlock", "Supabase file storage up to 100MB"].map((feature, i) => (
                                     <div key={i} className="flex items-center gap-3 h-[40px]">
-                                        <Check size={16} className="text-success shrink-0" />
+                                        <Check size={16} className="text-[#333] shrink-0" />
                                         <span className="text-[13px] font-bold text-[#333]">{feature}</span>
                                     </div>
                                 ))}
+                                <div className="flex items-center gap-3 h-[40px]">
+                                    <Check size={16} className="text-[#333] shrink-0" />
+                                    <span className="text-[13px] font-bold text-[#333]">Platform Ads: 5% at payout</span>
+                                </div>
+                                <div className="flex items-center gap-3 h-[40px]">
+                                    <Check size={16} className="text-success shrink-0" />
+                                    <span className="text-[13px] font-bold text-success bg-[#EBF5EE] px-2 py-0.5 rounded-md">Custom Sponsor: 0% always free</span>
+                                </div>
                             </div>
 
                             <Link to="/" className="w-full h-[48px] bg-[#E8312A] text-white font-black text-[15px] rounded-md flex items-center justify-center hover:bg-[#C42823] transition-colors">

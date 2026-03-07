@@ -70,9 +70,14 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                 )}
 
                 {link.adSource === 'custom' ? (
-                    <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
-                        <ShieldAlert size={12} strokeWidth={3} /> {link.customAd?.type === 'video' ? 'Video' : 'Image'} Ad
-                    </span>
+                    <div className="flex flex-col items-start gap-1">
+                        <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
+                            <ShieldAlert size={12} strokeWidth={3} /> {link.customAd?.type === 'video' ? 'Video' : 'Image'} Ad
+                        </span>
+                        <span className="text-[10px] font-black tracking-wide text-[#E8312A] uppercase px-1">
+                            0% Fee
+                        </span>
+                    </div>
                 ) : (
                     <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
                         <ShieldAlert size={12} strokeWidth={3} /> {link.adCount} Ad{link.adCount > 1 ? 's' : ''}

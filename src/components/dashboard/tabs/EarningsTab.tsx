@@ -12,12 +12,14 @@ export const EarningsTab = () => {
     // Mock Data
     const referralEarned = currentUser?.referral?.totalReferralEarnings || 0;
     const pendingReferral = currentUser?.referral?.pendingReferralEarnings || 0;
+    const availableCustom = 50.00;
     const balance = {
-        total: 1245.50 + referralEarned,
-        thisMonth: 340.20 + (currentUser?.referral?.thisMonthReferralEarnings || 0),
-        available: 125.00 + pendingReferral,
+        total: 1245.50 + referralEarned + availableCustom,
+        thisMonth: 340.20 + (currentUser?.referral?.thisMonthReferralEarnings || 0) + availableCustom,
+        available: 125.00 + pendingReferral + availableCustom,
         availableAd: 125.00,
-        availableReferral: pendingReferral
+        availableReferral: pendingReferral,
+        availableCustom: availableCustom
     };
 
     // Mock 14 days earnings data
@@ -33,9 +35,10 @@ export const EarningsTab = () => {
     const maxDay = Math.max(...chartData.map(d => d.amount));
 
     const linksEarnings = [
-        { id: '1', title: 'freeresource.pdf', earned: 840.20 },
-        { id: '2', title: 'figma-ui-kit.fig', earned: 210.50 },
-        { id: '3', title: 'old-campaign.zip', earned: 194.80 }
+        { id: '1', title: 'freeresource.pdf', earned: 840.20, isCustom: false },
+        { id: '2', title: 'design-system locked', earned: 320.00, isCustom: true },
+        { id: '3', title: 'figma-ui-kit.fig', earned: 210.50, isCustom: false },
+        { id: '4', title: 'old-campaign.zip', earned: 194.80, isCustom: false }
     ];
     const maxLinkEarnings = Math.max(...linksEarnings.map(l => l.earned));
 
@@ -127,9 +130,16 @@ export const EarningsTab = () => {
                 <h3 className="text-[14px] font-extrabold text-text">Earnings by Link</h3>
                 <div className="card p-0 shadow-none overflow-hidden flex flex-col">
                     {linksEarnings.map((link) => (
-                        <div key={link.id} className="flex items-center px-4 h-[48px] border-b border-border last:border-0 gap-3 group cursor-pointer hover:bg-surfaceAlt transition-colors">
-                            <span className="text-[13px] font-extrabold text-text truncate max-w-[40%] sm:max-w-[50%]">{link.title}</span>
-                            <div className="flex-1 flex items-center">
+                        <div key={link.id} className="flex items-center px-4 min-h-[52px] py-2 border-b border-border last:border-0 gap-3 group cursor-pointer hover:bg-surfaceAlt transition-colors">
+                            <div className="flex flex-col flex-1 justify-center truncate sm:max-w-[50%]">
+                                <span className="text-[13px] font-extrabold text-text truncate">{link.title}</span>
+                                {link.isCustom && (
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-success mt-0.5">
+                                        100% Commission-Free
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex-[0.8] flex items-center">
                                 <div className="h-[6px] bg-success/20 rounded-full w-full overflow-hidden">
                                     <div
                                         className="h-full bg-success rounded-full"
@@ -179,12 +189,13 @@ export const EarningsTab = () => {
                 availableAmount={balance.available}
                 availableAd={balance.availableAd}
                 availableReferral={balance.availableReferral}
+                availableCustom={balance.availableCustom}
             />
         </div>
     );
 };
 
-const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availableReferral }: { isOpen: boolean, onClose: () => void, availableAmount: number, availableAd: number, availableReferral: number }) => {
+const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availableReferral, availableCustom }: { isOpen: boolean, onClose: () => void, availableAmount: number, availableAd: number, availableReferral: number, availableCustom: number }) => {
     const [amount, setAmount] = useState(availableAmount.toString());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { showToast } = useToast();
@@ -192,7 +203,9 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
 
     const val = parseFloat(amount) || 0;
     const isError = val < 10 || val > availableAmount;
-    const fee = val * 0.05;
+    // Fee applies proportionally to the ad revenue portion of the withdrawal
+    const adPortion = val * (availableAd / availableAmount);
+    const fee = isNaN(adPortion) ? 0 : adPortion * 0.05;
     const final = val - fee;
 
     const handleSubmit = async () => {
@@ -232,20 +245,32 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
 
                 <div className="card shadow-none p-4 flex flex-col gap-3 bg-surface border-border">
                     <div className="flex justify-between items-center text-[13px] font-bold text-textMid">
-                        <span>Ad Revenue</span>
+                        <span>Platform Ad Revenue</span>
                         <span>${availableAd.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-bold text-[#D97757]">
-                        <span>Referral Bonus</span>
+                        <span>Referral Bonuses</span>
                         <span>+${availableReferral.toFixed(2)}</span>
                     </div>
+                    {availableCustom > 0 && (
+                        <div className="flex justify-between items-center text-[13px] font-bold text-success">
+                            <div className="flex flex-col">
+                                <span>Custom Sponsor Revenue</span>
+                                <span className="text-[10px] text-success/80 font-bold uppercase tracking-wider">100% Commission-Free</span>
+                            </div>
+                            <span>+${availableCustom.toFixed(2)}</span>
+                        </div>
+                    )}
                     <div className="h-[1px] w-full bg-border" />
                     <div className="flex justify-between items-center text-[13px] font-bold text-textMid">
                         <span>Withdraw amount</span>
                         <span>${val.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-bold text-textMid">
-                        <span>Platform fee (5%)</span>
+                        <div className="flex flex-col">
+                            <span>Platform fee (5%)</span>
+                            <span className="text-[10px] text-textMid font-bold uppercase tracking-wider">On Ad Revenue Only</span>
+                        </div>
                         <span className="text-warning">-${fee.toFixed(2)}</span>
                     </div>
                     <div className="h-[1px] w-full bg-border" />
