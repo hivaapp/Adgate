@@ -10,7 +10,7 @@ import { mockExploreResources } from '../lib/mockData';
 export const ResourceUnlock = () => {
     const { slug } = useParams();
     const { addToast } = useToast();
-    const { startSession, registerClick, getNextAd, totalAdsRequired, adsClicked, isComplete } = useAdSession();
+    const { startSession, registerClick, registerVideoWatch, registerSponsorClick, getNextAd, totalAdsRequired, adsClicked, isComplete, customSponsorStep } = useAdSession();
 
     const [isShowingAd, setIsShowingAd] = useState(false);
     const [currentAd, setCurrentAd] = useState<any>(null);
@@ -36,7 +36,6 @@ export const ResourceUnlock = () => {
         adType: "click",
         adSource: "custom",
         customAd: {
-            type: "video",
             brandName: "FlowDesk Tools",
             redirectUrl: "https://flowdesk.example.com",
             ctaText: "Get Access Now"
@@ -44,26 +43,15 @@ export const ResourceUnlock = () => {
     };
 
     const isCustom = resource.adSource === 'custom';
-    const isVideo = isCustom ? resource.customAd?.type === 'video' : resource.adType === 'video';
+    const isVideo = isCustom ? true : resource.adType === 'video';
+    const requiresClick = isCustom && !!resource.customAd?.redirectUrl;
 
     useEffect(() => {
         // Initialize session on mount or slug change
-        startSession(slug || 'default', isVideo ? 'video' : 'click', resource.adCount);
+        startSession(slug || 'default', isVideo ? 'video' : 'click', resource.adCount, isCustom);
         // Set open graph tags (mock implementation via DOM)
         document.title = `${resource.title} - AdGate`;
-        const setMeta = (property: string, content: string) => {
-            let tag = document.querySelector(`meta[property="${property}"]`);
-            if (!tag) {
-                tag = document.createElement('meta');
-                tag.setAttribute('property', property);
-                document.head.appendChild(tag);
-            }
-            tag.setAttribute('content', content);
-        };
-        setMeta('og:title', resource.title);
-        setMeta('og:description', resource.description || 'Unlock this resource for free on AdGate.');
-        setMeta('og:image', 'https://example.com/mock-preview.jpg');
-    }, [slug, resource.adCount, startSession, resource.title, resource.description]);
+    }, [slug, resource.adCount, startSession, resource.title, isVideo, isCustom]);
 
     useEffect(() => {
         if (isComplete && !isRevealing) {
@@ -82,8 +70,11 @@ export const ResourceUnlock = () => {
         }
     }, [nextAdCountdown]);
 
-
     const handleUnlockClick = () => {
+        if (customSponsorStep === "click") {
+            setIsShowingAd(true);
+            return;
+        }
         setCurrentAd(getNextAd());
         setIsShowingAd(true);
     };
@@ -104,26 +95,51 @@ export const ResourceUnlock = () => {
     };
 
     const handleVideoComplete = () => {
-        registerClick(currentAd.id);
-        setIsShowingAd(false);
-        const remaining = totalAdsRequired - adsClicked - 1;
-        if (remaining > 0) {
-            addToast(`Video completed! ${remaining} more to go`, 'success');
-            setNextAdCountdown(3);
+        if (isCustom) {
+            registerVideoWatch(requiresClick);
+            if (!requiresClick) {
+                setIsShowingAd(false);
+                addToast('Video complete! Revealing your content...', 'success');
+            }
         } else {
-            addToast('All videos complete! Revealing your content...', 'success');
+            registerClick(currentAd.id);
+            setIsShowingAd(false);
+            const remaining = totalAdsRequired - adsClicked - 1;
+            if (remaining > 0) {
+                addToast(`Video completed! ${remaining} more to go`, 'success');
+                setNextAdCountdown(3);
+            } else {
+                addToast('All videos complete! Revealing your content...', 'success');
+            }
         }
     };
 
     const handleVideoSkip = () => {
-        registerClick(currentAd.id);
-        setIsShowingAd(false);
-        const remaining = totalAdsRequired - adsClicked - 1;
-        if (remaining > 0) {
-            addToast(`Video skipped! ${remaining} more to go`, 'success');
-            setNextAdCountdown(3);
+        if (isCustom) {
+            registerVideoWatch(requiresClick);
+            if (!requiresClick) {
+                setIsShowingAd(false);
+                addToast('Video complete! Revealing your content...', 'success');
+            }
         } else {
-            addToast('All videos complete! Revealing your content...', 'success');
+            registerClick(currentAd.id);
+            setIsShowingAd(false);
+            const remaining = totalAdsRequired - adsClicked - 1;
+            if (remaining > 0) {
+                addToast(`Video skipped! ${remaining} more to go`, 'success');
+                setNextAdCountdown(3);
+            } else {
+                addToast('All videos complete! Revealing your content...', 'success');
+            }
+        }
+    };
+
+    const handleSponsorClick = () => {
+        registerSponsorClick();
+        setIsShowingAd(false);
+        addToast('Sponsor visited! Revealing your content...', 'success');
+        if (resource.customAd?.redirectUrl) {
+            window.open(resource.customAd.redirectUrl, '_blank');
         }
     };
 
@@ -158,12 +174,20 @@ export const ResourceUnlock = () => {
     // Button text dynamic logic
     const remainingAds = totalAdsRequired - adsClicked;
     let buttonText = isVideo ? "Watch Video to Unlock" : "Click Ad to Unlock";
+    let buttonIcon = isVideo ? <Play size={18} fill="currentColor" /> : <MousePointer2 size={18} />;
+    let buttonBg = "bg-brand hover:bg-brand-hover";
 
     if (isCustom) {
-        buttonText = "View Sponsor Message";
-    }
-
-    if (!isCustom) {
+        if (customSponsorStep === "watch") {
+            buttonText = requiresClick ? "Watch + Click to Unlock" : "Watch to Unlock";
+        } else if (customSponsorStep === "click") {
+            buttonText = "Visit Sponsor to Unlock";
+            buttonIcon = <MousePointerClick size={18} />;
+            buttonBg = "bg-[#6366F1] hover:bg-[#4F46E5]";
+        } else {
+            buttonText = requiresClick ? "Watch + Click to Unlock" : "Watch to Unlock";
+        }
+    } else {
         if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
             buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
         } else if (remainingAds === 1 && totalAdsRequired > 1) {
@@ -190,11 +214,14 @@ export const ResourceUnlock = () => {
 
             {/* Success Banner */}
             {isComplete && (
-                <div className="w-full h-16 bg-success flex flex-col items-center justify-center animate-slide-down shadow-md z-20">
-                    <div className="flex items-center gap-2 text-white font-black text-[16px]">
-                        <CheckCircle2 size={20} /> {resource.donateEnabled ? 'Unlocked! And you helped plant a tree.' : 'Unlocked!'}
+                <div className="w-full bg-success flex flex-col items-center justify-center animate-slide-down shadow-md z-20 px-4 py-3">
+                    <div className="flex items-center gap-2 text-white font-black text-[15px] sm:text-[16px] text-center">
+                        <CheckCircle2 size={20} className="shrink-0" />
+                        {isCustom && requiresClick
+                            ? `Thanks for supporting ${resource.customAd?.brandName}. You watched their video and visited their site.`
+                            : (resource.donateEnabled ? 'Unlocked! And you helped plant a tree.' : 'Unlocked!')}
                     </div>
-                    <span className="text-white/90 text-[13px] font-bold">Your free resource is ready to download</span>
+                    <span className="text-white/90 text-[13px] font-bold mt-1">Your free resource is ready to download</span>
                 </div>
             )}
 
@@ -228,7 +255,17 @@ export const ResourceUnlock = () => {
                             <span>{resource.fileSize}</span>
                             <span className="w-1 h-1 rounded-full bg-border" />
                             <span className="px-2 py-0.5 bg-surfaceAlt rounded-md text-[11px]">{resource.fileType}</span>
-                            <span className="px-2 py-0.5 bg-brandTint text-brand rounded-md text-[11px] flex items-center gap-1">{isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}</span>
+
+                            {isCustom ? (
+                                <span className="px-2 py-0.5 bg-[#EEF2FF] text-[#4F46E5] rounded-md text-[11px] flex items-center gap-1 font-bold">
+                                    ✨ Sponsor: {requiresClick ? 'Watch + Click' : 'Video Only'}
+                                </span>
+                            ) : (
+                                <span className="px-2 py-0.5 bg-brandTint text-brand rounded-md text-[11px] flex items-center gap-1">
+                                    {isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}
+                                </span>
+                            )}
+
                             {resource.donateEnabled && (
                                 <span className="px-2 py-0.5 bg-[#EBF5EE] text-[#166534] rounded-md text-[11px] flex items-center gap-1">🌱 Trees</span>
                             )}
@@ -288,34 +325,69 @@ export const ResourceUnlock = () => {
                     {!isComplete ? (
                         <>
                             {/* Progress Indicator */}
-                            <div className="flex items-center justify-center gap-2 mb-6 pointer-events-none">
-                                {[...Array(totalAdsRequired)].map((_, idx) => {
-                                    const isActive = idx === adsClicked;
-                                    const isDone = idx < adsClicked;
-                                    return (
-                                        <div key={idx} className="flex flex-col items-center gap-2 relative">
-                                            {idx > 0 && (
-                                                <div className={`absolute top-[18px] right-[100%] w-6 sm:w-10 h-[2px] -translate-y-1/2 ${isDone ? 'bg-success' : 'bg-border'}`} />
-                                            )}
-                                            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
-                                                ${isDone ? 'bg-success border-success text-white animate-checkPop' :
-                                                    isActive ? 'bg-white border-brand text-brand animate-pulseRing' :
-                                                        'bg-white border-border text-border'}
-                                            `}>
-                                                {isDone ? <Check size={18} strokeWidth={3} /> : (isVideo ? <Play size={16} fill={isActive ? "currentColor" : "none"} /> : <MousePointer2 size={16} />)}
-                                            </div>
-                                            <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>
-                                                {isVideo ? 'Video' : 'Ad'} {idx + 1}
-                                            </span>
+                            {isCustom ? (
+                                <div className="flex items-center justify-center gap-2 mb-6 pointer-events-none">
+                                    <div className="flex flex-col items-center gap-2 relative">
+                                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
+                                            ${customSponsorStep === "click" || isComplete ? 'bg-success border-success text-white animate-checkPop' : 'bg-white border-[#6366F1] text-[#6366F1] animate-pulseRing'}
+                                        `}>
+                                            {(customSponsorStep === "click" || isComplete) ? <Check size={18} strokeWidth={3} /> : <Play size={16} fill="currentColor" />}
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                        <span className={`text-[10px] font-bold ${customSponsorStep === "click" || isComplete ? 'text-success' : 'text-[#6366F1]'}`}>
+                                            Step 1: Watch
+                                        </span>
+                                    </div>
+
+                                    {requiresClick && (
+                                        <>
+                                            <div className={`w-8 sm:w-16 h-[2px] -mt-[18px] transition-colors ${customSponsorStep === "click" ? 'bg-[#6366F1]' : isComplete ? 'bg-success' : 'bg-border'}`} />
+                                            <div className="flex flex-col items-center gap-2 relative">
+                                                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
+                                                    ${isComplete ? 'bg-success border-success text-white animate-checkPop' :
+                                                        customSponsorStep === "click" ? 'bg-white border-[#6366F1] text-[#6366F1] animate-pulseRing' :
+                                                            'bg-white border-border text-border'}
+                                                `}>
+                                                    {isComplete ? <Check size={18} strokeWidth={3} /> : <MousePointerClick size={16} />}
+                                                </div>
+                                                <span className={`text-[10px] font-bold ${isComplete ? 'text-success' : customSponsorStep === "click" ? 'text-[#6366F1]' : 'text-textLight'}`}>
+                                                    Step 2: Click
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-center gap-2 mb-6 pointer-events-none">
+                                    {[...Array(totalAdsRequired)].map((_, idx) => {
+                                        const isActive = idx === adsClicked;
+                                        const isDone = idx < adsClicked;
+                                        return (
+                                            <div key={idx} className="flex flex-col items-center gap-2 relative">
+                                                {idx > 0 && (
+                                                    <div className={`absolute top-[18px] right-[100%] w-6 sm:w-10 h-[2px] -translate-y-1/2 ${isDone ? 'bg-success' : 'bg-border'}`} />
+                                                )}
+                                                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
+                                                    ${isDone ? 'bg-success border-success text-white animate-checkPop' :
+                                                        isActive ? 'bg-white border-brand text-brand animate-pulseRing' :
+                                                            'bg-white border-border text-border'}
+                                                `}>
+                                                    {isDone ? <Check size={18} strokeWidth={3} /> : (isVideo ? <Play size={16} fill={isActive ? "currentColor" : "none"} /> : <MousePointer2 size={16} />)}
+                                                </div>
+                                                <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>
+                                                    {isVideo ? 'Video' : 'Ad'} {idx + 1}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
 
                             <div className="text-center mb-5">
                                 {isCustom ? (
                                     <>
-                                        <p className="text-[14px] font-bold text-text mb-1">A brief message from our sponsor to unlock your resource.</p>
+                                        <p className="text-[14px] font-bold text-text mb-1">
+                                            {customSponsorStep === "click" ? "Step 1 complete! Now visit the sponsor's website to unlock." : "A brief message from our sponsor to unlock your resource."}
+                                        </p>
                                         <p className="text-[12px] font-semibold text-textMid flex items-center justify-center gap-1">
                                             Sponsored by {resource.customAd?.brandName || 'Partner'}
                                         </p>
@@ -341,9 +413,9 @@ export const ResourceUnlock = () => {
                             ) : (
                                 <button
                                     onClick={handleUnlockClick}
-                                    className="w-full h-[54px] bg-brand hover:bg-brand-hover text-white font-black text-[15px] rounded-[14px] flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-[0.98]"
+                                    className={`w-full h-[54px] ${buttonBg} text-white font-black text-[15px] rounded-[14px] flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-[0.98]`}
                                 >
-                                    {isVideo ? <Play size={18} fill="currentColor" /> : <MousePointer2 size={18} />}
+                                    {buttonIcon}
                                     {buttonText}
                                 </button>
                             )}
@@ -352,19 +424,6 @@ export const ResourceUnlock = () => {
                                 <p className="text-center text-[12px] font-bold text-success mt-3 flex items-center justify-center gap-1"><span className="text-[14px]">🌱</span> Unlocking this also plants trees</p>
                             )}
 
-                            {adsClicked > 0 && adsClicked < totalAdsRequired && nextAdCountdown === null && (
-                                <p className="text-center text-[13px] font-bold text-brand mt-4 animate-popIn">
-                                    Great! Just {totalAdsRequired - adsClicked} more {isVideo ? 'video' : 'ad'}{totalAdsRequired - adsClicked > 1 ? 's' : ''} to unlock your free resource.
-                                </p>
-                            )}
-
-                            <div className="flex items-center justify-center gap-3 mt-6 text-[12px] font-bold text-textMid">
-                                <span className="flex items-center gap-1"><Check size={14} className="text-success" /> No sign-up needed</span>
-                                <span className="w-1 h-1 rounded-full bg-border" />
-                                <span className="flex items-center gap-1"><Check size={14} className="text-success" /> Completely free</span>
-                                <span className="w-1 h-1 rounded-full bg-border" />
-                                <span className="flex items-center gap-1"><Check size={14} className="text-success" /> Instant access</span>
-                            </div>
                         </>
                     ) : (
                         <div className="animate-fadeIn">
@@ -435,16 +494,23 @@ export const ResourceUnlock = () => {
                 </div>
             </main>
 
-            {isShowingAd && currentAd && (
-                isVideo ? (
+            {isShowingAd && (
+                customSponsorStep === "click" ? (
+                    <SponsorClickInterstitial
+                        customAd={resource.customAd}
+                        onClick={handleSponsorClick}
+                        onClose={handleAdClose}
+                    />
+                ) : isVideo && currentAd ? (
                     <VideoAdViewer
                         ad={currentAd}
                         onCompleted={handleVideoComplete}
                         onSkip={handleVideoSkip}
                         isCustom={isCustom}
                         customAd={resource.customAd}
+                        requiresClick={requiresClick}
                     />
-                ) : (
+                ) : currentAd ? (
                     <AdInterstitial
                         ad={currentAd}
                         onClose={handleAdClose}
@@ -452,7 +518,7 @@ export const ResourceUnlock = () => {
                         isCustom={isCustom}
                         customAd={resource.customAd}
                     />
-                )
+                ) : null
             )}
 
             {/* Trees Counter Fixed Card */}
@@ -469,6 +535,46 @@ export const ResourceUnlock = () => {
                     </div>
                 </div>
             )}
+        </div>
+    );
+};
+
+// Step 2 Click Interstitial for Custom Sponsors
+const SponsorClickInterstitial = ({ customAd, onClick, onClose }: any) => {
+    return (
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-md animate-fadeIn p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true">
+            {/* Deliberately no close button as per specs: "No close button on Step 2; encourages click or abandonment via browser controls" */}
+            <div className="w-full max-w-[400px] bg-white rounded-[24px] overflow-hidden flex flex-col items-center">
+                <div className="w-full h-12 bg-successBg flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center">
+                        <Check size={12} className="text-white" strokeWidth={4} />
+                    </div>
+                    <span className="text-[13px] font-black text-success uppercase tracking-wide">Step 1 Complete</span>
+                </div>
+
+                <div className="p-8 flex flex-col items-center w-full">
+                    <div className="w-20 h-20 bg-surfaceAlt rounded-full mb-4 flex items-center justify-center">
+                        <span className="text-4xl font-black text-brand">
+                            {customAd?.brandName ? customAd.brandName[0].toUpperCase() : "B"}
+                        </span>
+                    </div>
+                    <h2 className="text-[24px] font-black tracking-tight leading-tight text-center mb-2">
+                        Thanks for watching!
+                    </h2>
+                    <p className="text-[15px] font-medium text-textMid text-center mb-8 px-2 leading-snug">
+                        Click below to visit <span className="text-text font-bold">{customAd?.brandName}</span> and instantly unlock your link.
+                    </p>
+                    <button
+                        onClick={onClick}
+                        className="w-full h-[56px] rounded-[16px] bg-[#6366F1] hover:bg-[#4F46E5] flex items-center justify-center text-white font-black text-[16px] shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        {customAd?.ctaText || "Visit Sponsor"} <MousePointerClick size={18} className="ml-2" />
+                    </button>
+                    <button onClick={onClose} className="mt-6 text-textLight hover:text-textMid text-[12px] font-bold underline transition-colors">
+                        I'll do this later
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

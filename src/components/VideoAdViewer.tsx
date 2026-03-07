@@ -8,9 +8,10 @@ interface VideoAdViewerProps {
     onSkip: () => void;
     isCustom?: boolean;
     customAd?: any;
+    requiresClick?: boolean;
 }
 
-export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd }: VideoAdViewerProps) {
+export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd, requiresClick }: VideoAdViewerProps) {
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
 
@@ -60,6 +61,12 @@ export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd }: V
             {/* Top Bar with Skip/Timer */}
             <div className="h-14 w-full flex items-center justify-between px-4 sm:px-6 bg-gradient-to-b from-black/80 to-transparent shrink-0 absolute top-0 left-0 right-0 z-20">
                 <span className="text-[12px] text-white/90 font-bold bg-white/20 px-2 py-1 rounded">{isCustom ? 'Sponsor' : 'Ad'} • {brand}</span>
+
+                {requiresClick && (
+                    <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-[rgba(255,255,255,0.15)] text-[10px] sm:text-[11px] font-black text-white px-3 py-1 rounded-full backdrop-blur-md hidden sm:block">
+                        STEP 1 OF 2
+                    </div>
+                )}
 
                 {canSkip ? (
                     <button

@@ -72,7 +72,7 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                 {link.adSource === 'custom' ? (
                     <div className="flex flex-col items-start gap-1">
                         <span className="flex-shrink-0 h-[28px] px-2.5 rounded-pill bg-surfaceAlt border border-border text-[11px] font-black tracking-wide text-textMid uppercase flex items-center justify-center gap-1">
-                            <ShieldAlert size={12} strokeWidth={3} /> {link.customAd?.type === 'video' ? 'Video' : 'Image'} Ad
+                            <ShieldAlert size={12} strokeWidth={3} /> {(link.customAd?.requiresClick || link.customAd?.redirectUrl) ? 'Two-Step' : 'Video'} Ad
                         </span>
                         <span className="text-[10px] font-black tracking-wide text-[#E8312A] uppercase px-1">
                             0% Fee
@@ -100,19 +100,42 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
             </button>
 
             {/* 4. Stats Row */}
-            <div className="flex w-full mt-1">
-                <div className="flex-1 flex flex-col justify-center items-start border-r border-border pr-3">
-                    <span className="text-[12px] font-bold text-textLight uppercase tracking-wider mb-0.5">Views</span>
-                    <span className="text-[16px] font-black text-text leading-none">{link.views.toLocaleString()}</span>
-                </div>
-                <div className="flex-1 flex flex-col justify-center items-center border-r border-border px-3">
-                    <span className="text-[12px] font-bold text-textLight uppercase tracking-wider mb-0.5">Unlocks</span>
-                    <span className="text-[16px] font-black text-text leading-none">{link.unlocks.toLocaleString()}</span>
-                </div>
-                <div className="flex-1 flex flex-col justify-center items-end pl-3">
-                    <span className="text-[12px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
-                    <span className="text-[16px] font-black text-success leading-none">${link.earned.toFixed(2)}</span>
-                </div>
+            <div className={`grid w-full mt-1 border border-border rounded-lg ${link.adSource === 'custom' ? 'grid-cols-4 bg-surfaceAlt' : 'grid-cols-3 bg-white'}`}>
+                {link.adSource === 'custom' ? (
+                    <>
+                        <div className="flex flex-col justify-center items-center py-2 border-r border-border">
+                            <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Views</span>
+                            <span className="text-[14px] font-black text-text leading-none">{link.views.toLocaleString()}</span>
+                        </div>
+                        <div className="flex flex-col justify-center items-center py-2 border-r border-border">
+                            <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Watches</span>
+                            <span className="text-[14px] font-black text-brand leading-none">{link.customAd?.videoWatches?.toLocaleString() || link.unlocks.toLocaleString()}</span>
+                        </div>
+                        <div className="flex flex-col justify-center items-center py-2 border-r border-border">
+                            <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Clicks</span>
+                            <span className="text-[14px] font-black text-[#6366F1] leading-none">{link.clicks > 0 ? link.clicks.toLocaleString() : link.unlocks.toLocaleString()}</span>
+                        </div>
+                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/50 rounded-r-lg">
+                            <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
+                            <span className="text-[14px] sm:text-[15px] font-black text-success leading-none">${link.earned.toFixed(2)}</span>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="flex flex-col justify-center items-center py-2 border-r border-border">
+                            <span className="text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Views</span>
+                            <span className="text-[15px] font-black text-text leading-none">{link.views.toLocaleString()}</span>
+                        </div>
+                        <div className="flex flex-col justify-center items-center py-2 border-r border-border">
+                            <span className="text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Unlocks</span>
+                            <span className="text-[15px] font-black text-text leading-none">{link.unlocks.toLocaleString()}</span>
+                        </div>
+                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/20 rounded-r-lg">
+                            <span className="text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
+                            <span className="text-[15px] font-black text-success leading-none">${link.earned.toFixed(2)}</span>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* 5. Actions Row */}
