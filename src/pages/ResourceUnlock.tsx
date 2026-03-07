@@ -42,9 +42,9 @@ export const ResourceUnlock = () => {
         }
     };
 
-    const isCustom = resource.adSource === 'custom';
+    const isCustom = resource.adSource === 'custom' || resource.isCustomSponsor;
     const isVideo = isCustom ? true : resource.adType === 'video';
-    const requiresClick = isCustom && !!resource.customAd?.redirectUrl;
+    const requiresClick = isCustom && (!!resource.customAd?.redirectUrl || resource.requiresClick);
 
     useEffect(() => {
         // Initialize session on mount or slug change
