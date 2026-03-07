@@ -179,13 +179,17 @@ export const ResourceUnlock = () => {
 
     if (isCustom) {
         if (customSponsorStep === "watch") {
-            buttonText = requiresClick ? "Watch Then Click Free" : "Watch to Unlock";
+            buttonText = "Watch Video to Unlock";
+            buttonIcon = <Play size={18} fill="currentColor" />;
+            buttonBg = "bg-[#E8312A] hover:bg-[#C0392B]";
         } else if (customSponsorStep === "click") {
             buttonText = "Visit Sponsor to Unlock";
             buttonIcon = <MousePointerClick size={18} />;
             buttonBg = "bg-[#6366F1] hover:bg-[#4F46E5]";
         } else {
-            buttonText = requiresClick ? "Watch Then Click Free" : "Watch to Unlock";
+            buttonText = "Watch Video to Unlock";
+            buttonIcon = <Play size={18} fill="currentColor" />;
+            buttonBg = "bg-[#E8312A] hover:bg-[#C0392B]";
         }
     } else {
         if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
@@ -347,28 +351,31 @@ export const ResourceUnlock = () => {
                                 <div className="flex items-center justify-center gap-2 mb-6 pointer-events-none">
                                     <div className="flex flex-col items-center gap-2 relative">
                                         <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
-                                            ${customSponsorStep === "click" || isComplete ? 'bg-success border-success text-white animate-checkPop' : 'bg-white border-[#6366F1] text-[#6366F1] animate-pulseRing'}
+                                            ${customSponsorStep === "click" || isComplete ? 'bg-success border-success text-white animate-checkPop' : 'bg-white border-[#E8312A] text-[#E8312A] animate-pulseRing'}
                                         `}>
                                             {(customSponsorStep === "click" || isComplete) ? <Check size={18} strokeWidth={3} /> : <Play size={16} fill="currentColor" />}
                                         </div>
-                                        <span className={`text-[10px] font-bold ${customSponsorStep === "click" || isComplete ? 'text-success' : 'text-[#6366F1]'}`}>
-                                            Step 1: Watch
+                                        <span className={`text-[11px] font-[700] ${customSponsorStep === "watch" && !isComplete ? 'text-[#E8312A]' : 'text-[#AAA]'}`}>
+                                            Watch Video
                                         </span>
                                     </div>
 
                                     {requiresClick && (
                                         <>
-                                            <div className={`w-8 sm:w-16 h-[2px] -mt-[18px] transition-colors ${customSponsorStep === "click" ? 'bg-[#6366F1]' : isComplete ? 'bg-success' : 'bg-border'}`} />
+                                            <div className="w-8 sm:w-16 h-[2px] -mt-[18px] relative overflow-hidden flex items-center">
+                                                <div className="absolute inset-0 border-t-[2px] border-dashed border-[#E8E8E8]" />
+                                                <div className={`absolute inset-y-0 left-0 bg-success transition-all duration-400 ease-out ${(customSponsorStep === "click" || isComplete) ? 'w-full' : 'w-0'}`} />
+                                            </div>
                                             <div className="flex flex-col items-center gap-2 relative">
                                                 <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
                                                     ${isComplete ? 'bg-success border-success text-white animate-checkPop' :
                                                         customSponsorStep === "click" ? 'bg-white border-[#6366F1] text-[#6366F1] animate-pulseRing' :
-                                                            'bg-white border-border text-border'}
+                                                            'bg-white border-[#E8E8E8] text-[#AAA]'}
                                                 `}>
                                                     {isComplete ? <Check size={18} strokeWidth={3} /> : <MousePointerClick size={16} />}
                                                 </div>
-                                                <span className={`text-[10px] font-bold ${isComplete ? 'text-success' : customSponsorStep === "click" ? 'text-[#6366F1]' : 'text-textLight'}`}>
-                                                    Step 2: Click
+                                                <span className={`text-[11px] font-[700] ${isComplete ? 'text-[#AAA]' : customSponsorStep === "click" ? 'text-[#6366F1]' : 'text-[#AAA]'}`}>
+                                                    Visit Sponsor
                                                 </span>
                                             </div>
                                         </>
@@ -403,11 +410,8 @@ export const ResourceUnlock = () => {
                             <div className="text-center mb-5">
                                 {isCustom ? (
                                     <>
-                                        <p className="text-[14px] font-bold text-text mb-1">
-                                            {customSponsorStep === "click" ? "Step 1 complete! Now visit the sponsor's website to unlock." : "A brief message from our sponsor to unlock your resource."}
-                                        </p>
-                                        <p className="text-[12px] font-semibold text-textMid flex items-center justify-center gap-1">
-                                            Sponsored by {resource.customAd?.brandName || 'Partner'}
+                                        <p className={`text-[14px] font-[700] mb-1 ${customSponsorStep === "click" ? 'text-[#6366F1]' : 'text-[#444]'}`}>
+                                            {customSponsorStep === "click" ? "Great \u2014 now visit the sponsor's site to unlock your content." : "Watch the sponsor video, then visit their site to unlock."}
                                         </p>
                                     </>
                                 ) : isVideo ? (
