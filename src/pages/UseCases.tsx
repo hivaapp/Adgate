@@ -4,7 +4,8 @@ import { ArrowRight, Play, MousePointerClick } from 'lucide-react';
 
 const CATEGORIES = [
     "All", "AI & Prompts", "Education", "Design", "Fitness",
-    "Business", "Gaming", "Music", "Photography", "Writing", "Coding", "Finance"
+    "Business", "Gaming", "Music", "Photography", "Writing", "Coding", "Finance",
+    "✨ Custom Sponsor"
 ];
 
 const USE_CASES = [
@@ -258,6 +259,35 @@ const USE_CASES = [
         ],
         calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
         bestAd: "click"
+    },
+    // Custom Sponsor
+    {
+        id: 19, category: "✨ Custom Sponsor", emoji: "⭐", tint: "bg-[#EDE9FE]",
+        title: "Creators With Brand Partnerships", creator: "Sponsored Creator / Influencer",
+        desc: "You already have brand deals — or you're actively pitching to brands. Instead of sending your sponsor's ad to a newsletter or posting it as a story, gate your free content behind your sponsor's ad. Your audience unlocks the content, sees the ad, and your sponsor gets verified impressions. You negotiate the rate directly and keep every cent.",
+        uploads: ["📄 Sponsor's image creative", "🎬 Sponsor's video ad", "🔗 Affiliate redirect link", "📊 Any high-value free resource"],
+        scenarios: [
+            { label: "Small", sub: "1,000 monthly impressions", range: "Your negotiated rate × 1K impressions — 0% to AdGate" },
+            { label: "Medium", sub: "5,000 monthly impressions", range: "Your negotiated rate × 5K impressions — 0% to AdGate" },
+            { label: "Large", sub: "20,000 monthly impressions", range: "Your negotiated rate × 20K impressions — 0% to AdGate" }
+        ],
+        calcNote: "Rate is negotiated directly with your sponsor. Industry standard image CPM: $5–$25. Video CPM: $15–$50. AdGate takes zero commission.",
+        bestAd: "custom",
+        isCustomSponsor: true
+    },
+    {
+        id: 20, category: "✨ Custom Sponsor", emoji: "🤝", tint: "bg-[#EDE9FE]",
+        title: "Micro-Influencer Sponsorships", creator: "Micro-Influencer / Niche Creator",
+        desc: "You have a tight-knit niche audience of 1,000 to 50,000 followers. Brands in your niche will pay for access to your audience — even at micro-influencer scale. Use AdGate to deliver their ad as part of your free resource sharing. You get a direct sponsorship deal, they get verified ad views, your audience gets free content.",
+        uploads: ["🖼️ Brand's product image", "🎬 Short brand video", "📄 Any niche resource your audience wants", "🔗 Brand's tracking URL"],
+        scenarios: [
+            { label: "Starter deal", sub: "500 impressions / month", range: "Typical flat fee deal: $100–$500/mo at 0% commission" },
+            { label: "Growing deal", sub: "2,000 impressions / month", range: "Typical flat fee deal: $500–$2,000/mo at 0% commission" },
+            { label: "Established deal", sub: "10,000 impressions / month", range: "Typical flat fee deal: $2,000–$10,000/mo at 0% commission" }
+        ],
+        calcNote: "Flat fee deals are common in micro-influencer sponsorships. You agree a price regardless of clicks. AdGate tracks impressions and provides sponsor reports — but takes nothing.",
+        bestAd: "custom",
+        isCustomSponsor: true
     }
 ];
 
@@ -288,7 +318,9 @@ export const UseCases = () => {
     const tickers = [
         "A fitness creator with 5K followers earns est. $120/mo",
         "A prompt engineer sharing ChatGPT guides earns est. $340/mo",
-        "A teacher sharing free worksheets earns est. $85/mo"
+        "A teacher sharing free worksheets earns est. $85/mo",
+        "A YouTuber with a brand deal uses Custom Sponsor — keeps 100% of their $500 deal",
+        "An influencer serves their own sponsor ad — zero commission, full control"
     ];
 
     useEffect(() => {
@@ -326,11 +358,11 @@ export const UseCases = () => {
                         <span className="text-[11px] font-semibold text-white/60 mt-2">avg per unlock</span>
                     </div>
                     <div className="flex flex-col items-center">
-                        <span className="text-[24px] font-black text-white leading-none">95%</span>
-                        <span className="text-[11px] font-semibold text-white/60 mt-2">creator share</span>
+                        <span className="text-[24px] font-black text-white leading-none">100%</span>
+                        <span className="text-[11px] font-semibold text-white/60 mt-2">Platform Ads 95% · Custom Sponsor 100%</span>
                     </div>
                     <div className="flex flex-col items-center">
-                        <span className="text-[24px] font-black text-white leading-none">18</span>
+                        <span className="text-[24px] font-black text-white leading-none">20</span>
                         <span className="text-[11px] font-semibold text-white/60 mt-2">use case types</span>
                     </div>
                 </div>
@@ -344,7 +376,7 @@ export const UseCases = () => {
                             key={cat}
                             onClick={() => setFilterCategory(cat)}
                             className={`h-[36px] px-4 rounded-full font-bold text-[13px] whitespace-nowrap transition-colors border ${filterCategory === cat
-                                ? 'bg-[#E8312A] text-white border-[#E8312A]'
+                                ? cat === "✨ Custom Sponsor" ? 'bg-[#6366F1] text-white border-[#6366F1]' : 'bg-[#E8312A] text-white border-[#E8312A]'
                                 : 'bg-transparent text-textMid border-border hover:bg-surfaceAlt'
                                 }`}
                         >
@@ -362,7 +394,7 @@ export const UseCases = () => {
                         return (
                             <div
                                 key={uc.id}
-                                className={`w-full bg-white border border-border rounded-[18px] p-[20px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex flex-col transition-all duration-300 ${!isMatch ? 'opacity-30 scale-[0.98] pointer-events-none hidden' : 'opacity-100 scale-100 block'}`}
+                                className={`w-full bg-white border border-border rounded-[18px] p-[20px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex flex-col transition-all duration-300 ${!isMatch ? 'opacity-30 scale-[0.98] pointer-events-none hidden' : 'opacity-100 scale-100 block'} ${uc.isCustomSponsor ? 'border-l-[3px] border-l-[#6366F1]' : ''}`}
                             >
                                 {/* Card Header */}
                                 <div className="flex gap-4 items-center mb-4">
@@ -394,20 +426,24 @@ export const UseCases = () => {
 
                                 {/* Estimated Earnings Section */}
                                 <div className="w-full bg-[#F8F8F8] rounded-[12px] p-[14px] mb-5 border border-border">
-                                    <span className="text-[11px] font-extrabold text-textMid uppercase tracking-wide block mb-3">Estimated Monthly Earnings</span>
+                                    <span className="text-[11px] font-extrabold text-textMid uppercase tracking-wide block mb-3">
+                                        {uc.isCustomSponsor ? 'Estimated Monthly Value' : 'Estimated Monthly Earnings'}
+                                    </span>
 
                                     <div className="flex flex-col gap-0 border-b border-border mb-3">
                                         {uc.scenarios.map((sc, j) => (
-                                            <div key={j} className="flex justify-between items-center h-[40px] border-t border-border gap-2">
+                                            <div key={j} className="flex flex-col sm:flex-row justify-between py-[10px] border-t border-border gap-2">
                                                 <div className="flex flex-col">
                                                     <span className="text-[13px] font-bold text-[#333] leading-tight">{sc.label}</span>
                                                     <span className="text-[11px] text-textMid font-medium">{sc.sub}</span>
                                                 </div>
-                                                <span className="text-[14px] font-black text-success">{sc.range}</span>
+                                                <span className={`text-[13px] sm:text-[14px] font-black ${uc.isCustomSponsor ? 'text-success self-start sm:self-center mt-1 sm:mt-0 text-left sm:text-right' : 'text-success self-start sm:self-center'}`}>
+                                                    {sc.range}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
-                                    <span className="text-[11px] font-medium text-[#AAA] block">{uc.calcNote}</span>
+                                    <span className="text-[11px] font-medium text-[#AAA] block leading-[1.6]">{uc.calcNote}</span>
                                 </div>
 
                                 {/* Footer */}
@@ -418,6 +454,11 @@ export const UseCases = () => {
                                             <div className="h-[22px] px-2 rounded-full bg-[#E8312A] flex items-center gap-1 text-white shadow-sm">
                                                 <Play size={10} fill="currentColor" />
                                                 <span className="text-[10px] font-black uppercase tracking-wider">Video</span>
+                                            </div>
+                                        ) : uc.bestAd === 'custom' ? (
+                                            <div className="h-[22px] px-2 rounded-full bg-[#6366F1] flex items-center gap-1 text-white shadow-sm">
+                                                <span className="text-[10px]">✨</span>
+                                                <span className="text-[10px] font-black uppercase tracking-wider">Custom Sponsor</span>
                                             </div>
                                         ) : (
                                             <div className="h-[22px] px-2 rounded-full bg-[#333333] flex items-center gap-1 text-white shadow-sm">
@@ -460,10 +501,15 @@ export const UseCases = () => {
                                 <span className="flex-[2] text-[12px] font-semibold text-textMid">{row.n}</span>
                             </div>
                         ))}
+                        <div className="w-full p-4 flex flex-col sm:flex-row flex-wrap sm:items-center border-t border-[#E5E7EB] bg-[#F5F3FF]">
+                            <span className="flex-[1] text-[13px] font-bold text-[#111]">Custom Sponsor Rate</span>
+                            <span className="flex-[1] text-[13px] font-black text-[#6366F1]">Your deal</span>
+                            <span className="flex-[2] text-[12px] font-semibold text-[#4C1D95]">Negotiated directly — 0% AdGate commission</span>
+                        </div>
                     </div>
 
                     <p className="text-[12px] font-medium text-textMid leading-[1.6] text-center max-w-[500px]">
-                        Actual earnings vary by audience geography, niche relevance, and ad inventory. Creators in the US, UK, Canada, and Australia typically see higher rates.
+                        Actual earnings vary by audience geography, niche relevance, and ad inventory. Creators in the US, UK, Canada, and Australia typically see higher rates. Custom Sponsor earnings are entirely independent of AdGate's ad network rates — your deal, your terms, your full earnings.
                     </p>
                 </div>
             </div>

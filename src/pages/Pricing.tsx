@@ -4,6 +4,8 @@ import { Check, Lock, CalendarX, CheckCircle2, CircleDollarSign, Percent, BadgeD
 
 const PRICING_FAQS = [
     { q: "When exactly is the 5% fee taken?", a: "For platform ads, the 5% fee is deducted only when you request a payout. Your dashboard shows gross earnings until then. For Custom Sponsors, there is 0% fee — you keep 100% of your deal." },
+    { q: "What is a Custom Sponsor link and how is it different?", a: "A Custom Sponsor link allows you to bypass AdGate's ad network and serve an image or video ad directly from your own sponsor before your content unlocks. You set the rate directly with your sponsor, and AdGate collects zero commission." },
+    { q: "How do I find sponsors for my Custom Sponsor links?", a: "Many creators use existing affiliate links (like Amazon, software programs, or courses) as their custom sponsor. Or, if you have brand deals from platforms like YouTube or Instagram, you can offer 'link sponsorships' as a value-add or standalone package." },
     { q: "Is there a minimum payout threshold?", a: "Yes, you must have at least $10 in available balance to request a payout." },
     { q: "How often are payouts processed?", a: "Payouts are processed automatically every Monday for the earnings generated in the previous week." },
     { q: "What payment methods are supported?", a: "We currently support direct payouts to bank accounts via Stripe Connect in over 130 countries." },
@@ -15,6 +17,7 @@ export const Pricing = () => {
     const [isDonateOn, setIsDonateOn] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [mathTab, setMathTab] = useState<'platform' | 'custom'>('platform');
+    const [customDealAmount, setCustomDealAmount] = useState('500');
 
     // Set meta tags properly
     useEffect(() => {
@@ -31,6 +34,10 @@ export const Pricing = () => {
     const calcDonate = 1.66;
     const calcTakeHome = isDonateOn ? (calcSubtotal - calcDonate).toFixed(2) : calcSubtotal.toFixed(2);
 
+    const parsedCustomAmount = parseFloat(customDealAmount) || 0;
+    const customDonateAmount = (parsedCustomAmount * 0.05).toFixed(2);
+    const customTakeHome = isDonateOn ? (parsedCustomAmount - parseFloat(customDonateAmount)).toFixed(2) : parsedCustomAmount.toFixed(2);
+
     return (
         <div className="flex flex-col items-center w-full min-h-screen bg-bg selection:bg-brandTint selection:text-brand">
             {/* Hero Section */}
@@ -41,11 +48,11 @@ export const Pricing = () => {
                 </div>
 
                 <h1 className="text-[clamp(28px,7vw,42px)] font-black text-[#111] leading-[1.05] tracking-tight mb-4">
-                    You earn. We take a small cut.
+                    You earn. We take a small cut <span className="text-textLight">—</span> <br className="hidden sm:block" />or nothing at all.
                 </h1>
 
-                <p className="text-[#666] font-semibold text-[15px] max-w-[400px] mx-auto mb-10 leading-snug">
-                    AdGate takes 5% on payouts only. No monthly fees. No hidden charges. No lock-in.
+                <p className="text-[#666] font-semibold text-[15px] max-w-[450px] mx-auto mb-10 leading-snug">
+                    Platform ads take 5% on payouts. Custom Sponsor links are 100% free. No monthly fees. No hidden charges. No lock-in.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 cursor-default">
@@ -56,6 +63,10 @@ export const Pricing = () => {
                     <div className="flex items-center gap-2">
                         <Lock size={16} className="text-[#E8312A]" />
                         <span className="text-[13px] font-bold text-[#444]">No upfront cost</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Percent size={16} className="text-[#6366F1]" />
+                        <span className="text-[13px] font-bold text-[#444]">0% on sponsor links</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <CalendarX size={16} className="text-[#E8312A]" />
@@ -85,8 +96,8 @@ export const Pricing = () => {
                         <div className="flex items-start sm:items-center py-4 sm:py-5 border-b border-border gap-4">
                             <div className="text-[#F59E0B] mt-1 sm:mt-0"><CircleDollarSign size={24} /></div>
                             <div className="flex-1">
-                                <h3 className="text-[14px] font-extrabold text-text mb-1">Ad Revenue</h3>
-                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">Every time a viewer watches a video ad or clicks a sponsor link on your content, AdGate collects the ad revenue on your behalf.</p>
+                                <h3 className="text-[14px] font-extrabold text-text mb-1">Earning Ad Revenue</h3>
+                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">For Platform Ads, AdGate collects the revenue on your behalf. For Custom Sponsor links, you collect the money directly from your sponsor.</p>
                             </div>
                             <div className="flex flex-col items-end">
                                 <span className="text-[16px] font-black text-[#111]">100%</span>
@@ -98,10 +109,10 @@ export const Pricing = () => {
                             <div className="text-[#E8312A] mt-1 sm:mt-0"><Percent size={24} /></div>
                             <div className="flex-1">
                                 <h3 className="text-[14px] font-extrabold text-text mb-1">Platform Fee</h3>
-                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">When you request a payout, AdGate deducts 5% to keep the lights on and improve the platform. That's it. No other charges.</p>
+                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">When you request a payout for Platform Ads, AdGate deducts 5%. For Custom Sponsors, AdGate takes zero commission.</p>
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[20px] font-black text-[#E8312A]">5%</span>
+                                <span className="text-[20px] font-black text-[#E8312A]">5% <span className="text-textLight font-medium">/</span> 0%</span>
                                 <span className="text-[10px] text-textMid">at payout</span>
                             </div>
                         </div>
@@ -110,11 +121,24 @@ export const Pricing = () => {
                             <div className="text-success mt-1 sm:mt-0"><BadgeDollarSign size={24} /></div>
                             <div className="flex-1">
                                 <h3 className="text-[14px] font-extrabold text-text mb-1">Your Earnings</h3>
-                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">You receive 95% of all ad revenue generated by your links, paid directly to your Stripe account weekly.</p>
+                                <p className="text-[13px] font-semibold text-textMid leading-relaxed">You receive 95% of Platform Ad revenue. You keep 100% of your Custom Sponsor deals.</p>
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[20px] font-black text-success">95%</span>
+                                <span className="text-[20px] font-black text-success">95% <span className="text-textLight font-medium">/</span> 100%</span>
                                 <span className="text-[10px] text-textMid">yours</span>
+                            </div>
+                        </div>
+
+                        {/* Row 5 */}
+                        <div className="flex items-start sm:items-center py-4 sm:py-5 border-t border-[#C4B5FD] gap-4 bg-[#F5F3FF] -mx-6 -mb-6 px-6 rounded-b-[18px]">
+                            <div className="text-[#6366F1] mt-1 sm:mt-0"><BadgeDollarSign size={24} /></div>
+                            <div className="flex-1">
+                                <h3 className="text-[14px] font-extrabold text-[#4C1D95] mb-1">Custom Sponsor — Zero Commission</h3>
+                                <p className="text-[13px] font-semibold text-[#4C1D95]/80 leading-relaxed">You bypass our ad network and serve your own sponsor. You keep 100% of the deal.</p>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <span className="text-[20px] font-black text-[#4C1D95]">100%</span>
+                                <span className="text-[10px] text-[#4C1D95]/80">yours</span>
                             </div>
                         </div>
                     </div>
@@ -201,20 +225,38 @@ export const Pricing = () => {
                             ) : (
                                 <>
                                     {/* Custom Row 1 */}
-                                    <div className="w-full bg-[#F8F8F8] h-[48px] rounded-full px-5 flex items-center justify-between">
-                                        <span className="text-[14px] font-bold text-text">Your Deal (100%)</span>
-                                        <span className="text-[16px] font-black text-[#111]">$500.00</span>
+                                    <div className="w-full bg-[#F5F3FF] border border-[#DDD6FE] h-[52px] rounded-lg px-5 flex items-center justify-between">
+                                        <span className="text-[14px] font-bold text-[#4C1D95]">Your Sponsorship Deal (100%)</span>
+                                        <div className="flex items-center gap-1.5 bg-white border border-[#C4B5FD] rounded-md px-3 h-[36px] overflow-hidden focus-within:ring-2 focus-within:ring-[#6366F1]">
+                                            <span className="font-black text-[#4C1D95] text-[16px]">$</span>
+                                            <input
+                                                type="text"
+                                                value={customDealAmount}
+                                                onChange={(e) => setCustomDealAmount(e.target.value.replace(/[^0-9.]/g, ''))}
+                                                className="w-[80px] bg-transparent outline-none font-black text-[#4C1D95] text-[16px] text-right"
+                                            />
+                                        </div>
                                     </div>
 
-                                    {/* Custom Row 2 (Conditional) */}
+                                    <div className="flex justify-center -my-2 z-10">
+                                        <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
+                                    </div>
+
+                                    {/* Custom Row 2 */}
+                                    <div className="w-full bg-white border-l-[3px] border-[#6366F1] h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
+                                        <span className="text-[14px] font-bold text-text">Platform Commission</span>
+                                        <span className="text-[16px] font-black text-[#4C1D95]">-$0.00</span>
+                                    </div>
+
+                                    {/* Custom Row 3 (Conditional) */}
                                     {isDonateOn && (
                                         <>
                                             <div className="flex justify-center -my-2 z-10">
                                                 <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
                                             </div>
                                             <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
-                                                <span className="text-[14px] font-bold text-text">Tree Donation (5%)</span>
-                                                <span className="text-[16px] font-black text-success">- $25.00</span>
+                                                <span className="text-[14px] font-bold text-text">Tree Donation (5% of your deal)</span>
+                                                <span className="text-[16px] font-black text-success">- ${customDonateAmount}</span>
                                             </div>
                                         </>
                                     )}
@@ -223,10 +265,10 @@ export const Pricing = () => {
                                         <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
                                     </div>
 
-                                    {/* Custom Row 3 */}
+                                    {/* Custom Row 4 */}
                                     <div className="w-full bg-[#EDFAF3] h-[56px] rounded-[12px] px-5 flex items-center justify-between border border-[#D1FADF]">
                                         <span className="text-[15px] font-black text-text">Your Final Take Home</span>
-                                        <span className="text-[22px] font-black text-success">${isDonateOn ? '475.00' : '500.00'}</span>
+                                        <span className="text-[22px] font-black text-success">${customTakeHome}</span>
                                     </div>
                                 </>
                             )}
@@ -270,7 +312,7 @@ export const Pricing = () => {
                             <div className="w-full h-px bg-border mb-6" />
 
                             <div className="flex flex-col gap-0 mb-8 flex-1">
-                                {["Unlimited link creation", "Video and click ad types", "1–3 ads per unlock", "Supabase file storage up to 100MB"].map((feature, i) => (
+                                {["Unlimited link creation", "Video, click, and custom sponsor ads", "1–3 ads per unlock", "Sponsor media library & reporting", "Supabase file storage up to 100MB"].map((feature, i) => (
                                     <div key={i} className="flex items-center gap-3 h-[40px]">
                                         <Check size={16} className="text-[#333] shrink-0" />
                                         <span className="text-[13px] font-bold text-[#333]">{feature}</span>
@@ -315,7 +357,7 @@ export const Pricing = () => {
                                         <span className="text-[13px] font-bold text-white/90">{feature}</span>
                                     </div>
                                 ))}
-                                {["Custom domain for links", "Advanced analytics with geography breakdown", "Priority ad network placement", "Remove AdGate branding from unlock pages"].map((feature, i) => (
+                                {["Custom domain for links", "Priority sponsor matching", "Advanced analytics with geography breakdown", "Priority ad network placement", "Remove AdGate branding from unlock pages"].map((feature, i) => (
                                     <div key={`pro-${i}`} className="flex items-center gap-3 h-[40px]">
                                         <span className="text-[#F59E0B] shrink-0 text-[14px]">★</span>
                                         <span className="text-[13px] font-bold text-[#F59E0B]">{feature}</span>
@@ -368,7 +410,7 @@ export const Pricing = () => {
                 <div className="w-full max-w-[600px] px-5 flex flex-col items-center text-center">
                     <div className="text-[48px] mb-4">🌳</div>
                     <h2 className="text-[24px] font-black text-white mb-2">Start earning today. It's free.</h2>
-                    <p className="text-[14px] font-bold text-white/70 mb-8">95% yours. 5% fee. 0% risk.</p>
+                    <p className="text-[14px] font-bold text-white/70 mb-8">Platform ads: 95% yours. Custom ads: 100% yours. 0% risk.</p>
                     <Link to="/" className="w-full sm:w-[200px] h-[52px] bg-[#E8312A] text-white font-extrabold text-[15px] rounded-[14px] flex items-center justify-center hover:bg-[#C42823] transition-colors shadow-sm">
                         Create Your First Link
                     </Link>

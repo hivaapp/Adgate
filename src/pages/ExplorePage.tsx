@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick } from 'lucide-react';
 import { mockExploreResources } from '../lib/mockData';
 
-const CATEGORIES = ['All', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
-const SORTS = ['Most Unlocked', 'Newest', 'Trending'];
+const CATEGORIES = ['All', '✨ Sponsored', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
+const SORTS = ['Most Unlocked', 'Newest', 'Trending', 'Sponsored First'];
 
 export const ExplorePage = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -17,13 +17,20 @@ export const ExplorePage = () => {
     const filteredResources = useMemo(() => {
         let res = [...mockExploreResources];
         if (selectedCategory !== 'All') {
-            res = res.filter(r => r.category === selectedCategory);
+            if (selectedCategory === '✨ Sponsored') {
+                res = res.filter(r => r.isCustomSponsor);
+            } else {
+                res = res.filter(r => r.category === selectedCategory);
+            }
         }
         if (searchQuery.trim()) {
-            res = res.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
+            res = res.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.sponsorName?.toLowerCase().includes(searchQuery.toLowerCase()));
         }
         // Mock sort implementation
         if (sortBy === 'Newest') res.reverse();
+        if (sortBy === 'Sponsored First') {
+            res.sort((a, b) => (b.isCustomSponsor ? 1 : 0) - (a.isCustomSponsor ? 1 : 0));
+        }
         return res;
     }, [selectedCategory, searchQuery, sortBy]);
 
@@ -72,7 +79,7 @@ export const ExplorePage = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-textLight" size={18} />
                     <input
                         type="text"
-                        placeholder="Search for resources..."
+                        placeholder="Search resources, users, or sponsors..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full h-[48px] bg-white border border-border rounded-[14px] pl-10 pr-4 font-bold text-[14px] outline-none focus:border-brand focus:ring-1 focus:ring-brand shadow-sm"
@@ -88,12 +95,23 @@ export const ExplorePage = () => {
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
                             className={`h-[36px] px-[14px] rounded-full font-extrabold text-[13px] whitespace-nowrap shrink-0 transition-colors snap-start
-                                ${selectedCategory === cat ? 'bg-brand text-white border-brand border' : 'bg-white text-text border border-border hover:bg-surfaceAlt'}
+                                ${selectedCategory === cat ? cat === '✨ Sponsored' ? 'bg-[#6366F1] text-white border-[#6366F1] border' : 'bg-brand text-white border-brand border' : 'bg-white text-text border border-border hover:bg-surfaceAlt'}
                             `}
                         >
                             {cat}
                         </button>
                     ))}
+                </div>
+            </div>
+
+            {/* Trending Tags */}
+            <div className="w-full max-w-[800px] px-4 mb-6">
+                <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-[12px] font-bold text-textMid flex items-center mr-1">Trending:</span>
+                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">✨ Brand Sponsors</button>
+                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">💼 Creator Deals</button>
+                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">Notion Templates</button>
+                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">UI Kits</button>
                 </div>
             </div>
 
@@ -127,53 +145,100 @@ export const ExplorePage = () => {
 
             {/* Resources Container */}
             <div className="w-full max-w-[800px] px-4 flex flex-col items-center">
-                {viewMode === 'grid' ? (
-                    <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-                        {visibleResources.map(r => (
-                            <Link to={`/r/${r.slug}`} key={r.id} className="bg-white rounded-[14px] border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col group">
-                                <div className={`h-[100px] w-full ${getFileBgClass(r.fileType)} flex items-center justify-center text-[40px] group-hover:scale-105 transition-transform duration-500`}>
-                                    {getFileEmoji(r.fileType)}
-                                </div>
-                                <div className="p-3 sm:p-4 flex flex-col flex-1">
-                                    <h3 className="font-extrabold text-[13px] sm:text-[14px] leading-tight mb-1 line-clamp-2 min-h-[40px]">{r.title}</h3>
-                                    <span className="text-[11px] font-bold text-textMid mb-3 truncate">by @{r.creatorHandle}</span>
-
-                                    <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
-                                        <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                {(() => {
+                    const renderResourceGrid = (resources: any[]) => (
+                        <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+                            {resources.map(r => (
+                                <Link to={`/r/${r.slug}`} key={r.id} className="bg-white rounded-[14px] border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col group relative">
+                                    {r.isCustomSponsor && <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-[6px] text-[#4C1D95] font-black text-[10px] shadow-sm z-10 flex items-center gap-1">✨ Sponsored</div>}
+                                    <div className={`h-[100px] w-full ${r.isCustomSponsor ? 'bg-gradient-to-br from-[#EDE9FE] to-[#C4B5FD] text-[#4C1D95]' : getFileBgClass(r.fileType)} flex items-center justify-center text-[40px] group-hover:scale-105 transition-transform duration-500`}>
+                                        {getFileEmoji(r.fileType)}
                                     </div>
+                                    <div className="p-3 sm:p-4 flex flex-col flex-1">
+                                        <h3 className="font-extrabold text-[13px] sm:text-[14px] leading-tight mb-1 line-clamp-2 min-h-[40px]">{r.title}</h3>
+                                        <span className="text-[11px] font-bold text-textMid mb-3 truncate">by @{r.creatorHandle}</span>
 
-                                    <div className="mt-auto flex items-center justify-between">
+                                        <div className="flex items-center gap-1.5 mb-3 flex-wrap">
+                                            <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
+                                            {r.isCustomSponsor ? (
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded">Custom · {r.sponsorName}</span>
+                                            ) : (
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                            )}
+                                        </div>
+
+                                        <div className="mt-auto flex items-center justify-between">
+                                            <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
+                                        </div>
+
+                                        <button className="w-full h-10 mt-3 bg-brand text-white font-black text-[13px] rounded-lg group-hover:bg-brand-hover transition-colors shadow-sm">
+                                            Unlock Free
+                                        </button>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    );
+
+                    const renderResourceList = (resources: any[]) => (
+                        <div className="w-full flex justify-center flex-col gap-3 mb-8">
+                            {resources.map(r => (
+                                <Link to={`/r/${r.slug}`} key={r.id} className="w-full h-[72px] bg-white rounded-[14px] border border-border p-3 flex items-center hover:bg-surfaceAlt transition-colors group relative">
+                                    <div className={`w-12 h-12 rounded-[10px] shrink-0 ${r.isCustomSponsor ? 'bg-gradient-to-br from-[#EDE9FE] to-[#C4B5FD] text-[#4C1D95] border-2 border-[#6366F1]' : getFileBgClass(r.fileType)} flex items-center justify-center text-[24px] mr-3`}>
+                                        {getFileEmoji(r.fileType)}
+                                    </div>
+                                    <div className="flex flex-col flex-1 min-w-0 pr-2">
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="font-extrabold text-[14px] leading-tight truncate">{r.title}</h3>
+                                            {r.isCustomSponsor && <span className="text-[10px] bg-[#EDE9FE] text-[#4C1D95] font-black px-1.5 py-0.5 rounded">✨ Sponsored</span>}
+                                        </div>
+                                        <span className="text-[12px] font-bold text-textMid truncate mt-0.5">by @{r.creatorHandle}</span>
+                                    </div>
+                                    <div className="flex flex-col items-end shrink-0 mr-3">
+                                        {r.isCustomSponsor ? (
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded mb-1">Custom · {r.sponsorName}</span>
+                                        ) : (
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                        )}
                                         <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
                                     </div>
+                                    <ChevronRight className="text-textLight group-hover:text-text transition-colors" size={20} />
+                                </Link>
+                            ))}
+                        </div>
+                    );
 
-                                    <button className="w-full h-10 mt-3 bg-brand text-white font-black text-[13px] rounded-lg group-hover:bg-brand-hover transition-colors shadow-sm">
-                                        Unlock Free
-                                    </button>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="w-full flex justify-center w-full mb-8 flex-col gap-3">
-                        {visibleResources.map(r => (
-                            <Link to={`/r/${r.slug}`} key={r.id} className="w-full h-[72px] bg-white rounded-[14px] border border-border p-3 flex items-center hover:bg-surfaceAlt transition-colors group">
-                                <div className={`w-12 h-12 rounded-[10px] shrink-0 ${getFileBgClass(r.fileType)} flex items-center justify-center text-[24px] mr-3`}>
-                                    {getFileEmoji(r.fileType)}
-                                </div>
-                                <div className="flex flex-col flex-1 min-w-0 pr-2">
-                                    <h3 className="font-extrabold text-[14px] leading-tight truncate">{r.title}</h3>
-                                    <span className="text-[12px] font-bold text-textMid truncate mt-0.5">by @{r.creatorHandle}</span>
-                                </div>
-                                <div className="flex flex-col items-end shrink-0 mr-3">
-                                    <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
-                                    <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
-                                </div>
-                                <ChevronRight className="text-textLight group-hover:text-text transition-colors" size={20} />
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                    const renderResources = (res: any[]) => viewMode === 'grid' ? renderResourceGrid(res) : renderResourceList(res);
+
+                    if (sortBy === 'Sponsored First') {
+                        const sponsored = visibleResources.filter(r => r.isCustomSponsor);
+                        const standard = visibleResources.filter(r => !r.isCustomSponsor);
+                        return (
+                            <>
+                                {sponsored.length > 0 && (
+                                    <>
+                                        <div className="w-full flex items-center gap-2 mb-3 mt-1">
+                                            <span className="text-[14px] font-black text-[#4C1D95]">✨ Sponsored Resources</span>
+                                            <div className="h-px bg-border flex-1"></div>
+                                        </div>
+                                        {renderResources(sponsored)}
+                                    </>
+                                )}
+                                {standard.length > 0 && (
+                                    <>
+                                        <div className="w-full flex items-center gap-2 mb-3 mt-1">
+                                            <span className="text-[14px] font-black text-text">Standard Resources</span>
+                                            <div className="h-px bg-border flex-1"></div>
+                                        </div>
+                                        {renderResources(standard)}
+                                    </>
+                                )}
+                            </>
+                        );
+                    }
+
+                    return renderResources(visibleResources);
+                })()}
 
                 {filteredResources.length === 0 && (
                     <div className="py-12 flex flex-col items-center">
@@ -202,9 +267,13 @@ export const ExplorePage = () => {
                         {[1, 2, 3, 4, 5].map(i => (
                             <div key={i} className="w-[140px] shrink-0 bg-surfaceAlt border border-border rounded-[16px] p-4 flex flex-col items-center text-center snap-start snap-always">
                                 <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-black text-[20px] mb-2">{['A', 'M', 'S', 'D', 'C'][i - 1]}</div>
-                                <span className="text-[13px] font-black leading-tight mb-0.5 line-clamp-1">{['Alex Creator', 'Marc Dev', 'Sarah M.', 'Design Guy', 'Creative Co'][i - 1]}</span>
+                                <span className="text-[13px] font-black leading-tight mb-0.5 line-clamp-1">{i === 1 || i === 3 ? '✨ ' : ''}{['Alex Creator', 'Marc Dev', 'Sarah M.', 'Design Guy', 'Creative Co'][i - 1]}</span>
                                 <span className="text-[11px] font-bold text-textMid mb-2 truncate max-w-full">@{['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}</span>
-                                <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
+                                {i === 1 || i === 3 ? (
+                                    <span className="text-[12px] font-black text-[#4C1D95] bg-[#EDE9FE] px-2 py-0.5 rounded mb-3">2 sponsored links</span>
+                                ) : (
+                                    <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
+                                )}
                                 <Link to={`/@${['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}`} className="mt-auto text-[12px] font-bold text-brand hover:underline">View Profile</Link>
                             </div>
                         ))}

@@ -290,6 +290,8 @@ export const mockExploreResources: any[] = [
         unlockCount: "1.2K",
         category: "Templates",
         adType: "video",
+        isCustomSponsor: true,
+        sponsorName: "Figma"
     },
     {
         id: "exp_2",
@@ -332,6 +334,8 @@ export const mockExploreResources: any[] = [
         unlockCount: "350",
         category: "Videos",
         adType: "click",
+        isCustomSponsor: true,
+        sponsorName: "Adobe"
     },
     {
         id: "exp_5",
