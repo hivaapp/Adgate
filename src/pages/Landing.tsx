@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick, Settings, X, File } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
 import { AdSourceSelector, type AdSourceType } from '../components/AdSourceSelector';
 import { type CustomAdData } from '../components/CustomSponsorForm';
 import { TreesLandingSection } from '../components/TreesLandingSection';
+import { BottomSheet } from '../components/ui/BottomSheet';
 import { useNavigate, Link } from 'react-router-dom';
 
 const FAQS = [
