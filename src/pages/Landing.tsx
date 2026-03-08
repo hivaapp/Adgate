@@ -419,7 +419,7 @@ export const Landing = () => {
                 </div>
 
                 {/* Mobile Compact Layout */}
-                <div className="sm:hidden flex flex-col w-full -mx-4 px-4">
+                <div className="sm:hidden flex flex-col w-full">
                     {/* The Main Drop Zone Card */}
                     <div
                         className={`w-full h-[180px] bg-white rounded-[18px] transition-all relative shadow-[0_1px_3px_rgba(0,0,0,0.06)] 
