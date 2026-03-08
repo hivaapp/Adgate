@@ -41,7 +41,7 @@ export const Navbar = () => {
         <>
             <nav className="sticky top-0 z-40 bg-bg/90 backdrop-blur-md border-b border-border h-16 w-full shadow-sm px-4 sm:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-2 z-50">
-                    <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-black text-[12px] leading-none shrink-0 cursor-pointer">
+                    <div className="w-8 h-8 rounded-[14px] bg-brand flex items-center justify-center text-white font-black text-[12px] leading-none shrink-0 cursor-pointer">
                         AG
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">

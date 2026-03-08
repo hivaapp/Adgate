@@ -24,10 +24,12 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
         }, 300);
 
         // Let's attach this interval to state or window to clear it, but simple is okay for fake data
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).__progressInterval = interval;
     }, []);
 
     const stopProgress = useCallback(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         clearInterval((window as any).__progressInterval);
         setProgress(100);
         setTimeout(() => {
@@ -53,6 +55,7 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useProgress = () => {
     const context = useContext(ProgressContext);
     if (!context) throw new Error('useProgress used outside Provider');

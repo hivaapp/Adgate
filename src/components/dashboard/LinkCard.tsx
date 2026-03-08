@@ -2,6 +2,7 @@ import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointe
 import { useToast } from '../../context/ToastContext';
 
 interface LinkCardProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     link: any;
     onEdit: () => void;
     onMore: () => void;
@@ -100,7 +101,7 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
             </button>
 
             {/* 4. Stats Row */}
-            <div className={`grid w-full mt-1 border border-border rounded-lg ${link.adSource === 'custom' ? 'grid-cols-4 bg-surfaceAlt' : 'grid-cols-3 bg-white'}`}>
+            <div className={`grid w-full mt-1 border border-border rounded-[14px] ${link.adSource === 'custom' ? 'grid-cols-4 bg-surfaceAlt' : 'grid-cols-3 bg-white'}`}>
                 {link.adSource === 'custom' ? (
                     <>
                         <div className="flex flex-col justify-center items-center py-2 border-r border-border">
@@ -115,7 +116,7 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                             <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Clicks</span>
                             <span className="text-[14px] font-black text-[#6366F1] leading-none">{link.clicks > 0 ? link.clicks.toLocaleString() : link.unlocks.toLocaleString()}</span>
                         </div>
-                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/50 rounded-r-lg">
+                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/50 rounded-r-[14px]">
                             <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
                             <span className="text-[14px] sm:text-[15px] font-black text-success leading-none">${link.earned.toFixed(2)}</span>
                         </div>
@@ -130,7 +131,7 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                             <span className="text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Unlocks</span>
                             <span className="text-[15px] font-black text-text leading-none">{link.unlocks.toLocaleString()}</span>
                         </div>
-                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/20 rounded-r-lg">
+                        <div className="flex flex-col justify-center items-center py-2 bg-successBg/20 rounded-r-[14px]">
                             <span className="text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
                             <span className="text-[15px] font-black text-success leading-none">${link.earned.toFixed(2)}</span>
                         </div>

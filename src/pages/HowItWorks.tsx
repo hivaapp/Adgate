@@ -51,7 +51,7 @@ export const HowItWorks = () => {
                             <button
                                 key={item.id}
                                 onClick={() => scrollToSection(item.id)}
-                                className="h-[40px] flex items-center gap-3 w-full hover:bg-surfaceAlt rounded-md transition-colors px-2 -mx-2"
+                                className="h-[40px] flex items-center gap-3 w-full hover:bg-surfaceAlt rounded-[14px] transition-colors px-2 -mx-2"
                             >
                                 <div className="w-[20px] h-[20px] rounded-full bg-[#FFF0EF] text-[#E8312A] flex items-center justify-center text-[11px] font-black shrink-0">{index + 1}</div>
                                 <span className="text-[14px] font-bold text-[#E8312A]">{item.label}</span>
@@ -115,7 +115,7 @@ export const HowItWorks = () => {
                             <div key={item.step} className="bg-white border border-border p-[16px] rounded-[14px] min-h-[160px] relative overflow-hidden flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                                 <div className="absolute top-2 left-3 text-[48px] font-black text-black opacity-[0.08] leading-none select-none">{item.step}</div>
                                 <div className="relative z-10 flex flex-col h-full">
-                                    <div className={`w - [48px] h - [48px] rounded - [12px] ${item.tint} flex items - center justify - center text - [24px] mb - 4`}>
+                                    <div className={`w - [48px] h - [48px] rounded-[14px] - [12px] ${item.tint} flex items - center justify - center text - [24px] mb - 4`}>
                                         {item.icon}
                                     </div>
                                     <h3 className="text-[16px] font-black text-[#111] mb-2 leading-snug">{item.title}</h3>
@@ -143,11 +143,11 @@ export const HowItWorks = () => {
                     <p className="text-[14px] text-textMid mb-10 text-center">Your viewers never pay anything. Here is exactly what they experience.</p>
 
                     <div className="w-[280px] bg-[#1A1A1A] rounded-[32px] p-[8px] mb-10 shadow-lg relative mx-auto">
-                        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[80px] h-[24px] bg-[#1A1A1A] z-20 rounded-b-xl" />
+                        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[80px] h-[24px] bg-[#1A1A1A] z-20 rounded-b-[18px]" />
                         <div className="w-full h-[480px] bg-white rounded-[24px] overflow-y-auto no-scrollbar relative z-10 p-[16px] flex flex-col gap-6 scroll-smooth">
                             <div className="flex flex-col gap-2">
                                 <div className="text-[11px] font-bold text-center text-textMid bg-surfaceAlt px-2 py-1 rounded-full self-center">1. They see your preview</div>
-                                <div className="border border-border rounded-lg p-3 bg-white shadow-sm flex flex-col gap-2 relative">
+                                <div className="border border-border rounded-[14px] p-3 bg-white shadow-sm flex flex-col gap-2 relative">
                                     <div className="font-bold text-[13px]">My Awesome Guide</div>
                                     <div className="text-[10px] text-textMid">1.2 MB PDF</div>
                                     <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent" />
@@ -156,7 +156,7 @@ export const HowItWorks = () => {
 
                             <div className="flex flex-col gap-2">
                                 <div className="text-[11px] font-bold text-center text-textMid bg-surfaceAlt px-2 py-1 rounded-full self-center">2. They choose to unlock</div>
-                                <div className="w-full bg-[#E8312A] text-white rounded-lg p-2 text-center text-[12px] font-bold flex flex-col gap-1 shadow-sm">
+                                <div className="w-full bg-[#E8312A] text-white rounded-[14px] p-2 text-center text-[12px] font-bold flex flex-col gap-1 shadow-sm">
                                     <div className="flex justify-center gap-1 mb-1">
                                         <div className="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
                                         <div className="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
@@ -167,7 +167,7 @@ export const HowItWorks = () => {
 
                             <div className="flex flex-col gap-2">
                                 <div className="text-[11px] font-bold text-center text-textMid bg-surfaceAlt px-2 py-1 rounded-full self-center">3. They see the ad (or sponsor)</div>
-                                <div className="w-full h-[120px] bg-[#111] rounded-lg relative overflow-hidden flex items-center justify-center text-[10px] text-white uppercase font-bold">
+                                <div className="w-full h-[120px] bg-[#111] rounded-[14px] relative overflow-hidden flex items-center justify-center text-[10px] text-white uppercase font-bold">
                                     <div className="absolute top-2 left-2 bg-[#6366F1] px-[6px] py-[2px] rounded-full text-[9px] flex items-center gap-1 shadow-sm">
                                         <span className="text-[8px]">✨</span>Sponsored
                                     </div>
@@ -181,7 +181,7 @@ export const HowItWorks = () => {
 
                             <div className="flex flex-col gap-2">
                                 <div className="text-[11px] font-bold text-center text-textMid bg-surfaceAlt px-2 py-1 rounded-full self-center">4. They get the content free</div>
-                                <div className="w-full bg-success text-white rounded-lg p-2 text-center text-[12px] font-bold shadow-sm">
+                                <div className="w-full bg-success text-white rounded-[14px] p-2 text-center text-[12px] font-bold shadow-sm">
                                     Download Resource
                                 </div>
                             </div>
@@ -323,7 +323,7 @@ export const HowItWorks = () => {
                     </div>
 
                     <div className="w-full bg-[#EDE9FE] border border-[#C4B5FD] rounded-[20px] p-[20px] mb-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                        <p className="text-[16px] font-bold text-[#4C1D95] leading-[1.65]">
+                        <p className="text-[16px] font-[800] text-[#4C1D95] leading-[1.65]">
                             If you have a brand deal — or you want to land one — Custom Sponsor links let you serve that ad yourself. AdGate charges nothing. The full sponsorship rate is yours.
                         </p>
                     </div>
@@ -339,7 +339,7 @@ export const HowItWorks = () => {
                             <div key={item.step} className="bg-white border border-border p-[16px] rounded-[14px] relative overflow-hidden flex flex-col shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                                 <div className="absolute top-2 right-3 text-[48px] font-black text-[#6366F1] opacity-[0.08] leading-none select-none">{item.step}</div>
                                 <div className="relative z-10 flex flex-col h-full">
-                                    <div className={`w - [40px] h - [40px] rounded - [12px] ${item.tint} flex items - center justify - center text - [20px] mb - 3`}>
+                                    <div className={`w - [40px] h - [40px] rounded-[14px] - [12px] ${item.tint} flex items - center justify - center text - [20px] mb - 3`}>
                                         {item.icon}
                                     </div>
                                     <h3 className="text-[14px] font-black text-[#111] mb-1.5 leading-snug">{item.title}</h3>
@@ -383,7 +383,7 @@ export const HowItWorks = () => {
                                 <div className="flex justify-between items-center"><span className="text-[12px] text-white/70">CTA Clicks</span><span className="text-[12px] font-bold text-white">1,245</span></div>
                                 <div className="flex justify-between items-center"><span className="text-[12px] text-white/70">CTR</span><span className="text-[12px] font-bold text-white">10.0%</span></div>
                             </div>
-                            <button className="mt-4 w-full h-[40px] rounded-lg border border-[#6366F1] text-[#6366F1] font-bold text-[13px] flex items-center justify-center hover:bg-[#6366F1]/10 transition-colors">Copy Report</button>
+                            <button className="mt-4 w-full h-[40px] rounded-[14px] border border-[#6366F1] text-[#6366F1] font-bold text-[13px] flex items-center justify-center hover:bg-[#6366F1]/10 transition-colors">Copy Report</button>
                         </div>
                     </div>
 
@@ -413,16 +413,16 @@ export const HowItWorks = () => {
                             { icon: "💳", tint: "bg-[#F5F3FF]", title: "Connecting Stripe", desc: "You connect your Stripe account once during onboarding. AdGate uses Stripe Connect to send funds directly to your bank account in 130+ countries." }
                         ].map((item, i) => (
                             <div key={i} className="bg-white p-5 rounded-[16px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-border flex flex-col">
-                                <div className={`w - [40px] h - [40px] rounded - [10px] ${item.tint} flex items - center justify - center text - [20px] mb - 3`}>{item.icon}</div>
+                                <div className={`w - [40px] h - [40px] rounded-[14px] - [10px] ${item.tint} flex items - center justify - center text - [20px] mb - 3`}>{item.icon}</div>
                                 <h3 className="text-[15px] font-black text-[#111] mb-2">{item.title}</h3>
                                 <p className="text-[13px] font-semibold text-textMid leading-[1.6] mb-3">{item.desc}</p>
                                 {item.isCommission && (
                                     <div className="flex flex-col gap-1.5 mt-auto">
-                                        <div className="flex items-center justify-between bg-surfaceAlt px-3 py-2 rounded-lg">
+                                        <div className="flex items-center justify-between bg-surfaceAlt px-3 py-2 rounded-[14px]">
                                             <span className="text-[12px] font-bold text-text">Platform Ads</span>
                                             <span className="text-[12px] font-black text-[#E8312A] bg-[#FFF0EF] px-2 py-0.5 rounded-full">5% at payout</span>
                                         </div>
-                                        <div className="flex items-center justify-between bg-[#F0FFF4] px-3 py-2 rounded-lg border border-[#BBF7D0]">
+                                        <div className="flex items-center justify-between bg-[#F0FFF4] px-3 py-2 rounded-[14px] border border-[#BBF7D0]">
                                             <span className="text-[12px] font-bold text-[#166534]">Custom Sponsor</span>
                                             <span className="text-[12px] font-black text-white bg-[#166534] px-2 py-0.5 rounded-full">0% always</span>
                                         </div>
@@ -547,7 +547,7 @@ export const HowItWorks = () => {
             <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center">
                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 opacity-80">
-                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                        <div className="w-6 h-6 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
                             AG
                         </div>
                         <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>

@@ -4,7 +4,9 @@ import { currentUser as mockUser, mockLinks, mockActivity } from '../lib/mockDat
 import type { User } from '../lib/mockData';
 import { useToast } from './ToastContext';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LinkData = any; // We can type this strictly later if needed, but let's use `any` for now
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ActivityData = any;
 
 type Earnings = {
@@ -99,6 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 finalLinkData.adSource = "platform";
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const newLink: any = {
                 id: `link_${Date.now()}`,
                 isActive: true,
@@ -212,6 +215,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (context === undefined) {

@@ -38,7 +38,7 @@ export const CreatorProfile = () => {
                         </div>
                     </div>
 
-                    <p className="text-[16px] font-bold text-textMid max-w-[360px] leading-relaxed">
+                    <p className="text-[16px] font-[800] text-textMid max-w-[360px] leading-relaxed">
                         Digital designer sharing free resources, templates, and assets. Support my work by unlocking links.
                     </p>
 
@@ -86,7 +86,7 @@ export const CreatorProfile = () => {
                                     </span>
 
                                     <div className="flex items-center gap-2 overflow-hidden w-full mt-1">
-                                        <span className="text-[12px] font-extrabold bg-surfaceAlt text-textLight px-1.5 py-0.5 rounded-md tracking-wide">
+                                        <span className="text-[12px] font-extrabold bg-surfaceAlt text-textLight px-1.5 py-0.5 rounded-[14px] tracking-wide">
                                             {link.type}
                                         </span>
                                         <div className="flex items-center gap-1 text-[12px] font-bold text-textLight">
@@ -94,7 +94,7 @@ export const CreatorProfile = () => {
                                             {link.adCount} {link.adType === 'video' ? 'Video' : 'Ad'}{link.adCount > 1 ? 's' : ''}
                                         </div>
                                         {link.donate && (
-                                            <div className="flex items-center gap-1 text-[11px] font-[800] text-[#166534] bg-[#EBF5EE] px-1.5 py-0.5 rounded-md ml-auto sm:ml-2 shrink-0">
+                                            <div className="flex items-center gap-1 text-[11px] font-[800] text-[#166534] bg-[#EBF5EE] px-1.5 py-0.5 rounded-[14px] ml-auto sm:ml-2 shrink-0">
                                                 🌳 5% to trees
                                             </div>
                                         )}

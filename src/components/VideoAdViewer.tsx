@@ -7,6 +7,7 @@ interface VideoAdViewerProps {
     onCompleted: () => void;
     onSkip: () => void;
     isCustom?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     customAd?: any;
     requiresClick?: boolean;
 }
@@ -60,7 +61,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd, req
         <div className="fixed inset-0 z-50 flex flex-col bg-black animate-fadeIn" role="dialog" aria-modal="true">
             {/* Top Bar with Skip/Timer */}
             <div className="h-14 w-full flex items-center justify-between px-4 sm:px-6 bg-gradient-to-b from-black/80 to-transparent shrink-0 absolute top-0 left-0 right-0 z-20">
-                <span className="text-[12px] text-white/90 font-bold bg-white/20 px-2 py-1 rounded">{isCustom ? 'Sponsor' : 'Ad'} • {brand}</span>
+                <span className="text-[12px] text-white/90 font-bold bg-white/20 px-2 py-1 rounded-[14px]">{isCustom ? 'Sponsor' : 'Ad'} • {brand}</span>
 
                 {requiresClick && (
                     <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-[rgba(255,255,255,0.15)] text-[10px] sm:text-[11px] font-black text-white px-3 py-1 rounded-full backdrop-blur-md hidden sm:block">
@@ -102,7 +103,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd, req
                     <h2 className="text-[32px] sm:text-[40px] font-black tracking-tight leading-tight max-w-[400px]" style={{ color: ad.textColor }}>
                         {headline}
                     </h2>
-                    <p className="mt-4 text-[18px] sm:text-[20px] font-bold opacity-90 max-w-[360px]" style={{ color: ad.videoSimulation?.accentColor || ad.textColor }}>
+                    <p className="mt-4 text-[18px] sm:text-[20px] font-[800] opacity-90 max-w-[360px]" style={{ color: ad.videoSimulation?.accentColor || ad.textColor }}>
                         {subtext}
                     </p>
                 </div>
@@ -114,7 +115,7 @@ export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd, req
                     <div className="flex flex-col">
                         <span className="text-white font-black text-[18px] drop-shadow-md flex items-center gap-2">
                             {brand}
-                            {(!isCustom) && <span className="text-[11px] bg-[#BBF7D0]/20 text-[#BBF7D0] px-1.5 py-0.5 rounded font-bold tracking-tight">🌱 + trees</span>}
+                            {(!isCustom) && <span className="text-[11px] bg-[#BBF7D0]/20 text-[#BBF7D0] px-1.5 py-0.5 rounded-[14px] font-bold tracking-tight">🌱 + trees</span>}
                         </span>
                         <span className="text-white/80 font-bold text-[13px]">{tagline}</span>
                     </div>

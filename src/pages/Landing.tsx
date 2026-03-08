@@ -66,7 +66,7 @@ export const Landing = () => {
     const [showTextInput, setShowTextInput] = useState(false);
     const [textInputValue, setTextInputValue] = useState("");
     const [hasPulsed, setHasPulsed] = useState(false);
-    const hasConfiguredAdSetup = useRef(false);
+    const [hasConfiguredAdSetup, setHasConfiguredAdSetup] = useState(false);
     const outputCardRef = useRef<HTMLDivElement>(null);
 
     // How It Works state
@@ -79,13 +79,13 @@ export const Landing = () => {
     }, [isGenerated]);
 
     useEffect(() => {
-        if (files.length > 0 && !hasPulsed && !hasConfiguredAdSetup.current) {
+        if (files.length > 0 && !hasPulsed && !hasConfiguredAdSetup) {
             const timer = setTimeout(() => {
-                if (!hasConfiguredAdSetup.current) setHasPulsed(true);
+                if (!hasConfiguredAdSetup) setHasPulsed(true);
             }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [files, hasPulsed]);
+    }, [files, hasPulsed, hasConfiguredAdSetup]);
 
     useEffect(() => {
         if (hasPulsed) {
@@ -95,7 +95,7 @@ export const Landing = () => {
     }, [hasPulsed]);
 
     const handleAdSetupApply = () => {
-        hasConfiguredAdSetup.current = true;
+        setHasConfiguredAdSetup(true);
         setHasPulsed(false);
         setAdSetupSheetOpen(false);
     };
@@ -173,47 +173,35 @@ export const Landing = () => {
     return (
         <div className="flex flex-col items-center w-full min-h-screen bg-bg selection:bg-brandTint selection:text-brand">
             {/* Hero Section */}
-            <div className="w-full max-w-[800px] px-4 pt-12 sm:pt-20 pb-16 flex flex-col items-center text-center animate-fadeIn">
-                <div className="bg-brandTint text-brand font-extrabold text-[12px] px-3 py-1 mt-6 rounded-full mb-6 flex items-center gap-2 border border-brand/20">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
-                    </span>
-                    Earn from every share — for free
-                </div>
-
-                <h1 className="text-[40px] sm:text-[64px] font-black text-text leading-[1.05] tracking-tight mb-6">
-                    Monetize your audience.<br />
-                    <span className="text-brand">Without subscriptions.</span>
+            <div className="w-full max-w-[800px] px-4 pt-[32px] pb-[20px] flex flex-col items-center text-center animate-fadeIn">
+                <h1
+                    className="w-full text-center"
+                    style={{
+                        fontFamily: '"Nunito", sans-serif',
+                        fontWeight: 900,
+                        fontSize: 'clamp(26px, 7vw, 42px)',
+                        color: '#111111',
+                        letterSpacing: '-0.03em',
+                        lineHeight: 1.2
+                    }}
+                >
+                    Upload anything. Share a link. Get <span style={{ color: '#E8312A' }}>paid</span> when people unlock it.
                 </h1>
 
-                <p className="text-textMid font-bold text-[16px] sm:text-[20px] max-w-[540px] mb-10 leading-snug">
-                    Upload any file, set the ad count, and share the link. Viewers click a short ad to unlock it, and you keep 95% of the revenue.
-                </p>
+                <div className="h-[12px]" />
 
-                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                    <div className="bg-white border border-border px-4 py-3 flex gap-3 items-center rounded-[16px] shadow-sm">
-                        <div className="w-10 h-10 bg-surfaceAlt rounded-full flex items-center justify-center text-[20px]">🙌</div>
-                        <div className="flex flex-col items-start leading-none gap-1">
-                            <span className="font-black text-[18px] text-text">12.4k</span>
-                            <span className="font-bold text-[11px] text-textLight uppercase tracking-wider">Creators</span>
-                        </div>
-                    </div>
-                    <div className="bg-white border border-border px-4 py-3 flex gap-3 items-center rounded-[16px] shadow-sm">
-                        <div className="w-10 h-10 bg-surfaceAlt rounded-full flex items-center justify-center text-[20px]">🔗</div>
-                        <div className="flex flex-col items-start leading-none gap-1">
-                            <span className="font-black text-[18px] text-text">145k+</span>
-                            <span className="font-bold text-[11px] text-textLight uppercase tracking-wider">Links Gen</span>
-                        </div>
-                    </div>
-                    <div className="bg-white border border-border px-4 py-3 flex gap-3 items-center rounded-[16px] shadow-sm">
-                        <div className="w-10 h-10 bg-successBg rounded-full flex items-center justify-center text-[20px]">💸</div>
-                        <div className="flex flex-col items-start leading-none gap-1">
-                            <span className="font-black text-[18px] text-success">$2.1M</span>
-                            <span className="font-bold text-[11px] text-textLight uppercase tracking-wider">Paid Out</span>
-                        </div>
-                    </div>
-                </div>
+                <p
+                    className="text-center mx-auto text-[15px] sm:text-[17px]"
+                    style={{
+                        fontFamily: '"Nunito", sans-serif',
+                        fontWeight: 600,
+                        color: '#666666',
+                        maxWidth: '400px',
+                        lineHeight: 1.5
+                    }}
+                >
+                    Your audience gets it free by watching a short ad. You keep 95%.
+                </p>
             </div>
 
             {/* Generator Component */}
@@ -249,9 +237,9 @@ export const Landing = () => {
                             <h4 className="font-black text-[15px] text-text tracking-tight mb-1">Drag and drop files here</h4>
                             <p className="text-textMid font-bold text-[13px] mb-4">or click to select files</p>
                             <div className="flex gap-2">
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded uppercase">PDF</span>
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded uppercase">ZIP</span>
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded uppercase">IMG</span>
+                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">PDF</span>
+                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">ZIP</span>
+                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">IMG</span>
                             </div>
                         </div>
 
@@ -260,7 +248,7 @@ export const Landing = () => {
                                 {files.map((file, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-[12px] border border-border shadow-sm">
                                         <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="w-8 h-8 rounded bg-surfaceAlt flex items-center justify-center text-[16px] shrink-0">📄</div>
+                                            <div className="w-8 h-8 rounded-[14px] bg-surfaceAlt flex items-center justify-center text-[16px] shrink-0">📄</div>
                                             <span className="font-bold text-[13px] text-text truncate">{file.name}</span>
                                         </div>
                                         <button
@@ -297,7 +285,7 @@ export const Landing = () => {
                                 adCount={adCount}
                             />
                             {adSource === 'custom' && (
-                                <div className="mt-4 p-3 rounded-lg bg-surfaceAlt/50 border border-border text-[12px] text-textMid">
+                                <div className="mt-4 p-3 rounded-[14px] bg-surfaceAlt/50 border border-border text-[12px] text-textMid">
                                     Ad count set by your creative duration.
                                 </div>
                             )}
@@ -333,7 +321,7 @@ export const Landing = () => {
                                 <span className="font-black text-[14px] text-text">{activeEstimate.label}</span>
                                 <div className="flex items-center justify-between text-[12px] font-bold mt-1">
                                     <span className="text-textMid">Time: {activeEstimate.time}</span>
-                                    <span className="text-success bg-successBg px-1.5 py-0.5 rounded">{activeEstimate.earnings} / unlock</span>
+                                    <span className="text-success bg-successBg px-1.5 py-0.5 rounded-[14px]">{activeEstimate.earnings} / unlock</span>
                                 </div>
                             </div>
                         </div>
@@ -386,17 +374,18 @@ export const Landing = () => {
                             <div className="flex flex-col animate-fadeIn">
                                 <label className="font-black text-[11px] text-textMid uppercase tracking-wider mb-1.5">Your Generated Link</label>
                                 <div className="flex gap-2">
-                                    <div className={`flex-1 h-[56px] rounded-[14px] border-2 px-4 flex items-center relative overflow-hidden transition-colors ${isLoggedIn ? 'bg-brandTint border-brand/30' : 'bg-surfaceAlt border-border border-dashed'}`}>
-                                        {!isLoggedIn && <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10" />}
-                                        <span className="font-bold font-mono text-[14px] sm:text-[15px] truncate text-text">{fakeUrl}</span>
-                                    </div>
-                                    {!isLoggedIn ? (
-                                        <button onClick={() => setIsModalOpen(true)} className="h-[56px] px-6 bg-brand text-white rounded-[14px] font-black text-[15px] flex items-center gap-2 shadow-sm shrink-0">
-                                            <Lock size={18} /> Sign In
-                                        </button>
+                                    {isLoggedIn ? (
+                                        <>
+                                            <div className="flex-1 h-[56px] rounded-[14px] border-2 px-4 flex items-center relative overflow-hidden transition-colors bg-brandTint border-brand/30">
+                                                <span className="font-bold font-mono text-[14px] sm:text-[15px] truncate text-text">{fakeUrl}</span>
+                                            </div>
+                                            <button onClick={copyToClipboard} className={`h-[56px] w-[56px] rounded-[14px] flex items-center justify-center text-white transition-colors shrink-0 shadow-sm ${isCopied ? 'bg-success' : 'bg-brand hover:bg-brand-hover'}`}>
+                                                {isCopied ? <Check size={24} /> : <LinkIcon size={24} />}
+                                            </button>
+                                        </>
                                     ) : (
-                                        <button onClick={copyToClipboard} className={`h-[56px] w-[56px] rounded-[14px] flex items-center justify-center text-white transition-colors shrink-0 shadow-sm ${isCopied ? 'bg-success' : 'bg-brand hover:bg-brand-hover'}`}>
-                                            {isCopied ? <Check size={24} /> : <LinkIcon size={24} />}
+                                        <button onClick={() => setIsModalOpen(true)} className="w-full h-[56px] bg-brand text-white rounded-[14px] font-black text-[15px] flex items-center justify-center gap-2 shadow-sm shrink-0 hover:bg-brand-hover transition-colors">
+                                            <Lock size={18} /> Sign In to Reveal Link
                                         </button>
                                     )}
                                 </div>
@@ -420,7 +409,7 @@ export const Landing = () => {
                                     </div>
                                 </div>
                                 {!isLoggedIn && (
-                                    <p className="text-[12px] font-bold text-brand mt-2 flex items-center gap-1.5 bg-brandTint p-2 rounded-lg">
+                                    <p className="text-[12px] font-bold text-brand mt-2 flex items-center gap-1.5 bg-brandTint p-2 rounded-[14px]">
                                         <span className="text-[16px]">👆</span> Sign in or create an account to claim and share this link.
                                     </p>
                                 )}
@@ -463,7 +452,7 @@ export const Landing = () => {
                                     value={textInputValue}
                                     onChange={(e) => setTextInputValue(e.target.value)}
                                     placeholder="Paste a URL or type your prompt here..."
-                                    className="w-full h-[44px] rounded-lg border border-[#E8E8E8] px-3 text-[14px] outline-none focus:border-[#E8312A]"
+                                    className="w-full h-[44px] rounded-[14px] border border-[#E8E8E8] px-3 text-[14px] outline-none focus:border-[#E8312A]"
                                 />
                             </div>
                         ) : (
@@ -494,15 +483,15 @@ export const Landing = () => {
                         {/* Ad Setup Item */}
                         <button onClick={() => setAdSetupSheetOpen(true)} className={`flex-1 flex flex-col justify-center items-center relative ${hasPulsed ? 'bg-[#FFF0EF] transition-colors duration-300' : 'bg-white'}`}>
                             <div className="flex items-center gap-1">
-                                {hasConfiguredAdSetup.current ? (
+                                {hasConfiguredAdSetup ? (
                                     adSource === 'platform' ? <Play size={10} className="text-[#E8312A]" /> : <Star size={10} className="text-[#6366F1]" />
                                 ) : (
                                     <Settings size={10} className="text-[#AAA49C]" />
                                 )}
                                 <span className="text-[11px] text-textMid">Ad Setup</span>
-                                {adSource === 'custom' && hasConfiguredAdSetup.current && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#6366F1]" />}
+                                {adSource === 'custom' && hasConfiguredAdSetup && <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#6366F1]" />}
                             </div>
-                            {hasConfiguredAdSetup.current ? (
+                            {hasConfiguredAdSetup ? (
                                 <span className="text-[11px] sm:text-[12px] font-[800] text-[#111] truncate px-1 max-w-[140px]">
                                     {adSource === 'platform' ? `Platform \u00B7 ${adType === 'click' ? 'Click' : 'Video'}` : `Custom \u00B7 ${(customAd?.redirectUrl) ? 'Watch \u2192 Click' : 'Video'} \u00B7 ${customAd?.brandName || 'Sponsor'}`}
                                 </span>
@@ -569,17 +558,18 @@ export const Landing = () => {
                             </div>
 
                             <div className="flex gap-2">
-                                <div className={`flex-1 h-[40px] rounded-[10px] px-3 flex items-center relative overflow-hidden transition-colors ${isLoggedIn ? 'bg-[#F3F1EC]' : 'bg-[#F3F1EC]'}`}>
-                                    {!isLoggedIn && <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10" />}
-                                    <span className="font-bold font-mono text-[13px] truncate text-text">{fakeUrl}</span>
-                                </div>
-                                {!isLoggedIn ? (
-                                    <button onClick={() => setIsModalOpen(true)} className="h-[40px] px-4 bg-[#E8312A] text-white rounded-[10px] font-black text-[13px] flex items-center gap-1.5 shrink-0">
-                                        Sign In to reveal
-                                    </button>
+                                {isLoggedIn ? (
+                                    <>
+                                        <div className="flex-1 h-[40px] rounded-[10px] px-3 flex items-center relative overflow-hidden transition-colors bg-[#F3F1EC]">
+                                            <span className="font-bold font-mono text-[13px] truncate text-text">{fakeUrl}</span>
+                                        </div>
+                                        <button onClick={copyToClipboard} className={`w-[40px] h-[40px] rounded-full flex items-center justify-center text-white transition-colors shrink-0 shadow-sm ${isCopied ? 'bg-success' : 'bg-[#E8312A]'}`}>
+                                            {isCopied ? <Check size={18} /> : <LinkIcon size={18} />}
+                                        </button>
+                                    </>
                                 ) : (
-                                    <button onClick={copyToClipboard} className={`w-[40px] h-[40px] rounded-full flex items-center justify-center text-white transition-colors shrink-0 shadow-sm ${isCopied ? 'bg-success' : 'bg-[#E8312A]'}`}>
-                                        {isCopied ? <Check size={18} /> : <LinkIcon size={18} />}
+                                    <button onClick={() => setIsModalOpen(true)} className="w-full h-[40px] bg-[#E8312A] text-white rounded-[10px] font-black text-[13px] flex items-center justify-center gap-1.5 shrink-0">
+                                        Sign In to reveal
                                     </button>
                                 )}
                             </div>
@@ -644,7 +634,7 @@ export const Landing = () => {
                             onClick={() => setHowTab('custom')}
                             className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors flex items-center gap-2 ${howTab === 'custom' ? 'bg-white shadow-sm text-[#4F46E5]' : 'text-textMid hover:text-text'}`}
                         >
-                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded text-[10px] uppercase font-black">0% Fee</span>
+                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded-[14px] text-[10px] uppercase font-black">0% Fee</span>
                         </button>
                     </div>
 
@@ -686,7 +676,7 @@ export const Landing = () => {
                             </span>
                         </div>
                         {isDonateOn && (
-                            <div className="flex justify-between items-start mb-3 bg-[#EBF5EE] p-2 rounded-lg">
+                            <div className="flex justify-between items-start mb-3 bg-[#EBF5EE] p-2 rounded-[14px]">
                                 <div className="flex flex-col">
                                     <span className="text-[13px] font-[700] text-[#417A55]">Tree Donation (Optional)</span>
                                     {howTab === 'custom' && <span className="text-[11px] text-[#417A55]/80 mt-1 max-w-[200px]">You choose to donate 5% of your deal. This comes from your 100% and is your choice.</span>}
@@ -725,7 +715,7 @@ export const Landing = () => {
                                 min="100" max="100000" step="100"
                                 value={calcViews}
                                 onChange={(e) => setCalcViews(Number(e.target.value))}
-                                className="w-full h-2 bg-border rounded-lg appearance-none cursor-pointer accent-[#E8312A]"
+                                className="w-full h-2 bg-border rounded-[14px] appearance-none cursor-pointer accent-[#E8312A]"
                             />
                             <div className="text-[18px] font-[900] text-[#E8312A] -mt-1">
                                 {calcViews.toLocaleString()} clicks
@@ -959,7 +949,7 @@ export const Landing = () => {
             <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center">
                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 opacity-80">
-                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                        <div className="w-6 h-6 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
                             AG
                         </div>
                         <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>

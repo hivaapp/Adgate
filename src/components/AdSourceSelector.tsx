@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AdTypeSelector } from "./AdTypeSelector";
 import { CustomSponsorForm, type CustomAdData } from "./CustomSponsorForm";
 
@@ -26,10 +26,12 @@ export function AdSourceSelector({
     adCount = 1
 }: AdSourceSelectorProps) {
     const [source, setSource] = useState<AdSourceType>(value);
+    const [prevValue, setPrevValue] = useState<AdSourceType | undefined>(value);
 
-    useEffect(() => {
+    if (value !== prevValue) {
+        setPrevValue(value);
         if (value !== undefined) setSource(value);
-    }, [value]);
+    }
 
     const handleSourceChange = (newSource: AdSourceType) => {
         setSource(newSource);

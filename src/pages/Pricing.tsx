@@ -163,7 +163,7 @@ export const Pricing = () => {
                             onClick={() => setMathTab('custom')}
                             className={`px-6 py-2 rounded-[8px] font-[800] text-[14px] transition-colors flex items-center gap-2 ${mathTab === 'custom' ? 'bg-white shadow-sm text-[#4F46E5]' : 'text-textMid hover:text-text'}`}
                         >
-                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded text-[10px] uppercase font-black">0% Fee</span>
+                            Custom Sponsor <span className="bg-[#E0EEF5] text-[#0369A1] px-1.5 py-0.5 rounded-[14px] text-[10px] uppercase font-black">0% Fee</span>
                         </button>
                     </div>
 
@@ -184,7 +184,7 @@ export const Pricing = () => {
                                     </div>
 
                                     {/* Row 2 */}
-                                    <div className="w-full bg-white border-l-[3px] border-[#E8312A] h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
+                                    <div className="w-full bg-white border-l-[3px] border-[#E8312A] h-[48px] rounded-r-[14px] shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
                                         <span className="text-[14px] font-bold text-text">Platform Fee (5%)</span>
                                         <span className="text-[16px] font-black text-[#E8312A]">- ${calcFee.toFixed(2)}</span>
                                     </div>
@@ -194,7 +194,7 @@ export const Pricing = () => {
                                     </div>
 
                                     {/* Row 3 */}
-                                    <div className="w-full bg-[#F0FFF4] h-[48px] rounded-lg px-5 flex items-center justify-between border border-[#D1FADF]">
+                                    <div className="w-full bg-[#F0FFF4] h-[48px] rounded-[14px] px-5 flex items-center justify-between border border-[#D1FADF]">
                                         <span className="text-[14px] font-bold text-text">Your Earnings Before Donation</span>
                                         <span className="text-[16px] font-black text-[#111]">= ${calcSubtotal.toFixed(2)}</span>
                                     </div>
@@ -205,7 +205,7 @@ export const Pricing = () => {
                                             <div className="flex justify-center -my-2 z-10">
                                                 <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
                                             </div>
-                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
+                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-[14px] shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
                                                 <span className="text-[14px] font-bold text-text">Tree Donation (5% of your share)</span>
                                                 <span className="text-[16px] font-black text-success">- ${calcDonate.toFixed(2)}</span>
                                             </div>
@@ -225,9 +225,9 @@ export const Pricing = () => {
                             ) : (
                                 <>
                                     {/* Custom Row 1 */}
-                                    <div className="w-full bg-[#F5F3FF] border border-[#DDD6FE] h-[52px] rounded-lg px-5 flex items-center justify-between">
+                                    <div className="w-full bg-[#F5F3FF] border border-[#DDD6FE] h-[52px] rounded-[14px] px-5 flex items-center justify-between">
                                         <span className="text-[14px] font-bold text-[#4C1D95]">Your Sponsorship Deal (100%)</span>
-                                        <div className="flex items-center gap-1.5 bg-white border border-[#C4B5FD] rounded-md px-3 h-[36px] overflow-hidden focus-within:ring-2 focus-within:ring-[#6366F1]">
+                                        <div className="flex items-center gap-1.5 bg-white border border-[#C4B5FD] rounded-[14px] px-3 h-[36px] overflow-hidden focus-within:ring-2 focus-within:ring-[#6366F1]">
                                             <span className="font-black text-[#4C1D95] text-[16px]">$</span>
                                             <input
                                                 type="text"
@@ -243,7 +243,7 @@ export const Pricing = () => {
                                     </div>
 
                                     {/* Custom Row 2 */}
-                                    <div className="w-full bg-white border-l-[3px] border-[#6366F1] h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
+                                    <div className="w-full bg-white border-l-[3px] border-[#6366F1] h-[48px] rounded-r-[14px] shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between">
                                         <span className="text-[14px] font-bold text-text">Platform Commission</span>
                                         <span className="text-[16px] font-black text-[#4C1D95]">-$0.00</span>
                                     </div>
@@ -254,7 +254,7 @@ export const Pricing = () => {
                                             <div className="flex justify-center -my-2 z-10">
                                                 <div className="bg-white p-1 pb-1.5"><ChevronDown size={14} className="text-textLight" /></div>
                                             </div>
-                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-lg shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
+                                            <div className="w-full bg-white border-l-[3px] border-success h-[48px] rounded-r-[14px] shadow-sm border-y border-r border-[#F3F1EC] px-4 flex items-center justify-between animate-slideDown">
                                                 <span className="text-[14px] font-bold text-text">Tree Donation (5% of your deal)</span>
                                                 <span className="text-[16px] font-black text-success">- ${customDonateAmount}</span>
                                             </div>
@@ -324,11 +324,11 @@ export const Pricing = () => {
                                 </div>
                                 <div className="flex items-center gap-3 h-[40px]">
                                     <Check size={16} className="text-success shrink-0" />
-                                    <span className="text-[13px] font-bold text-success bg-[#EBF5EE] px-2 py-0.5 rounded-md">Custom Sponsor: 0% always free</span>
+                                    <span className="text-[13px] font-bold text-success bg-[#EBF5EE] px-2 py-0.5 rounded-[14px]">Custom Sponsor: 0% always free</span>
                                 </div>
                             </div>
 
-                            <Link to="/" className="w-full h-[48px] bg-[#E8312A] text-white font-black text-[15px] rounded-md flex items-center justify-center hover:bg-[#C42823] transition-colors">
+                            <Link to="/" className="w-full h-[48px] bg-[#E8312A] text-white font-black text-[15px] rounded-[14px] flex items-center justify-center hover:bg-[#C42823] transition-colors">
                                 Get Started Free
                             </Link>
                         </div>
@@ -369,7 +369,7 @@ export const Pricing = () => {
                                 Same 5% payout commission
                             </div>
 
-                            <button className="w-full h-[48px] bg-white text-[#111] font-black text-[15px] rounded-md flex items-center justify-center hover:bg-gray-100 transition-colors">
+                            <button className="w-full h-[48px] bg-white text-[#111] font-black text-[15px] rounded-[14px] flex items-center justify-center hover:bg-gray-100 transition-colors">
                                 Join Waitlist
                             </button>
                         </div>
@@ -421,7 +421,7 @@ export const Pricing = () => {
             <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center">
                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 opacity-80">
-                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                        <div className="w-6 h-6 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
                             AG
                         </div>
                         <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>

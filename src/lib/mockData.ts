@@ -276,6 +276,7 @@ export const mockEarningsData = [
 
 export const mockCreatorProfile = { ...currentUser, links: mockLinks.filter(l => l.isActive) };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mockExploreResources: any[] = [
     {
         id: "exp_1",

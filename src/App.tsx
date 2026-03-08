@@ -42,10 +42,10 @@ const NotFound = () => (
     <p className="text-[14px] font-bold text-textMid mb-8 max-w-[300px]">The creator may have deleted this resource or the link is incorrect.</p>
 
     <div className="flex items-center gap-3 mb-12 flex-col sm:flex-row w-full sm:w-auto">
-      <Link to="/" className="w-full sm:w-auto px-6 h-[44px] bg-brand text-white font-black text-[14px] rounded-lg flex items-center justify-center hover:bg-brand-hover shadow-sm">
+      <Link to="/" className="w-full sm:w-auto px-6 h-[44px] bg-brand text-white font-black text-[14px] rounded-[14px] flex items-center justify-center hover:bg-brand-hover shadow-sm">
         Go Home
       </Link>
-      <Link to="/explore" className="w-full sm:w-auto px-6 h-[44px] bg-transparent border-2 border-brand text-brand font-black text-[14px] rounded-lg flex items-center justify-center hover:bg-brandTint shadow-sm">
+      <Link to="/explore" className="w-full sm:w-auto px-6 h-[44px] bg-transparent border-2 border-brand text-brand font-black text-[14px] rounded-[14px] flex items-center justify-center hover:bg-brandTint shadow-sm">
         Explore Resources
       </Link>
     </div>

@@ -40,7 +40,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
             <div className="relative w-full max-w-[400px] bg-surface rounded-t-[24px] sm:rounded-[24px] p-6 sm:p-8 pt-4 sm:pt-8 animate-slide-up sm:animate-pop-in flex flex-col items-center">
                 <div className="w-12 h-1.5 bg-border rounded-full mb-6 sm:hidden" />
 
-                <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center text-2xl mb-4 text-brand glow-red">
+                <div className="w-12 h-12 bg-brand/10 rounded-[18px] flex items-center justify-center text-2xl mb-4 text-brand glow-red">
                     🔗
                 </div>
 
@@ -55,7 +55,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
                             key={provider.id}
                             onClick={() => handleProviderClick(provider.id)}
                             disabled={loadingProvider !== null}
-                            className="w-full h-[48px] bg-surface border border-border rounded-xl font-bold text-text flex items-center justify-center gap-3 transition-transform hover:-translate-y-[1px] hover:shadow-sm active:translate-y-0 active:shadow-none ease-out relative"
+                            className="w-full h-[48px] bg-surface border border-border rounded-[18px] font-bold text-text flex items-center justify-center gap-3 transition-transform hover:-translate-y-[1px] hover:shadow-sm active:translate-y-0 active:shadow-none ease-out relative"
                         >
                             {loadingProvider === provider.id ? (
                                 <Loader2 className="w-5 h-5 animate-spin text-textMid" />
@@ -69,7 +69,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
                     ))}
                 </div>
 
-                <div className="w-full bg-eco-tint p-4 rounded-xl flex items-start gap-3 mb-6 border border-eco/20">
+                <div className="w-full bg-eco-tint p-4 rounded-[18px] flex items-start gap-3 mb-6 border border-eco/20">
                     <span className="text-xl">🌱</span>
                     <p className="text-sm font-bold text-eco">
                         By signing up, you'll be able to donate 5% of your ad revenue to plant trees.

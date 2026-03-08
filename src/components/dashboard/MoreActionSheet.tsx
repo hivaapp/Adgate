@@ -5,6 +5,7 @@ import { useToast } from '../../context/ToastContext';
 interface MoreActionSheetProps {
     isOpen: boolean;
     onClose: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     link: any;
     onDelete: () => void;
     onDisable: () => void;
@@ -72,7 +73,7 @@ export const MoreActionSheet = ({ isOpen, onClose, link, onDelete, onDisable }: 
 
                 <button
                     onClick={onClose}
-                    className="w-full h-[52px] flex items-center justify-center px-2 mt-2 text-textMid hover:text-text hover:bg-surfaceAlt transition-colors font-bold rounded-md"
+                    className="w-full h-[52px] flex items-center justify-center px-2 mt-2 text-textMid hover:text-text hover:bg-surfaceAlt transition-colors font-bold rounded-[14px]"
                 >
                     Cancel
                 </button>

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick, Sparkles } from 'lucide-react';
+import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick, Sparkles, X } from 'lucide-react';
 import { mockExploreResources } from '../lib/mockData';
 
 const CATEGORIES = ['All', '✨ Sponsored', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
@@ -82,8 +82,16 @@ export const ExplorePage = () => {
                         placeholder="Search resources, users, or sponsors..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-[48px] bg-white border border-border rounded-[14px] pl-10 pr-4 font-bold text-[14px] outline-none focus:border-brand focus:ring-1 focus:ring-brand shadow-sm"
+                        className="w-full h-[48px] bg-white border border-border rounded-[14px] pl-10 pr-10 font-bold text-[14px] outline-none focus:border-brand focus:ring-1 focus:ring-brand shadow-sm"
                     />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-textLight hover:text-text"
+                        >
+                            <X size={16} />
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -108,10 +116,10 @@ export const ExplorePage = () => {
             <div className="w-full max-w-[800px] px-4 mb-6">
                 <div className="flex flex-wrap gap-2 items-center">
                     <span className="text-[12px] font-bold text-textMid flex items-center mr-1">Trending:</span>
-                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">✨ Brand Sponsors</button>
-                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">💼 Creator Deals</button>
-                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">Notion Templates</button>
-                    <button className="h-[26px] px-3 rounded-md font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">UI Kits</button>
+                    <button className="h-[26px] px-3 rounded-[14px] font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">✨ Brand Sponsors</button>
+                    <button className="h-[26px] px-3 rounded-[14px] font-bold text-[11px] bg-[#EDE9FE] text-[#4C1D95] border border-[#C4B5FD] transition-colors hover:bg-[#DDD6FE]">💼 Creator Deals</button>
+                    <button className="h-[26px] px-3 rounded-[14px] font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">Notion Templates</button>
+                    <button className="h-[26px] px-3 rounded-[14px] font-bold text-[11px] bg-surfaceAlt text-textMid border border-border hover:bg-border transition-colors">UI Kits</button>
                 </div>
             </div>
 
@@ -127,16 +135,16 @@ export const ExplorePage = () => {
                         {SORTS.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                 </div>
-                <div className="flex bg-white rounded-lg p-0.5 border border-border">
+                <div className="flex bg-white rounded-[14px] p-0.5 border border-border">
                     <button
                         onClick={() => setViewMode('grid')}
-                        className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
+                        className={`p-1.5 rounded-[14px] transition-colors ${viewMode === 'grid' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
                     >
                         <Grid size={18} />
                     </button>
                     <button
                         onClick={() => setViewMode('list')}
-                        className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
+                        className={`p-1.5 rounded-[14px] transition-colors ${viewMode === 'list' ? 'bg-surfaceAlt text-text' : 'text-textLight hover:text-text'}`}
                     >
                         <ListIcon size={18} />
                     </button>
@@ -146,6 +154,7 @@ export const ExplorePage = () => {
             {/* Resources Container */}
             <div className="w-full max-w-[800px] px-4 flex flex-col items-center">
                 {(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const renderResourceGrid = (resources: any[]) => (
                         <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
                             {resources.map(r => (
@@ -159,11 +168,11 @@ export const ExplorePage = () => {
                                         <span className="text-[11px] font-bold text-textMid mb-3 truncate">by @{r.creatorHandle}</span>
 
                                         <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-                                            <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded uppercase tracking-wide">{r.fileType}</span>
+                                            <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-surfaceAlt rounded-[14px] uppercase tracking-wide">{r.fileType}</span>
                                             {r.isCustomSponsor ? (
-                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded flex items-center gap-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded-[14px] flex items-center gap-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
                                             ) : (
-                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                             )}
                                         </div>
 
@@ -171,7 +180,7 @@ export const ExplorePage = () => {
                                             <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
                                         </div>
 
-                                        <button className="w-full h-10 mt-3 bg-brand text-white font-black text-[13px] rounded-lg group-hover:bg-brand-hover transition-colors shadow-sm">
+                                        <button className="w-full h-10 mt-3 bg-brand text-white font-black text-[13px] rounded-[14px] group-hover:bg-brand-hover transition-colors shadow-sm">
                                             Unlock Free
                                         </button>
                                     </div>
@@ -180,6 +189,7 @@ export const ExplorePage = () => {
                         </div>
                     );
 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const renderResourceList = (resources: any[]) => (
                         <div className="w-full flex justify-center flex-col gap-3 mb-8">
                             {resources.map(r => (
@@ -190,15 +200,15 @@ export const ExplorePage = () => {
                                     <div className="flex flex-col flex-1 min-w-0 pr-2">
                                         <div className="flex items-center gap-2">
                                             <h3 className="font-extrabold text-[14px] leading-tight truncate">{r.title}</h3>
-                                            {r.isCustomSponsor && <span className="text-[10px] bg-[#EDE9FE] text-[#4C1D95] font-black px-1.5 py-0.5 rounded">✨ Sponsored</span>}
+                                            {r.isCustomSponsor && <span className="text-[10px] bg-[#EDE9FE] text-[#4C1D95] font-black px-1.5 py-0.5 rounded-[14px]">✨ Sponsored</span>}
                                         </div>
                                         <span className="text-[12px] font-bold text-textMid truncate mt-0.5">by @{r.creatorHandle}</span>
                                     </div>
                                     <div className="flex flex-col items-end shrink-0 mr-3">
                                         {r.isCustomSponsor ? (
-                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded mb-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded-[14px] mb-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
                                         ) : (
-                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
                                         )}
                                         <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
                                     </div>
@@ -208,6 +218,7 @@ export const ExplorePage = () => {
                         </div>
                     );
 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const renderResources = (res: any[]) => viewMode === 'grid' ? renderResourceGrid(res) : renderResourceList(res);
 
                     if (sortBy === 'Sponsored First') {
@@ -270,9 +281,9 @@ export const ExplorePage = () => {
                                 <span className="text-[13px] font-black leading-tight mb-0.5 line-clamp-1">{i === 1 || i === 3 ? '✨ ' : ''}{['Alex Creator', 'Marc Dev', 'Sarah M.', 'Design Guy', 'Creative Co'][i - 1]}</span>
                                 <span className="text-[11px] font-bold text-textMid mb-2 truncate max-w-full">@{['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}</span>
                                 {i === 1 || i === 3 ? (
-                                    <span className="text-[12px] font-black text-[#4C1D95] bg-[#EDE9FE] px-2 py-0.5 rounded mb-3">2 sponsored links</span>
+                                    <span className="text-[12px] font-black text-[#4C1D95] bg-[#EDE9FE] px-2 py-0.5 rounded-[14px] mb-3">2 sponsored links</span>
                                 ) : (
-                                    <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
+                                    <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded-[14px] mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
                                 )}
                                 <Link to={`/@${['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}`} className="mt-auto text-[12px] font-bold text-brand hover:underline">View Profile</Link>
                             </div>
@@ -285,7 +296,7 @@ export const ExplorePage = () => {
             <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center mt-12">
                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 opacity-80">
-                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                        <div className="w-6 h-6 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
                             AG
                         </div>
                         <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>

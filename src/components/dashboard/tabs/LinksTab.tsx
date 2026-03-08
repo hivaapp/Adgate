@@ -10,7 +10,9 @@ export const LinksTab = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeSort, setActiveSort] = useState('All');
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [editLinkData, setEditLinkData] = useState<any>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [moreActionLink, setMoreActionLink] = useState<any>(null);
 
     const { showToast } = useToast();

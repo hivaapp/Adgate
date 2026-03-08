@@ -294,6 +294,17 @@ const USE_CASES = [
 export const UseCases = () => {
     const location = useLocation();
     const [filterCategory, setFilterCategory] = useState("All");
+    const [prevSearch, setPrevSearch] = useState("");
+
+    if (location.search !== prevSearch) {
+        setPrevSearch(location.search);
+        if (location.search.includes('category=')) {
+            const cat = decodeURIComponent(location.search.split('category=')[1].split('&')[0]);
+            if (CATEGORIES.includes(cat)) {
+                setFilterCategory(cat);
+            }
+        }
+    }
 
     useEffect(() => {
         document.title = "AdGate Use Cases — Earn From Any Content";
@@ -304,13 +315,9 @@ export const UseCases = () => {
     }, []);
 
     useEffect(() => {
-        // Simple search param parsing
+        // Scroll to content if navigated with a category
         if (location.search.includes('category=')) {
-            const cat = decodeURIComponent(location.search.split('category=')[1].split('&')[0]);
-            if (CATEGORIES.includes(cat)) {
-                setFilterCategory(cat);
-                window.scrollTo(0, 500);
-            }
+            setTimeout(() => window.scrollTo(0, 500), 50);
         }
     }, [location.search]);
 
@@ -530,7 +537,7 @@ export const UseCases = () => {
             <footer className="w-full bg-white border-t border-border py-12 px-4 flex flex-col items-center">
                 <div className="w-full max-w-[1000px] flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 opacity-80">
-                        <div className="w-6 h-6 rounded bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
+                        <div className="w-6 h-6 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-[10px] leading-none shrink-0">
                             AG
                         </div>
                         <span className="font-black text-[16px] tracking-tight text-text">AdGate</span>

@@ -59,7 +59,7 @@ export const EarningsTab = () => {
                         $<CountUp end={balance.total} decimals={2} />
                     </span>
                     {referralEarned > 0 && (
-                        <div className="mt-1 flex items-center gap-1 bg-[#FFFBEB] px-1.5 py-0.5 rounded text-[10px] font-[800] text-[#D97757] w-fit">
+                        <div className="mt-1 flex items-center gap-1 bg-[#FFFBEB] px-1.5 py-0.5 rounded-[14px] text-[10px] font-[800] text-[#D97757] w-fit">
                             <span>+ ${referralEarned.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Referral Bonus</span>
                         </div>
                     )}
@@ -108,7 +108,7 @@ export const EarningsTab = () => {
                                             style={{ height: `${heightPercentage}%` }}
                                         >
                                             {/* Tooltip */}
-                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-text text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-sm">
+                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-text text-white text-[10px] font-bold py-1 px-2 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-sm">
                                                 ${d.amount.toFixed(2)}
                                                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-text" />
                                             </div>
@@ -201,12 +201,18 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
     const { showToast } = useToast();
     const { startProgress, stopProgress } = useProgress();
 
-    const val = parseFloat(amount) || 0;
-    const isError = val < 10 || val > availableAmount;
+    const val = parseFloat(amount);
+    const isValidAmount = !isNaN(val) && val >= 10 && val <= availableAmount;
+    const isAmountEmpty = amount === '';
+    const isAmountTooLow = !isNaN(val) && val < 10 && !isAmountEmpty;
+    const isAmountTooHigh = !isNaN(val) && val > availableAmount;
+    const isError = isAmountTooLow || isAmountTooHigh;
+
     // Fee applies proportionally to the ad revenue portion of the withdrawal
-    const adPortion = val * (availableAd / availableAmount);
+    const safeVal = isNaN(val) ? 0 : val;
+    const adPortion = safeVal * (availableAd / availableAmount);
     const fee = isNaN(adPortion) ? 0 : adPortion * 0.05;
-    const final = val - fee;
+    const final = safeVal - fee;
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
@@ -232,7 +238,7 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[18px] font-black text-textMid">$</span>
                         <input
                             type="number"
-                            className={`w-full h-[56px] border ${isError ? 'border-error ring-1 ring-error' : 'border-border'} rounded-[12px] px-8 pl-8 text-[20px] font-black text-text focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all`}
+                            className={`w-full h-[56px] border ${isError ? 'border-error ring-1 ring-error' : 'border-border'} rounded-[14px] px-8 pl-8 text-[20px] font-black text-text focus:outline-none focus:border-success focus:ring-1 focus:ring-success transition-all`}
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             min="10"
@@ -240,7 +246,7 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
                             max={availableAmount}
                         />
                     </div>
-                    {isError && val > 0 && <span className="text-[11px] font-bold text-error mt-1">{val < 10 ? 'Minimum is $10' : 'Exceeds balance'}</span>}
+                    {isError && <span className="text-[11px] font-bold text-error mt-1">{isAmountTooLow ? 'Minimum is $10' : 'Exceeds balance'}</span>}
                 </div>
 
                 <div className="card shadow-none p-4 flex flex-col gap-3 bg-surface border-border">
@@ -282,13 +288,16 @@ const WithdrawSheet = ({ isOpen, onClose, availableAmount, availableAd, availabl
 
                 <button
                     onClick={handleSubmit}
-                    disabled={isError || isSubmitting}
-                    className="btn-primary bg-success hover:bg-[#346344] w-full h-[52px] rounded-[14px] text-[16px] mt-2"
+                    disabled={!isValidAmount || isSubmitting}
+                    className="btn-primary bg-success hover:bg-[#346344] w-full h-[52px] rounded-[14px] text-[16px] mt-2 flex items-center justify-center gap-2"
                 >
                     {isSubmitting ? (
-                        <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                        <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Confirming...
+                        </>
                     ) : (
-                        'Confirm Payout'
+                        `Confirm Payout ($${final > 0 ? final.toFixed(2) : '0.00'})`
                     )}
                 </button>
             </div>

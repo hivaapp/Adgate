@@ -6,19 +6,25 @@ interface AdInterstitialProps {
     onClose: () => void;
     onClick: () => void;
     isCustom?: boolean;
-    customAd?: any;
+    customAd?: {
+        brandName?: string;
+        redirectUrl?: string;
+        ctaText?: string;
+    };
 }
 
 export function AdInterstitial({ ad, onClose, onClick, isCustom, customAd }: AdInterstitialProps) {
     const [countdown, setCountdown] = useState(5);
     const [canDismiss, setCanDismiss] = useState(false);
 
+    if (countdown === 0 && !canDismiss) {
+        setCanDismiss(true);
+    }
+
     useEffect(() => {
         if (countdown > 0) {
             const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
             return () => clearTimeout(timer);
-        } else {
-            setCanDismiss(true);
         }
     }, [countdown]);
 
@@ -41,7 +47,7 @@ export function AdInterstitial({ ad, onClose, onClick, isCustom, customAd }: AdI
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fadeIn" role="dialog" aria-modal="true">
-            <div className="relative w-full h-full sm:h-auto sm:w-[440px] sm:rounded-2xl overflow-hidden flex flex-col" style={{ backgroundColor: bgColor }}>
+            <div className="relative w-full h-full sm:h-auto sm:w-[440px] sm:rounded-[18px] overflow-hidden flex flex-col" style={{ backgroundColor: bgColor }}>
 
                 {/* Top Bar */}
                 <div className="h-12 w-full flex items-center justify-between px-4 bg-black/20 shrink-0">
@@ -72,13 +78,13 @@ export function AdInterstitial({ ad, onClose, onClick, isCustom, customAd }: AdI
                 <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center" style={{ color: textColor }}>
                     <div className="text-[72px] leading-none mb-6 animate-popIn">{logo}</div>
                     <h2 className="text-[22px] font-black mb-2 tracking-tight">{brand}</h2>
-                    <p className="text-[16px] font-bold opacity-85 mb-10 max-w-[280px]">
+                    <p className="text-[16px] font-[800] opacity-85 mb-10 max-w-[280px]">
                         {tagline}
                     </p>
 
                     <button
                         onClick={handleCtaClick}
-                        className="w-full sm:w-[calc(100%-80px)] h-[56px] bg-white rounded-xl font-bold text-[16px] shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                        className="w-full sm:w-[calc(100%-80px)] h-[56px] bg-white rounded-[18px] font-bold text-[16px] shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-transform"
                         style={{ color: isCustom ? '#D97757' : bgColor, backgroundColor: isCustom ? '#111111' : '#ffffff' }}
                     >
                         {cta}
@@ -96,7 +102,7 @@ export function AdInterstitial({ ad, onClose, onClick, isCustom, customAd }: AdI
                             <span className="text-[11px] text-white/50 font-bold tracking-tight">Powered by AdGate</span>
                         ) : (
                             <>
-                                <span className="text-brand text-sm bg-white rounded-sm px-1 font-black">A</span>
+                                <span className="text-brand text-sm bg-white rounded-[14px] px-1 font-black">A</span>
                                 <span className="text-[11px] text-white/50 font-bold tracking-tight">Free content powered by AdGate</span>
                             </>
                         )}

@@ -65,7 +65,7 @@ export const TreesLandingSection = () => {
         }, 1000 / frames);
 
         return () => clearInterval(counter);
-    }, [isVisible]); // Empty dependency ensures it only runs once when visible
+    }, [isVisible, liveTotal]); // Runs when visible and liveTotal is available
 
     // Live increment simulation
     useEffect(() => {
@@ -90,7 +90,7 @@ export const TreesLandingSection = () => {
         }, 8000);
 
         return () => clearInterval(interval);
-    }, [isVisible]);
+    }, [isVisible, MOCK_TICKERS.length]);
 
     return (
         <div
@@ -122,7 +122,7 @@ export const TreesLandingSection = () => {
                     >
                         {count.toLocaleString('en-US')}
                     </div>
-                    <div className="text-[16px] font-[700] text-white/80 mt-1 mb-2">Trees Planted</div>
+                    <div className="text-[16px] font-[800] text-white/80 mt-1 mb-2">Trees Planted</div>
                     <div className="text-[13px] font-[600] text-white/60">and counting — 🌱 a new tree every 18 minutes</div>
 
                     {/* Ticker */}
@@ -158,7 +158,7 @@ export const TreesLandingSection = () => {
                 <div className="w-full mb-10">
                     <h3 className="text-[14px] font-[700] text-white text-center mb-4">Where Your Trees Are Growing</h3>
                     <div className="flex flex-col">
-                        {platformTrees.countriesPlanted.map((c: any, i: number) => (
+                        {platformTrees.countriesPlanted.map((c: { flag: string; country: string; percentage: number; trees: number }, i: number) => (
                             <div key={i} className="h-[40px] flex items-center w-full max-w-[400px] mx-auto">
                                 <span className="w-8 text-[16px] text-center">{c.flag}</span>
                                 <span className="w-24 text-[13px] font-[700] text-white truncate">{c.country}</span>
@@ -187,7 +187,7 @@ export const TreesLandingSection = () => {
                     <span className="text-[32px] mb-3">🌳</span>
                     <h3 className="text-[16px] font-[900] text-white mb-1">Join {platformTrees.totalCreatorsPlanting.toLocaleString()} creators planting trees</h3>
                     <p className="text-[13px] text-white/70 mb-5">Enable the donation toggle when creating your link</p>
-                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="w-full sm:w-auto sm:px-12 h-[48px] bg-white text-[#E8312A] rounded-md font-[800] text-[14px] hover:bg-white/90 transition-colors">
+                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="w-full sm:w-auto sm:px-12 h-[48px] bg-white text-[#E8312A] rounded-[14px] font-[800] text-[14px] hover:bg-white/90 transition-colors">
                         Start Planting
                     </button>
                 </div>

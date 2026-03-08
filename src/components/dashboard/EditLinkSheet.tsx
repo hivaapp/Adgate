@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
 import { FileIcon, TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
@@ -9,7 +9,7 @@ interface EditLinkSheetProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    link: any;
+    link: { id: string; title: string; description?: string; adCount: number; adType?: "click" | "video"; donateEnabled?: boolean; donate?: boolean; type?: string; } | null | undefined;
 }
 
 export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkSheetProps) => {
@@ -19,11 +19,13 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
     const [adType, setAdType] = useState<"click" | "video">(link?.adType || 'click');
     const [donate, setDonate] = useState(link?.donateEnabled || link?.donate || false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [prevLink, setPrevLink] = useState(link);
 
     const { startProgress, stopProgress } = useProgress();
     const { updateLink } = useAuth();
 
-    useEffect(() => {
+    if (link !== prevLink) {
+        setPrevLink(link);
         if (link) {
             setTitle(link.title);
             setDesc(link.description || '');
@@ -31,9 +33,10 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
             setAdType(link.adType || 'click');
             setDonate(link.donateEnabled || link.donate || false);
         }
-    }, [link]);
+    }
 
     const handleSubmit = async () => {
+        if (!link) return;
         setIsSubmitting(true);
         startProgress();
 
@@ -60,7 +63,7 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
                         <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Linked Resource</label>
                         <div className="w-full p-3 bg-surfaceAlt border border-border rounded-[12px] flex items-center justify-between shadow-sm">
                             <div className="flex items-center gap-3 overflow-hidden pr-2">
-                                <div className="w-10 h-10 rounded-lg bg-white flex flex-col items-center justify-center flex-shrink-0 text-brand">
+                                <div className="w-10 h-10 rounded-[14px] bg-white flex flex-col items-center justify-center flex-shrink-0 text-brand">
                                     <FileIcon size={20} strokeWidth={2.5} />
                                 </div>
                                 <div className="flex flex-col">

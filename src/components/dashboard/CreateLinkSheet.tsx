@@ -80,7 +80,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                     ) : (
                         <div className="w-full p-3 bg-surface border border-border rounded-[12px] flex items-center justify-between shadow-sm">
                             <div className="flex items-center gap-3 overflow-hidden pr-2">
-                                <div className="w-10 h-10 rounded-lg bg-surfaceAlt flex items-center justify-center flex-shrink-0 text-[20px]">
+                                <div className="w-10 h-10 rounded-[14px] bg-surfaceAlt flex items-center justify-center flex-shrink-0 text-[20px]">
                                     📄
                                 </div>
                                 <span className="font-bold text-[14px] truncate text-text">{file.name}</span>

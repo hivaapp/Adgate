@@ -13,7 +13,8 @@ export const TreesDetailScreen = ({ onClose }: TreesDetailScreenProps) => {
     const [animate, setAnimate] = useState(false);
 
     useEffect(() => {
-        setAnimate(true);
+        const timer = setTimeout(() => setAnimate(true), 10);
+        return () => clearTimeout(timer);
     }, []);
 
     const trees = currentUser.myTrees!;
@@ -147,7 +148,7 @@ export const TreesDetailScreen = ({ onClose }: TreesDetailScreenProps) => {
                     {/* Share Section */}
                     <div className="bg-white rounded-[18px] p-5 border border-border">
                         <h2 className="text-[14px] font-[900] text-text mb-3">Share Your Impact</h2>
-                        <div className="bg-[#EDFAF3] border border-[#BBF7D0] p-4 rounded-xl mb-4 relative">
+                        <div className="bg-[#EDFAF3] border border-[#BBF7D0] p-4 rounded-[18px] mb-4 relative">
                             <div className="text-[24px] absolute top-2 left-2 opacity-20">"</div>
                             <p className="text-[14px] font-[700] text-[#166534] text-center relative z-10 px-2 leading-relaxed">
                                 {shareText}
@@ -157,13 +158,13 @@ export const TreesDetailScreen = ({ onClose }: TreesDetailScreenProps) => {
                         <div className="flex gap-2">
                             <button
                                 onClick={handleShare}
-                                className="flex-1 h-12 bg-brand text-white rounded-md font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-brandHover transition-colors"
+                                className="flex-1 h-12 bg-brand text-white rounded-[14px] font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-brandHover transition-colors"
                             >
                                 <Share2 className="w-4 h-4" /> Share
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 h-12 bg-surfaceAlt text-text border border-border rounded-md font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-border transition-colors"
+                                className="flex-1 h-12 bg-surfaceAlt text-text border border-border rounded-[14px] font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-border transition-colors"
                             >
                                 <Copy className="w-4 h-4" /> Copy
                             </button>

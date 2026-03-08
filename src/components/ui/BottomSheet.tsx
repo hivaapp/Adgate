@@ -13,21 +13,21 @@ interface BottomSheetProps {
 export const BottomSheet = ({ isOpen, onClose, title, children, fullHeight = false }: BottomSheetProps) => {
     const [shouldRender, setShouldRender] = useState(isOpen);
 
+    if (isOpen && !shouldRender) {
+        setShouldRender(true);
+    }
+
     useEffect(() => {
         if (isOpen) {
-            setShouldRender(true);
             document.body.style.overflow = 'hidden';
-        } else {
+            return () => { document.body.style.overflow = ''; };
+        } else if (shouldRender) {
             const timer = setTimeout(() => {
                 setShouldRender(false);
-                document.body.style.overflow = '';
-            }, 250);
-            return () => {
-                clearTimeout(timer);
-                document.body.style.overflow = '';
-            };
+            }, 400);
+            return () => clearTimeout(timer);
         }
-    }, [isOpen]);
+    }, [isOpen, shouldRender]);
 
     if (!shouldRender) return null;
 
@@ -35,14 +35,14 @@ export const BottomSheet = ({ isOpen, onClose, title, children, fullHeight = fal
         <div className="fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center">
             {/* Backdrop */}
             <div
-                className={`absolute inset-0 bg-text/40 backdrop-blur-sm transition-opacity duration-250 ${isOpen ? 'opacity-100' : 'opacity-0'
+                className={`absolute inset-0 bg-text/40 backdrop-blur-sm transition-opacity duration-[400ms] ${isOpen ? 'opacity-100' : 'opacity-0'
                     }`}
                 onClick={onClose}
             />
 
             {/* Sheet/Modal Container */}
             <div
-                className={`relative w-full bg-white flex flex-col transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)]
+                className={`relative w-full bg-white flex flex-col transition-all duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)]
                     ${isOpen ? 'translate-y-0 opacity-100 sm:scale-100' : 'translate-y-full opacity-0 sm:translate-y-0 sm:scale-95'}
                     ${fullHeight ? 'h-[92vh]' : 'max-h-[85vh]'}
                     rounded-t-[20px] sm:rounded-[20px] sm:w-[500px] sm:h-auto overflow-hidden`}

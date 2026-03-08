@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick, ArrowRight } from 'lucide-react';
 import { useAdSession } from '../hooks/useAdSession';
@@ -6,6 +6,7 @@ import { useToast } from '../context/ToastContext';
 import { AdInterstitial } from '../components/AdInterstitial';
 import { VideoAdViewer } from '../components/VideoAdViewer';
 import { mockExploreResources } from '../lib/mockData';
+import type { MockAd, MockVideoAd } from '../lib/mockAds';
 
 export const ResourceUnlock = () => {
     const { slug } = useParams();
@@ -13,7 +14,7 @@ export const ResourceUnlock = () => {
     const { startSession, registerClick, registerVideoWatch, registerSponsorClick, getNextAd, totalAdsRequired, adsClicked, isComplete, customSponsorStep } = useAdSession();
 
     const [isShowingAd, setIsShowingAd] = useState(false);
-    const [currentAd, setCurrentAd] = useState<any>(null);
+    const [currentAd, setCurrentAd] = useState<MockAd | MockVideoAd | null>(null);
     const [isRevealing, setIsRevealing] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [nextAdCountdown, setNextAdCountdown] = useState<number | null>(null);
@@ -53,38 +54,39 @@ export const ResourceUnlock = () => {
         document.title = `${resource.title} - AdGate`;
     }, [slug, resource.adCount, startSession, resource.title, isVideo, isCustom]);
 
-    useEffect(() => {
-        if (isComplete && !isRevealing) {
-            setIsRevealing(true);
-            setNextAdCountdown(null);
-        }
-    }, [isComplete]);
-
-    useEffect(() => {
-        if (nextAdCountdown !== null && nextAdCountdown > 0) {
-            const timer = setTimeout(() => setNextAdCountdown(c => (c as number) - 1), 1000);
-            return () => clearTimeout(timer);
-        } else if (nextAdCountdown === 0) {
-            setNextAdCountdown(null);
-            handleUnlockClick();
-        }
-    }, [nextAdCountdown]);
-
-    const handleUnlockClick = () => {
+    const handleUnlockClick = useCallback(() => {
         if (customSponsorStep === "click") {
             setIsShowingAd(true);
             return;
         }
         setCurrentAd(getNextAd());
         setIsShowingAd(true);
-    };
+    }, [customSponsorStep, getNextAd]);
+
+    if (isComplete && !isRevealing) {
+        setIsRevealing(true);
+        if (nextAdCountdown !== null) setNextAdCountdown(null);
+    }
+
+    useEffect(() => {
+        if (nextAdCountdown !== null && nextAdCountdown > 0) {
+            const timer = setTimeout(() => setNextAdCountdown(c => (c as number) - 1), 1000);
+            return () => clearTimeout(timer);
+        } else if (nextAdCountdown === 0) {
+            const timer = setTimeout(() => {
+                setNextAdCountdown(null);
+                handleUnlockClick();
+            }, 0);
+            return () => clearTimeout(timer);
+        }
+    }, [nextAdCountdown, handleUnlockClick]);
 
     const handleAdClose = () => {
         setIsShowingAd(false);
     };
 
     const handleAdClick = () => {
-        registerClick(currentAd.id);
+        registerClick(currentAd!.id);
         setIsShowingAd(false);
         const remaining = totalAdsRequired - adsClicked - 1;
         if (remaining > 0) {
@@ -102,7 +104,7 @@ export const ResourceUnlock = () => {
                 addToast('Video complete! Revealing your content...', 'success');
             }
         } else {
-            registerClick(currentAd.id);
+            registerClick(currentAd!.id);
             setIsShowingAd(false);
             const remaining = totalAdsRequired - adsClicked - 1;
             if (remaining > 0) {
@@ -122,7 +124,7 @@ export const ResourceUnlock = () => {
                 addToast('Video complete! Revealing your content...', 'success');
             }
         } else {
-            registerClick(currentAd.id);
+            registerClick(currentAd!.id);
             setIsShowingAd(false);
             const remaining = totalAdsRequired - adsClicked - 1;
             if (remaining > 0) {
@@ -206,7 +208,7 @@ export const ResourceUnlock = () => {
             {/* Header */}
             <header className="w-full h-12 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 sticky top-0 bg-bg/90 backdrop-blur-md">
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-brand flex items-center justify-center text-white font-black text-[10px] leading-none">
+                    <div className="w-6 h-6 rounded-[14px] bg-brand flex items-center justify-center text-white font-black text-[10px] leading-none">
                         AG
                     </div>
                     <span className="font-black text-[15px] tracking-tight">AdGate</span>
@@ -258,7 +260,7 @@ export const ResourceUnlock = () => {
                             <span className="w-1 h-1 rounded-full bg-border" />
                             <span>{resource.fileSize}</span>
                             <span className="w-1 h-1 rounded-full bg-border" />
-                            <span className="px-2 py-0.5 bg-surfaceAlt rounded-md text-[11px]">{resource.fileType}</span>
+                            <span className="px-2 py-0.5 bg-surfaceAlt rounded-[14px] text-[11px]">{resource.fileType}</span>
 
                             {isCustom ? (
                                 <div className="h-[40px] px-3 bg-[#EDE9FE] text-[#6366F1] rounded-[10px] flex items-center gap-2 ml-1 shadow-[0_1px_2px_rgba(99,102,241,0.1)]">
@@ -283,13 +285,13 @@ export const ResourceUnlock = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <span className="px-2 py-0.5 bg-brandTint text-brand rounded-md text-[11px] flex items-center gap-1">
+                                <span className="px-2 py-0.5 bg-brandTint text-brand rounded-[14px] text-[11px] flex items-center gap-1">
                                     {isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}
                                 </span>
                             )}
 
                             {resource.donateEnabled && (
-                                <span className="px-2 py-0.5 bg-[#EBF5EE] text-[#166534] rounded-md text-[11px] flex items-center gap-1">🌱 Trees</span>
+                                <span className="px-2 py-0.5 bg-[#EBF5EE] text-[#166534] rounded-[14px] text-[11px] flex items-center gap-1">🌱 Trees</span>
                             )}
                         </div>
 
@@ -507,7 +509,7 @@ export const ResourceUnlock = () => {
                             <div className="w-full bg-surfaceAlt border border-border rounded-[14px] p-5 flex flex-col items-center text-center">
                                 <h3 className="font-black text-[15px] mb-1">Want to earn from your own free content?</h3>
                                 <p className="text-[13px] font-semibold text-textMid mb-4">Join 10,000+ creators earning with AdGate links.</p>
-                                <Link to="/" className="w-full sm:w-auto px-6 h-10 flex items-center justify-center rounded-lg bg-brand text-white font-black text-[14px] hover:bg-brand-hover shadow-sm">
+                                <Link to="/" className="w-full sm:w-auto px-6 h-10 flex items-center justify-center rounded-[14px] bg-brand text-white font-black text-[14px] hover:bg-brand-hover shadow-sm">
                                     Create Free Link
                                 </Link>
                             </div>
@@ -525,7 +527,7 @@ export const ResourceUnlock = () => {
                     />
                 ) : isVideo && currentAd ? (
                     <VideoAdViewer
-                        ad={currentAd}
+                        ad={currentAd as MockVideoAd}
                         onCompleted={handleVideoComplete}
                         onSkip={handleVideoSkip}
                         isCustom={isCustom}
@@ -534,7 +536,7 @@ export const ResourceUnlock = () => {
                     />
                 ) : currentAd ? (
                     <AdInterstitial
-                        ad={currentAd}
+                        ad={currentAd as MockAd}
                         onClose={handleAdClose}
                         onClick={handleAdClick}
                         isCustom={isCustom}
@@ -562,7 +564,8 @@ export const ResourceUnlock = () => {
 };
 
 // Step 2 Click Interstitial for Custom Sponsors
-const SponsorClickInterstitial = ({ customAd, onClick, onClose }: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SponsorClickInterstitial = ({ customAd, onClick, onClose }: { customAd: any, onClick: () => void, onClose: () => void }) => {
     return (
         <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-md animate-fadeIn p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true">
             {/* Deliberately no close button on Step 2; encourages click or abandonment */}

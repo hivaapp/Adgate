@@ -21,10 +21,10 @@ export const OnboardingCarousel = ({ onComplete }: { onComplete: () => void }) =
         },
         {
             icon: (
-                <div className="flex bg-surfaceAlt p-2 rounded-card border-2 border-brand">
-                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-text font-black text-xl shadow-sm">1</div>
-                    <div className="w-12 h-12 bg-transparent rounded-lg flex items-center justify-center text-textMid font-black text-xl">2</div>
-                    <div className="w-12 h-12 bg-transparent rounded-lg flex items-center justify-center text-textMid font-black text-xl">3</div>
+                <div className="flex bg-surfaceAlt p-2 rounded-[14px] border-2 border-brand">
+                    <div className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center text-text font-black text-xl shadow-sm">1</div>
+                    <div className="w-12 h-12 bg-transparent rounded-[14px] flex items-center justify-center text-textMid font-black text-xl">2</div>
+                    <div className="w-12 h-12 bg-transparent rounded-[14px] flex items-center justify-center text-textMid font-black text-xl">3</div>
                 </div>
             ),
             title: "You control the ads.",
@@ -60,7 +60,7 @@ export const OnboardingCarousel = ({ onComplete }: { onComplete: () => void }) =
             <div className="w-full flex justify-end">
                 <button
                     onClick={onComplete}
-                    className="text-[14px] font-black text-textMid hover:text-text px-3 py-2 rounded-lg"
+                    className="text-[14px] font-black text-textMid hover:text-text px-3 py-2 rounded-[14px]"
                 >
                     Skip
                 </button>
@@ -75,7 +75,7 @@ export const OnboardingCarousel = ({ onComplete }: { onComplete: () => void }) =
                 <h2 className="text-[28px] font-black tracking-tight text-text leading-[1.1] mb-4 animate-slide-up" style={{ animationDelay: '50ms' }} key={`t-${step}`}>
                     {currentSlide.title}
                 </h2>
-                <p className="text-[16px] font-bold text-textMid leading-relaxed max-w-[320px] animate-slide-up" style={{ animationDelay: '100ms' }} key={`d-${step}`}>
+                <p className="text-[16px] font-[800] text-textMid leading-relaxed max-w-[320px] animate-slide-up" style={{ animationDelay: '100ms' }} key={`d-${step}`}>
                     {currentSlide.desc}
                 </p>
             </div>

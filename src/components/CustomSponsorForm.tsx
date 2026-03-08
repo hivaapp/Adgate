@@ -32,16 +32,20 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
 
     const [data, setData] = useState<CustomAdData>(value || defaultData);
     const [acknowledged, setAcknowledged] = useState(false);
+    const [prevValue, setPrevValue] = useState<CustomAdData | null | undefined>(value);
     const [showErrors, setShowErrors] = useState(false);
     const [shakeAck, setShakeAck] = useState(false);
     const [previewTab, setPreviewTab] = useState<"watch" | "click">("watch");
 
-    useEffect(() => {
+    if (value !== prevValue) {
+        setPrevValue(value);
         if (value) {
             setData(value);
-            setAcknowledged(true);
+            if (!acknowledged) {
+                setAcknowledged(true);
+            }
         }
-    }, [value]);
+    }
 
     useEffect(() => {
         const isError = !data.brandName || !data.fileName || !acknowledged || (data.redirectUrl.length > 0 && !data.redirectUrl.startsWith("http"));
@@ -51,7 +55,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
         if (onChange) {
             onChange(acknowledged ? data : null);
         }
-    }, [data, acknowledged]);
+    }, [data, acknowledged, onErrorStateChange, onChange]);
 
     const handleDataChange = (updates: Partial<CustomAdData>) => {
         const newData = { ...data, ...updates };
@@ -128,7 +132,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                     </button>
                 ) : (
                     <div className="w-full rounded-[10px] border border-[#C4B5FD] bg-white p-[14px] flex items-center mt-1 relative">
-                        <div className="w-[60px] h-[60px] bg-[#1A1A1A] rounded-lg flex items-center justify-center shrink-0">
+                        <div className="w-[60px] h-[60px] bg-[#1A1A1A] rounded-[14px] flex items-center justify-center shrink-0">
                             <Play size={20} className="text-white fill-white" />
                         </div>
                         <div className="ml-3 flex flex-col flex-1 min-w-0 pr-8">
@@ -153,14 +157,14 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => handleDataChange({ skipAfter: Math.max(3, data.skipAfter - 1) })}
-                                    className="w-7 h-7 rounded-md bg-[#F5F5F5] flex items-center justify-center font-[700] text-[#666]"
+                                    className="w-7 h-7 rounded-[14px] bg-[#F5F5F5] flex items-center justify-center font-[700] text-[#666]"
                                 >-</button>
-                                <div className="w-12 h-9 border border-[#E8E8E8] rounded-md flex items-center justify-center text-[13px] font-[800] text-[#333]">
+                                <div className="w-12 h-9 border border-[#E8E8E8] rounded-[14px] flex items-center justify-center text-[13px] font-[800] text-[#333]">
                                     {data.skipAfter}
                                 </div>
                                 <button
                                     onClick={() => handleDataChange({ skipAfter: Math.min(15, data.skipAfter + 1) })}
-                                    className="w-7 h-7 rounded-md bg-[#F5F5F5] flex items-center justify-center font-[700] text-[#666]"
+                                    className="w-7 h-7 rounded-[14px] bg-[#F5F5F5] flex items-center justify-center font-[700] text-[#666]"
                                 >+</button>
                             </div>
                         </div>
@@ -205,7 +209,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                     {urlError ? (
                         <span className="text-[11px] text-[#C0392B]">Please enter a valid URL starting with https://</span>
                     ) : (
-                        <div className={`mt-1 p-2.5 rounded-md text-[11.5px] font-[600] transition-colors flex gap-2 items-start ${isTwoStep ? 'bg-[#F5F3FF] text-[#6366F1]' : 'bg-[#F5F5F5] text-[#888]'}`}>
+                        <div className={`mt-1 p-2.5 rounded-[14px] text-[11.5px] font-[600] transition-colors flex gap-2 items-start ${isTwoStep ? 'bg-[#F5F3FF] text-[#6366F1]' : 'bg-[#F5F5F5] text-[#888]'}`}>
                             <LinkIcon size={14} className="mt-0.5 shrink-0" />
                             {isTwoStep
                                 ? "URL provided. Viewers will watch the video AND click through to this site to unlock."
@@ -287,16 +291,16 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                 <div className="flex items-center justify-between mt-2">
                     <span className="text-[13px] font-[800] text-[#333]">Live Preview</span>
                     {isTwoStep && (
-                        <div className="flex gap-1 bg-surfaceAlt p-0.5 rounded-md">
+                        <div className="flex gap-1 bg-surfaceAlt p-0.5 rounded-[14px]">
                             <button
                                 onClick={(e) => { e.preventDefault(); setPreviewTab("watch"); }}
-                                className={`px-2 py-1 text-[11px] font-bold rounded-sm transition-colors ${previewTab === "watch" ? "bg-white text-text shadow-sm" : "text-textMid hover:text-text"}`}
+                                className={`px-2 py-1 text-[11px] font-bold rounded-[14px] transition-colors ${previewTab === "watch" ? "bg-white text-text shadow-sm" : "text-textMid hover:text-text"}`}
                             >
                                 Step 1
                             </button>
                             <button
                                 onClick={(e) => { e.preventDefault(); setPreviewTab("click"); }}
-                                className={`px-2 py-1 text-[11px] font-bold rounded-sm transition-colors ${previewTab === "click" ? "bg-[#6366F1] text-white shadow-sm" : "text-textMid hover:text-text"}`}
+                                className={`px-2 py-1 text-[11px] font-bold rounded-[14px] transition-colors ${previewTab === "click" ? "bg-[#6366F1] text-white shadow-sm" : "text-textMid hover:text-text"}`}
                             >
                                 Step 2
                             </button>
@@ -321,7 +325,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                                     </div>
                                 )}
 
-                                <div className="absolute top-3 left-3 bg-[#444] text-[10px] font-[800] text-white px-2 py-0.5 rounded flex tracking-wider">
+                                <div className="absolute top-3 left-3 bg-[#444] text-[10px] font-[800] text-white px-2 py-0.5 rounded-[14px] flex tracking-wider">
                                     AD
                                 </div>
                                 {isTwoStep && (
@@ -344,7 +348,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                         ) : (
                             <div className="absolute inset-0 bg-white flex flex-col pt-12 p-4 items-center">
                                 {/* Success Strip */}
-                                <div className="w-full h-10 bg-successBg rounded-md flex items-center justify-center gap-2 mb-6">
+                                <div className="w-full h-10 bg-successBg rounded-[14px] flex items-center justify-center gap-2 mb-6">
                                     <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center">
                                         <Check size={12} className="text-white" strokeWidth={4} />
                                     </div>
@@ -361,7 +365,7 @@ export function CustomSponsorForm({ value, onChange, onErrorStateChange }: Custo
                                 <p className="text-textMid text-center text-sm font-semibold mb-6">
                                     Click below to visit <span className="text-text font-bold">{data.brandName || "your sponsor"}</span> and unlock your link.
                                 </p>
-                                <button className="w-full h-12 rounded-xl bg-[#6366F1] flex items-center justify-center text-white font-black text-sm shadow-md transition-transform hover:scale-105">
+                                <button className="w-full h-12 rounded-[18px] bg-[#6366F1] flex items-center justify-center text-white font-black text-sm shadow-md transition-transform hover:scale-105">
                                     {data.ctaText || "Visit Sponsor"} <MousePointerClick size={16} className="ml-2" />
                                 </button>
                                 <button className="mt-4 text-textLight text-[11px] font-bold underline">

@@ -22,7 +22,7 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
             <aside className="hidden md:flex flex-col w-[220px] bg-surfaceAlt border-r border-border h-full flex-shrink-0">
                 <div className="h-16 flex items-center px-6 border-b border-border">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-black text-xs leading-none">
+                        <div className="w-8 h-8 rounded-[14px] bg-brand flex items-center justify-center text-white font-black text-xs leading-none">
                             AG
                         </div>
                         <span className="font-black text-xl tracking-tight text-text">AdGate</span>
@@ -33,8 +33,8 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
-                            onClick={() => onTabChange(tab.id as any)}
-                            className={`flex items-center gap-3 px-4 h-12 rounded-md font-bold text-sm transition-colors ${currentTab === tab.id
+                            onClick={() => onTabChange(tab.id)}
+                            className={`flex items-center gap-3 px-4 h-12 rounded-[14px] font-bold text-sm transition-colors ${currentTab === tab.id
                                 ? 'bg-brand text-white'
                                 : 'text-textMid hover:bg-white hover:text-text'
                                 }`}
@@ -44,7 +44,7 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
                         </button>
                     ))}
 
-                    <button className="absolute bottom-6 left-4 right-4 flex items-center gap-3 px-4 h-12 rounded-md font-bold text-sm text-error hover:bg-errorBg transition-colors mt-auto">
+                    <button className="absolute bottom-6 left-4 right-4 flex items-center gap-3 px-4 h-12 rounded-[14px] font-bold text-sm text-error hover:bg-errorBg transition-colors mt-auto">
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                         Log Out
                     </button>
@@ -64,12 +64,13 @@ export const DashboardLayout = ({ children, currentTab, onTabChange }: Dashboard
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
-                            onClick={() => onTabChange(tab.id as any)}
-                            className={`flex flex-col items-center justify-center gap-1 w-full relative ${currentTab === tab.id ? 'text-brand' : 'text-[#AAAAAA]'
+                            onClick={() => onTabChange(tab.id)}
+                            className={`flex flex-col items-center justify-center gap-1 w-full relative h-[60px] ${currentTab === tab.id ? 'text-brand' : 'text-[#AAAAAA]'
                                 }`}
                         >
-                            <tab.icon className="w-[22px] h-[22px]" />
-                            <span className="text-[10px] font-bold">{tab.label}</span>
+                            <tab.icon className="w-[22px] h-[22px] mt-1" />
+                            {currentTab === tab.id && <div className="absolute top-1.5 w-1 h-1 bg-brand rounded-full" />}
+                            <span className="text-[11px] font-bold mt-[2px]">{tab.label}</span>
                         </button>
                     ))}
                 </div>

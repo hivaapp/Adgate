@@ -12,15 +12,11 @@ type Tab = 'home' | 'links' | 'earnings' | 'referrals' | 'account';
 
 export const Dashboard = () => {
     const [currentTab, setCurrentTab] = useState<Tab>('home');
-    const [showOnboarding, setShowOnboarding] = useState(false);
-
-    useEffect(() => {
+    const [showOnboarding, setShowOnboarding] = useState(() => {
         // Mock check for first time user
         const hasSeenOnboarding = localStorage.getItem('adgate_onboarding');
-        if (!hasSeenOnboarding) {
-            setShowOnboarding(true);
-        }
-    }, []);
+        return !hasSeenOnboarding;
+    });
 
     const { showToast } = useToast();
 

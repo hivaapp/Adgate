@@ -51,7 +51,7 @@ export const ReferralsTab = () => {
             {/* Header section with negative margins on mobile to be edge-to-edge if needed, but the layout adds padding. We will stick to full width within container. */}
             <div className="w-full">
                 <div
-                    className="w-full rounded-2xl md:rounded-[24px] p-5 relative overflow-hidden"
+                    className="w-full rounded-[18px] md:rounded-[24px] p-5 relative overflow-hidden"
                     style={{ background: 'linear-gradient(135deg, #F59E0B, #EF6C00)' }}
                 >
                     <div className="flex justify-between items-start mb-2">
@@ -70,17 +70,17 @@ export const ReferralsTab = () => {
                     <div className="flex-1 bg-white rounded-[14px] p-3 border shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                         <div className="text-[16px] mb-1">💰</div>
                         <div className="text-[18px] font-[900] text-text">${referral.thisMonthReferralEarnings.toFixed(2)}</div>
-                        <div className="text-[10px] font-[700] text-textMid uppercase tracking-wide">This Month</div>
+                        <div className="text-[11px] font-[700] text-textMid uppercase tracking-wide">This Month</div>
                     </div>
                     <div className="flex-1 bg-white rounded-[14px] p-3 border shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                         <div className="text-[16px] mb-1">🔥</div>
                         <div className="text-[18px] font-[900] text-text">{referral.activeReferrals}</div>
-                        <div className="text-[10px] font-[700] text-textMid uppercase tracking-wide">Active Refs</div>
+                        <div className="text-[11px] font-[700] text-textMid uppercase tracking-wide">Active Refs</div>
                     </div>
                     <div className="flex-1 bg-white rounded-[14px] p-3 border shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                         <div className="text-[16px] mb-1">⏳</div>
                         <div className="text-[18px] font-[900] text-text">${referral.pendingReferralEarnings.toFixed(2)}</div>
-                        <div className="text-[10px] font-[700] text-textMid uppercase tracking-wide">Pending</div>
+                        <div className="text-[11px] font-[700] text-textMid uppercase tracking-wide">Pending</div>
                     </div>
                 </div>
             </div>
@@ -95,13 +95,13 @@ export const ReferralsTab = () => {
                     Share this link with other creators. You earn 5% of their ad revenue forever — at no cost to them.
                 </p>
 
-                <div className="flex items-center bg-[#F8F8F8] border border-[#E8E8E8] rounded-xl h-12 px-3 mb-3">
+                <div className="flex items-center bg-[#F8F8F8] border border-[#E8E8E8] rounded-[18px] h-12 px-3 mb-3">
                     <div className="flex-1 truncate text-[13px] font-[700] text-text">
                         {referral.referralLink}
                     </div>
                     <button
                         onClick={() => handleCopy(referral.referralLink)}
-                        className="w-9 h-9 flex items-center justify-center bg-brand text-white rounded-lg ml-2 hover:bg-brandHover transition-colors"
+                        className="w-9 h-9 flex items-center justify-center bg-brand text-white rounded-[14px] ml-2 hover:bg-brandHover transition-colors"
                     >
                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </button>
@@ -110,13 +110,13 @@ export const ReferralsTab = () => {
                 <div className="flex gap-2.5 mb-4">
                     <button
                         onClick={handleShare}
-                        className="flex-1 h-12 bg-brand text-white rounded-md font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-brandHover transition-colors"
+                        className="flex-1 h-12 bg-brand text-white rounded-[14px] font-bold text-[14px] flex items-center justify-center gap-2 hover:bg-brandHover transition-colors"
                     >
                         <Share2 className="w-4 h-4" /> Share Link
                     </button>
                     <button
                         onClick={() => handleCopy(referral.referralCode)}
-                        className="flex-1 h-12 bg-white text-brand border border-brand rounded-md font-bold text-[14px] flex items-center justify-center hover:bg-brandTint transition-colors"
+                        className="flex-1 h-12 bg-white text-brand border border-brand rounded-[14px] font-bold text-[14px] flex items-center justify-center hover:bg-brandTint transition-colors"
                     >
                         Copy Code
                     </button>
@@ -146,7 +146,7 @@ export const ReferralsTab = () => {
                             <div className="text-[11px] text-success font-[700]">5% lifetime commission</div>
                             <div className="text-[11px] text-textMid">1–5 active referrals</div>
                         </div>
-                        <div className="bg-successBg text-success px-2 py-1 rounded-[6px] text-[10px] font-bold">Achieved</div>
+                        <div className="bg-successBg text-success px-2 py-1 rounded-[6px] text-[11px] font-bold">Achieved</div>
                     </div>
 
                     {/* Silver */}
@@ -159,7 +159,7 @@ export const ReferralsTab = () => {
                                 <div className="h-1.5 flex-1 bg-border rounded-full overflow-hidden">
                                     <div className="h-full bg-brand" style={{ width: '25%' }}></div>
                                 </div>
-                                <span className="text-[10px] font-bold text-textMid">5/20</span>
+                                <span className="text-[11px] font-bold text-textMid">5/20</span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@ export const ReferralsTab = () => {
                             <div className="text-[11px] text-textMid font-[600]">5% commission + priority support</div>
                             <div className="text-[11px] text-textMid">21+ active referrals</div>
                         </div>
-                        <div className="bg-border text-textMid px-2 py-1 rounded-[6px] text-[10px] font-bold flex items-center gap-1">
+                        <div className="bg-border text-textMid px-2 py-1 rounded-[6px] text-[11px] font-bold flex items-center gap-1">
                             Lock
                         </div>
                     </div>
@@ -190,16 +190,16 @@ export const ReferralsTab = () => {
                         <h2 className="text-[14px] font-[900] text-text">Referred Creators</h2>
                         <span className="bg-border text-text px-2 py-0.5 rounded-full text-[11px] font-bold">{referredCreators.length}</span>
                     </div>
-                    <div className="flex bg-[#F3F1EC] p-0.5 rounded-lg border border-[#E6E2D9]">
+                    <div className="flex bg-[#F3F1EC] p-0.5 rounded-[14px] border border-[#E6E2D9]">
                         <button
                             onClick={() => setFilter('active')}
-                            className={`px-3 py-1 rounded-md text-[11px] font-[800] transition-colors ${filter === 'active' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
+                            className={`px-3 py-1 rounded-[14px] text-[11px] font-[800] transition-colors ${filter === 'active' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
                         >
                             Active
                         </button>
                         <button
                             onClick={() => setFilter('all')}
-                            className={`px-3 py-1 rounded-md text-[11px] font-[800] transition-colors ${filter === 'all' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
+                            className={`px-3 py-1 rounded-[14px] text-[11px] font-[800] transition-colors ${filter === 'all' ? 'bg-white shadow-sm text-text' : 'text-textMid hover:text-text'}`}
                         >
                             All
                         </button>
@@ -228,23 +228,23 @@ export const ReferralsTab = () => {
                                         </div>
                                         <div className="text-[12px] text-textMid font-[600]">@{creator.username}</div>
                                         <div className="flex gap-1.5 mt-1">
-                                            <span className="bg-[#F8F8F8] px-1.5 py-0.5 rounded-[4px] text-[10px] font-[700] text-textMid border border-[#E8E8E8]">
+                                            <span className="bg-[#F8F8F8] px-1.5 py-0.5 rounded-[4px] text-[11px] font-[700] text-textMid border border-[#E8E8E8]">
                                                 {creator.resourceCount} link{creator.resourceCount !== 1 ? 's' : ''}
                                             </span>
-                                            <span className="bg-[#F8F8F8] px-1.5 py-0.5 rounded-[4px] text-[10px] font-[700] text-textMid border border-[#E8E8E8]">
+                                            <span className="bg-[#F8F8F8] px-1.5 py-0.5 rounded-[4px] text-[11px] font-[700] text-textMid border border-[#E8E8E8]">
                                                 {creator.isActive ? 'Active' : 'Inactive'}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <div className="text-[15px] font-[900] text-success">+${creator.yourCut.toFixed(2)}</div>
-                                        <div className="text-[10px] text-textMid font-[600]">lifetime earned</div>
+                                        <div className="text-[11px] text-textMid font-[600]">lifetime earned</div>
                                     </div>
                                 </div>
 
                                 <div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
                                     <div className="overflow-hidden">
-                                        <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#E8E8E8]">
+                                        <div className="bg-[#FAFAFA] rounded-[18px] p-3 border border-[#E8E8E8]">
                                             <div className="flex justify-between items-center mb-3">
                                                 <div>
                                                     <div className="text-[11px] font-[700] text-textMid">Their Month</div>
@@ -283,7 +283,7 @@ export const ReferralsTab = () => {
 
                 <div className="bg-white rounded-[18px] border border-border overflow-hidden">
                     {visibleActivity.map((act, index) => (
-                        <div key={act.id} className={`flex items-center p-3.5 h-[56px] ${index !== visibleActivity.length - 1 ? 'border-b border-border' : ''}`}>
+                        <div key={act.id} className={`flex items-center p-3.5 h-[56px] cursor-pointer active:bg-[#F8F8F8] transition-colors duration-[80ms] ${index !== visibleActivity.length - 1 ? 'border-b border-border' : ''}`}>
                             <div className={`w-9 h-9 rounded-full flex items-center justify-center mr-3 ${act.type === 'joined' ? 'bg-successBg text-success' : 'bg-[#FFFBEB] text-[#D97757]'}`}>
                                 {act.type === 'joined' ? '👋' : '💰'}
                             </div>
@@ -297,7 +297,7 @@ export const ReferralsTab = () => {
                             </div>
                             {act.type === 'earned' && (
                                 <div className="text-right pl-2">
-                                    <div className="text-[10px] font-[600] text-textMid">you earned</div>
+                                    <div className="text-[11px] font-[600] text-textMid">you earned</div>
                                     <div className="text-[13px] font-[800] text-success">+${act.yourCut.toFixed(2)}</div>
                                 </div>
                             )}

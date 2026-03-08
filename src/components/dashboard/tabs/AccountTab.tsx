@@ -108,12 +108,12 @@ export const AccountTab = () => {
 
                     <SettingRow label="Default Ad Count" onClick={() => navigateTo('ad_count')}>
                         <div className="flex items-center gap-2">
-                            <span className="text-[14px] font-extrabold text-brand bg-brandTint px-2 py-0.5 rounded-md">2 Ads</span>
+                            <span className="text-[14px] font-extrabold text-brand bg-brandTint px-2 py-0.5 rounded-[14px]">2 Ads</span>
                             <ChevronRight className="w-5 h-5 text-textLight" />
                         </div>
                     </SettingRow>
 
-                    <div className="h-[52px] w-full bg-white px-4 flex items-center justify-between">
+                    <div onClick={() => setDonate(!donate)} className="h-[52px] w-full bg-white px-4 flex items-center justify-between cursor-pointer active:bg-[#F8F8F8] transition-colors duration-[80ms]">
                         <span className="text-[15px] font-extrabold text-text">Donate 5% to Trees</span>
                         <div
                             onClick={() => setDonate(!donate)}
@@ -146,7 +146,7 @@ export const AccountTab = () => {
                         <SettingRow label="Change Password" onClick={() => navigateTo('password')} />
                         <div
                             onClick={() => navigateTo('delete')}
-                            className="h-[52px] w-full bg-white px-4 flex items-center justify-between cursor-pointer hover:bg-errorBg/30 transition-colors"
+                            className="h-[52px] w-full bg-white px-4 flex items-center justify-between cursor-pointer hover:bg-errorBg/30 active:bg-[#F8F8F8] transition-colors duration-[80ms]"
                         >
                             <span className="text-[15px] font-extrabold text-error">Delete Account</span>
                             <ChevronRight className="w-5 h-5 text-error" />
@@ -181,7 +181,7 @@ export const AccountTab = () => {
 const SettingRow = ({ label, children, hasBorder = true, onClick }: { label: string, children?: React.ReactNode, hasBorder?: boolean, onClick?: () => void }) => (
     <div
         onClick={onClick}
-        className={`h-[52px] w-full bg-white px-4 flex items-center justify-between cursor-pointer hover:bg-surfaceAlt active:bg-border transition-colors ${hasBorder ? 'border-b border-border' : ''}`}
+        className={`h-[52px] w-full bg-white px-4 flex items-center justify-between cursor-pointer hover:bg-surfaceAlt active:bg-[#F8F8F8] transition-colors duration-[80ms] ${hasBorder ? 'border-b border-border' : ''}`}
     >
         <span className="text-[15px] font-extrabold text-text">{label}</span>
         {children || <ChevronRight className="w-5 h-5 text-textLight" />}
@@ -193,9 +193,9 @@ const SettingRow = ({ label, children, hasBorder = true, onClick }: { label: str
 const ToggleRow = ({ label, initial = true }: { label: string, initial?: boolean }) => {
     const [on, setOn] = useState(initial);
     return (
-        <div className="h-[52px] w-full flex items-center justify-between border-b border-border last:border-0">
+        <div onClick={() => setOn(!on)} className="h-[52px] w-full flex items-center justify-between border-b border-border last:border-0 cursor-pointer active:bg-[#F8F8F8] transition-colors duration-[80ms]">
             <span className="text-[14px] font-bold text-text">{label}</span>
-            <div onClick={() => setOn(!on)} className={`w-12 h-7 rounded-full px-1 flex items-center cursor-pointer transition-colors ${on ? 'bg-success' : 'bg-surfaceAlt border border-border'}`}>
+            <div className={`w-12 h-7 rounded-full px-1 flex items-center cursor-pointer transition-colors ${on ? 'bg-success' : 'bg-surfaceAlt border border-border'}`}>
                 <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${on ? 'translate-x-[20px]' : 'translate-x-0 border border-border'}`} />
             </div>
         </div>
@@ -373,6 +373,7 @@ const ScreenPassword = ({ onSave }: { onSave: () => void }) => {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ScreenEditProfile = ({ user, onSave }: { user: any, onSave: () => void }) => {
     const { updateProfile } = useAuth();
     const { addToast } = useToast();

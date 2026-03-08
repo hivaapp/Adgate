@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Play, MousePointerClick } from "lucide-react";
 
 interface AdTypeSelectorProps {
@@ -17,13 +17,15 @@ export function AdTypeSelector({
     const [internalValue, setInternalValue] = useState<"click" | "video">(
         value || defaultValue
     );
+    const [prevValue, setPrevValue] = useState<"click" | "video" | undefined>(value);
 
     // Sync from prop to state if controlled
-    useEffect(() => {
+    if (value !== prevValue) {
+        setPrevValue(value);
         if (value !== undefined) {
             setInternalValue(value);
         }
-    }, [value]);
+    }
 
     const handleSelect = (type: "click" | "video") => {
         if (value === undefined) {
@@ -55,7 +57,7 @@ export function AdTypeSelector({
             >
                 <div className="flex items-center gap-3 w-full">
                     <div
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-150 ${isVideo
+                        className={`w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-colors duration-150 ${isVideo
                             ? "bg-[#FFE8E7] text-[#E8312A]"
                             : "bg-[#F5F5F5] text-[#888888]"
                             }`}
@@ -118,7 +120,7 @@ export function AdTypeSelector({
             >
                 <div className="flex items-center gap-3 w-full">
                     <div
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-150 ${isClick
+                        className={`w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-colors duration-150 ${isClick
                             ? "bg-[#FFE8E7] text-[#E8312A]"
                             : "bg-[#F5F5F5] text-[#888888]"
                             }`}

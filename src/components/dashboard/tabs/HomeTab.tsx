@@ -5,7 +5,7 @@ import { Copy, Plus, ArrowRight, ChevronRight } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 import { TreesDetailScreen } from './TreesDetailScreen';
 
-export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) => {
+export const HomeTab = ({ onTabChange }: { onTabChange: (tab: 'home' | 'links' | 'earnings' | 'referrals' | 'account') => void }) => {
     const { currentUser: user } = useAuth();
     const { showToast } = useToast();
     const [showTreesDetail, setShowTreesDetail] = useState(false);
@@ -114,7 +114,7 @@ export const HomeTab = ({ onTabChange }: { onTabChange: (tab: any) => void }) =>
                                 <Copy className="w-3.5 h-3.5" /> Copy
                             </button>
                         </div>
-                        <div className="w-full h-10 bg-surfaceAlt border border-border rounded-md px-3 flex items-center hover:border-[#D97757] transition-colors cursor-pointer group" onClick={copyLink}>
+                        <div className="w-full h-10 bg-surfaceAlt border border-border rounded-[14px] px-3 flex items-center hover:border-[#D97757] transition-colors cursor-pointer group" onClick={copyLink}>
                             <span className="font-mono text-[13px] text-textMid truncate group-hover:text-text transition-colors">{latestLink.url}</span>
                         </div>
                     </>

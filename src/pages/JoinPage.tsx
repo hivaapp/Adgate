@@ -15,7 +15,7 @@ export const JoinPage = () => {
                 {/* Logo & Referrer Badge */}
                 <div className="flex items-center gap-4 mb-16">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-text text-white flex items-center justify-center font-black text-xs leading-none">
+                        <div className="w-8 h-8 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-xs leading-none">
                             AG
                         </div>
                         <span className="font-black text-lg tracking-tight text-text">AdGate</span>
@@ -62,7 +62,7 @@ export const JoinPage = () => {
                         </div>
                     </div>
 
-                    <button className="w-full h-[56px] bg-brand text-white rounded-xl font-[800] text-[16px] flex items-center justify-center hover:bg-brandHover transition-colors mb-4 shadow-sm" style={{ boxShadow: '0 4px 12px rgba(217,119,87,0.2)' }}>
+                    <button className="w-full h-[56px] bg-brand text-white rounded-[18px] font-[800] text-[16px] flex items-center justify-center hover:bg-brandHover transition-colors mb-4 shadow-sm" style={{ boxShadow: '0 4px 12px rgba(217,119,87,0.2)' }}>
                         Sign Up Free
                     </button>
 
@@ -102,7 +102,7 @@ export const JoinPage = () => {
                     <div className="h-[64px] border-b border-border px-6 flex items-center justify-between bg-white shrink-0">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse" />
-                            <div className="w-24 h-4 rounded bg-surfaceAlt animate-pulse" />
+                            <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse" />
                         </div>
                         <div className="w-32 h-8 rounded-full bg-brandTint" />
                     </div>
@@ -112,26 +112,26 @@ export const JoinPage = () => {
                         <div className="flex gap-4 mb-8">
                             <div className="flex-1 bg-white border border-border rounded-[16px] p-6 shadow-sm">
                                 <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse mb-8" />
-                                <div className="w-24 h-4 rounded bg-surfaceAlt animate-pulse mb-2" />
-                                <div className="w-32 h-8 rounded bg-text opacity-10" />
+                                <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-2" />
+                                <div className="w-32 h-8 rounded-[14px] bg-text opacity-10" />
                             </div>
                             <div className="flex-1 bg-white border border-border rounded-[16px] p-6 shadow-sm">
                                 <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse mb-8" />
-                                <div className="w-24 h-4 rounded bg-surfaceAlt animate-pulse mb-2" />
-                                <div className="w-32 h-8 rounded bg-text opacity-10" />
+                                <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-2" />
+                                <div className="w-32 h-8 rounded-[14px] bg-text opacity-10" />
                             </div>
                         </div>
 
                         <div className="w-full bg-white border border-border rounded-[16px] p-6 shadow-sm">
-                            <div className="w-full h-4 rounded bg-surfaceAlt animate-pulse mb-6 max-w-[200px]" />
+                            <div className="w-full h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-6 max-w-[200px]" />
                             <div className="flex flex-col gap-4">
                                 {[1, 2, 3].map(i => (
                                     <div key={i} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded bg-surfaceAlt animate-pulse" />
+                                            <div className="w-10 h-10 rounded-[14px] bg-surfaceAlt animate-pulse" />
                                             <div className="flex flex-col gap-2">
-                                                <div className="w-32 h-3 rounded bg-surfaceAlt animate-pulse" />
-                                                <div className="w-16 h-2 rounded bg-surfaceAlt animate-pulse opacity-50" />
+                                                <div className="w-32 h-3 rounded-[14px] bg-surfaceAlt animate-pulse" />
+                                                <div className="w-16 h-2 rounded-[14px] bg-surfaceAlt animate-pulse opacity-50" />
                                             </div>
                                         </div>
                                         <div className="w-12 h-6 rounded-full bg-brandTint" />
@@ -145,8 +145,8 @@ export const JoinPage = () => {
                     <div className="h-[64px] border-t border-border bg-white flex items-center justify-around px-6 shrink-0">
                         {[1, 2, 3, 4, 5].map(i => (
                             <div key={i} className={`w-10 h-10 flex flex-col items-center justify-center gap-1 ${i === 1 ? 'opacity-100' : 'opacity-40'}`}>
-                                <div className="w-5 h-5 rounded bg-text animate-pulse" />
-                                <div className="w-6 h-1 rounded flex-shrink-0 bg-text animate-pulse" />
+                                <div className="w-5 h-5 rounded-[14px] bg-text animate-pulse" />
+                                <div className="w-6 h-1 rounded-[14px] flex-shrink-0 bg-text animate-pulse" />
                             </div>
                         ))}
                     </div>
