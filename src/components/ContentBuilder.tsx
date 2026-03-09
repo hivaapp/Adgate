@@ -143,7 +143,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
         setLinkError('');
     };
 
-    const validateAndAddLink = () => {
+    const validateAndAddLink = (e?: React.FormEvent | React.KeyboardEvent | React.MouseEvent) => {
+        if (e) e.preventDefault();
+        
         let finalUrl = linkUrl.trim();
         if (!finalUrl) return;
 
@@ -156,7 +158,8 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
             return;
         }
 
-        if (value.links.some(l => l.url === finalUrl)) {
+        const isDuplicate = value.links.some(l => l.url.toLowerCase() === finalUrl.toLowerCase());
+        if (isDuplicate) {
             setLinkError("Already added");
             return;
         }
@@ -169,6 +172,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
         });
 
         setIsAddingLink(false);
+        setLinkUrl('');
+        setLinkTitle('');
+        setLinkError('');
     };
 
     const removeLink = (index: number) => {
@@ -313,10 +319,11 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
                                             className="w-full h-[44px] bg-[#F8F8F8] border border-[#E8E8E8] rounded-[8px] pl-9 pr-[60px] text-[14px] font-[600] text-[#111] outline-none focus:border-[#E8312A]/50 focus:bg-white"
                                             autoFocus
                                             onKeyDown={e => {
-                                                if (e.key === 'Enter') validateAndAddLink();
+                                                if (e.key === 'Enter') validateAndAddLink(e);
                                             }}
                                         />
                                         <button
+                                            type="button"
                                             onClick={validateAndAddLink}
                                             className="absolute right-1.5 top-1.5 h-[32px] px-4 bg-[#E8312A] text-white rounded-[50px] text-[12px] font-[800] hover:bg-[#C4663F]"
                                         >
@@ -330,7 +337,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
                                         placeholder="Link title (optional)"
                                         className="w-full h-[40px] bg-white border border-[#E8E8E8] rounded-[8px] px-3 text-[13px] font-[600] text-[#111] placeholder-[#BBB] outline-none focus:border-[#E8312A]/50"
                                         onKeyDown={e => {
-                                            if (e.key === 'Enter') validateAndAddLink();
+                                            if (e.key === 'Enter') validateAndAddLink(e);
                                         }}
                                     />
                                     {linkError && (
