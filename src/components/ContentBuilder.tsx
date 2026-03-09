@@ -64,7 +64,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
     const [pastePrompt, setPastePrompt] = useState<{ url: string, position: { top: number, left: number } } | null>(null);
 
     // Handlers
-    const setMode = (mode: ContentMode) => onChange({ ...value, contentMode: mode });
+    // Handlers
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -190,31 +190,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
 
     return (
         <div className="w-full flex flex-col items-center">
-            {/* Type Selector Pills - Now directly contained in the card bounds when used */}
-            <div className="flex gap-2 mb-3 justify-center">
-                <button
-                    onClick={() => setMode('file')}
-                    className={`h-[36px] px-4 rounded-[50px] flex items-center gap-1.5 transition-colors ${value.contentMode === 'file' ? 'bg-[#E8312A] text-white font-[800]' : 'bg-white border border-[#E8E8E8] text-textMid font-[700] hover:bg-surfaceAlt'}`}
-                >
-                    <span className="text-[14px]">📎</span>
-                    <span className="text-[13px]">File</span>
-                </button>
-                <button
-                    onClick={() => setMode('text')}
-                    className={`h-[36px] px-4 rounded-[50px] flex items-center gap-1.5 transition-colors ${value.contentMode === 'text' ? 'bg-[#E8312A] text-white font-[800]' : 'bg-white border border-[#E8E8E8] text-textMid font-[700] hover:bg-surfaceAlt'}`}
-                >
-                    <span className="text-[14px]">✏️</span>
-                    <span className="text-[13px]">Text</span>
-                </button>
-                <button
-                    onClick={() => setMode('both')}
-                    className={`h-[36px] px-4 rounded-[50px] flex items-center gap-1.5 transition-colors ${value.contentMode === 'both' ? 'bg-[#E8312A] text-white font-[800]' : 'bg-white border border-[#E8E8E8] text-textMid font-[700] hover:bg-surfaceAlt'}`}
-                >
-                    <span className="text-[14px]">✨</span>
-                    <span className="text-[13px]">Text + File</span>
-                </button>
-            </div>
-
             {/* The Main Container Card */}
             <div className={`w-full bg-white rounded-[18px] transition-all overflow-hidden flex flex-col relative
                 ${isTextMode ? 'border-[1.5px] border-solid border-[#E8E8E8] shadow-[0_1px_3px_rgba(0,0,0,0.06)]' :

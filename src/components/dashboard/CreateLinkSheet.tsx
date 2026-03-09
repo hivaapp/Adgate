@@ -15,7 +15,7 @@ interface CreateLinkSheetProps {
 
 export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetProps) => {
     const [contentData, setContentData] = useState<ContentData>({
-        contentMode: 'file',
+        contentMode: 'both',
         textContent: '',
         links: [],
         file: null
@@ -41,8 +41,10 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
         setIsSubmitting(true);
         startProgress();
 
+        const fallbackTitle = contentData.file ? contentData.file.name : (contentData.links[0]?.title || contentData.links[0]?.url || 'Untitled Resource');
+
         await createLink({
-            title,
+            title: title || fallbackTitle,
             description: desc,
             adCount: adSource === 'custom' ? 1 : adCount,
             donateEnabled: donate,
@@ -60,7 +62,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
         // Reset state after slight delay
         setTimeout(() => {
             setContentData({
-                contentMode: 'file',
+                contentMode: 'both',
                 textContent: '',
                 links: [],
                 file: null
@@ -85,7 +87,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                 {/* Title and Description */}
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5 relative">
-                        <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Resource Title</label>
+                        <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Resource Title <span className="text-textLight font-semibold capitalize tracking-normal">(optional)</span></label>
                         <input
                             type="text"
                             className={`input-field h-[48px] text-[15px] font-bold ${title.length > 50 ? 'border-error/50 focus:border-error focus:ring-error focus:ring-1' : ''}`}
@@ -191,7 +193,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                         }
                         handleSubmit();
                     }}
-                    disabled={!(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) || !title || isSubmitting}
+                    disabled={!(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) || isSubmitting}
                     className="btn-primary w-full h-[52px] rounded-[14px] text-[16px]"
                 >
                     {isSubmitting ? (
