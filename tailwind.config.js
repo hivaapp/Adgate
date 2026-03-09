@@ -17,7 +17,7 @@ export default {
                 border: '#E6E2D9',
                 text: '#21201C',
                 textMid: '#6B6860',
-                textLight: '#AAA49C',
+                textLight: '#767676',
                 brand: {
                     DEFAULT: '#D97757',
                     hover: '#C4663F',

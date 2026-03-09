@@ -14,6 +14,10 @@ import { JoinPage } from './pages/JoinPage';
 import { Pricing } from './pages/Pricing';
 import { HowItWorks } from './pages/HowItWorks';
 import { UseCases } from './pages/UseCases';
+import { Terms } from './pages/Terms';
+import { Privacy } from './pages/Privacy';
+import { HelpPage } from './pages/HelpPage';
+import { ContactPage } from './pages/ContactPage';
 import { ScrollToTop } from './components/ScrollToTop';
 
 const AppLayout = ({ children, hideNav = false }: { children: ReactNode, hideNav?: boolean }) => (
@@ -102,6 +106,10 @@ function App() {
               />
               <Route path="/explore" element={<AppLayout><ExplorePage /></AppLayout>} />
               <Route path="/r/:slug" element={<ResourceUnlock />} />
+              <Route path="/terms" element={<AppLayout><Terms /></AppLayout>} />
+              <Route path="/privacy" element={<AppLayout><Privacy /></AppLayout>} />
+              <Route path="/help" element={<AppLayout><HelpPage /></AppLayout>} />
+              <Route path="/contact" element={<AppLayout><ContactPage /></AppLayout>} />
               <Route path="/@:username" element={<CreatorProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

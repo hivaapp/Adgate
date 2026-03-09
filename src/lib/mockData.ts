@@ -68,6 +68,94 @@ export const currentUser: User = {
 
 export const mockLinks = [
     {
+        id: "link_text_001",
+        slug: "text-only-ai-tools",
+        title: "Top 10 AI Tools for Designers",
+        description: "Here are my top picks for AI design tools in 2025.",
+        contentMode: "text",
+        textContent: "Here are my top picks for AI design tools in 2025. These tools will save you hours of work each week:\n\n1. Midjourney for concept generation\n2. Framer for rapid prototyping\n3. Galileo for UI ideation",
+        links: [
+            { url: "https://midjourney.com", title: "Midjourney" },
+            { url: "https://framer.com", title: "Framer AI" },
+            { url: "https://galileo.ai", title: "Galileo AI" }
+        ],
+        fileAttachments: [],
+        fileType: "TEXT",
+        fileName: "",
+        fileSize: "0 KB",
+        adCount: 1,
+        adSource: "platform",
+        adType: "click",
+        donateEnabled: true,
+        isActive: true,
+        viewCount: 304,
+        unlockCount: 250,
+        earned: 4.50,
+        conversionRate: "82.2%",
+        createdAt: "2024-05-10T10:00:00Z",
+        geography: [{ country: "US", percent: 45 }, { country: "UK", percent: 20 }, { country: "IN", percent: 15 }],
+        deviceSplit: { mobile: 65, desktop: 30, tablet: 5 },
+    },
+    {
+        id: "link_combo_001",
+        slug: "combo-notion-setup",
+        title: "Notion Productivity Setup Guide",
+        description: "Follow these steps to set up your Notion workspace...",
+        contentMode: "both",
+        textContent: "Follow these steps to set up your Notion workspace and use the attached template to get started instantly.",
+        links: [
+            { url: "https://notion.so/templates", title: "Notion Templates" }
+        ],
+        fileAttachments: [
+            { fileName: "notion-template.zip", fileSize: "1.2 MB", fileType: "zip" }
+        ],
+        fileType: "ZIP",
+        fileName: "notion-template.zip",
+        fileSize: "1.2 MB",
+        adCount: 2,
+        adSource: "platform",
+        adType: "video",
+        donateEnabled: false,
+        isActive: true,
+        viewCount: 1200,
+        unlockCount: 950,
+        earned: 12.00,
+        conversionRate: "79.1%",
+        createdAt: "2024-05-11T12:00:00Z",
+        geography: [],
+        deviceSplit: { mobile: 50, desktop: 50, tablet: 0 },
+    },
+    {
+        id: "link_links_001",
+        slug: "links-stock-photos",
+        title: "My Favorite Free Stock Photo Sites",
+        description: "A curated list of the best places to find high-quality free stock photos.",
+        contentMode: "text",
+        textContent: "",
+        links: [
+            { url: "https://unsplash.com", title: "Unsplash" },
+            { url: "https://pexels.com", title: "Pexels" },
+            { url: "https://pixabay.com", title: "Pixabay" },
+            { url: "https://burst.shopify.com", title: "Burst" }
+        ],
+        fileAttachments: [],
+        fileType: "LINK",
+        fileName: "",
+        fileSize: "0 KB",
+        adCount: 1,
+        adSource: "platform",
+        adType: "video",
+        donateEnabled: true,
+        isActive: true,
+        viewCount: 450,
+        unlockCount: 320,
+        earned: 2.10,
+        conversionRate: "71.1%",
+        createdAt: "2024-05-12T09:00:00Z",
+        geography: [],
+        deviceSplit: { mobile: 70, desktop: 30, tablet: 0 },
+    },
+    {
         id: "link_01",
         slug: "design-system-pro",
         title: "Pro Design System UI Kit",
@@ -276,8 +364,44 @@ export const mockEarningsData = [
 
 export const mockCreatorProfile = { ...currentUser, links: mockLinks.filter(l => l.isActive) };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mockExploreResources: any[] = [
+export interface ExploreResource {
+    id: string;
+    slug: string;
+    title: string;
+    creatorName: string;
+    creatorHandle: string;
+    creatorAvatar: string;
+    verified: boolean;
+    fileType: string;
+    adCount: number;
+    unlockCount: string;
+    category: string;
+    adType?: "click" | "video";
+    isCustomSponsor?: boolean;
+    sponsorName?: string;
+    requiresClick?: boolean;
+    isActive?: boolean;
+    adSource?: string;
+    customAd?: {
+        fileName: string;
+        fileSize: number;
+        fileMimeType: string;
+        previewUrl: string;
+        redirectUrl: string;
+        requiresClick: boolean;
+        ctaText: string;
+        brandName: string;
+        skipAfter: number;
+        impressions: number;
+        videoWatches: number;
+        clicks: number;
+    };
+    description?: string;
+    fileSize?: string;
+    donateEnabled?: boolean;
+}
+
+export const mockExploreResources: ExploreResource[] = [
     {
         id: "exp_1",
         slug: "design-system-pro",

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
+import { Link } from 'react-router-dom';
 
 
 interface SignInModalProps {
@@ -19,6 +21,8 @@ const PROVIDERS = [
 export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuccess }) => {
     const { login } = useAuth();
     const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+
+    useBodyScrollLock(isOpen);
 
     if (!isOpen) return null;
 
@@ -78,9 +82,9 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuc
 
                 <p className="text-xs font-bold text-textLight text-center">
                     By continuing, you agree to our{' '}
-                    <a href="#" className="text-brand hover:underline">Terms of Service</a>
+                    <Link to="/terms" className="text-brand hover:underline">Terms of Service</Link>
                     {' '}and{' '}
-                    <a href="#" className="text-brand hover:underline">Privacy Policy</a>.
+                    <Link to="/privacy" className="text-brand hover:underline">Privacy Policy</Link>.
                 </p>
             </div>
         </div>

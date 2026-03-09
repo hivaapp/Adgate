@@ -4,10 +4,56 @@ import { currentUser as mockUser, mockLinks, mockActivity } from '../lib/mockDat
 import type { User } from '../lib/mockData';
 import { useToast } from './ToastContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type LinkData = any; // We can type this strictly later if needed, but let's use `any` for now
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ActivityData = any;
+export interface LinkData {
+    id: string;
+    slug?: string;
+    title?: string;
+    description?: string;
+    contentMode?: string;
+    textContent?: string;
+    links?: { url: string; title: string; }[];
+    fileAttachments?: unknown[];
+    fileType?: string;
+    fileName?: string;
+    fileSize?: string;
+    adCount?: number;
+    adSource?: string;
+    adType?: string;
+    donateEnabled?: boolean;
+    isActive?: boolean;
+    viewCount?: number;
+    unlockCount?: number;
+    earned?: number;
+    conversionRate?: string;
+    createdAt?: string;
+    geography?: { country: string; percent: number; }[];
+    deviceSplit?: { mobile: number; desktop: number; tablet: number; };
+    customAd?: {
+        fileName?: string;
+        fileSize?: number;
+        fileMimeType?: string;
+        previewUrl?: string;
+        redirectUrl?: string;
+        requiresClick?: boolean;
+        ctaText?: string;
+        brandName?: string;
+        skipAfter?: number;
+        impressions?: number;
+        videoWatches?: number;
+        clicks?: number;
+    };
+    [key: string]: unknown;
+}
+
+export interface ActivityData {
+    id: string;
+    type?: string;
+    description?: string;
+    timestamp?: string;
+    earned?: number;
+    resourceTitle?: string;
+    [key: string]: unknown;
+}
 
 type Earnings = {
     total: number;
@@ -53,7 +99,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         available: mockUser.availableToWithdraw,
     });
 
-    const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+    const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
+        return sessionStorage.getItem('adgate_onboarding_seen') === 'true';
+    });
     const [activeTab, setActiveTab] = useState('home');
 
     // Utility to simulate network delay & random failure
@@ -101,8 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 finalLinkData.adSource = "platform";
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const newLink: any = {
+            const newLink = {
                 id: `link_${Date.now()}`,
                 isActive: true,
                 viewCount: 0,
@@ -184,6 +231,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const markOnboardingSeen = () => {
         setHasSeenOnboarding(true);
+        sessionStorage.setItem('adgate_onboarding_seen', 'true');
         if (currentUser) {
             setCurrentUser({ ...currentUser, hasSeenOnboarding: true });
         }

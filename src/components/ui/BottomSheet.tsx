@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { X } from 'lucide-react';
 
 interface BottomSheetProps {
@@ -17,11 +18,10 @@ export const BottomSheet = ({ isOpen, onClose, title, children, fullHeight = fal
         setShouldRender(true);
     }
 
+    useBodyScrollLock(isOpen);
+
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-            return () => { document.body.style.overflow = ''; };
-        } else if (shouldRender) {
+        if (!isOpen && shouldRender) {
             const timer = setTimeout(() => {
                 setShouldRender(false);
             }, 400);

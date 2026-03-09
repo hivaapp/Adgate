@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { BottomSheet } from '../ui/BottomSheet';
-import { UploadCloud, TreeDeciduous } from 'lucide-react';
+import { TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
 import { useAuth } from '../../context/AuthContext';
 import { AdSourceSelector, type AdSourceType } from '../AdSourceSelector';
 import { type CustomAdData } from '../CustomSponsorForm';
+import { ContentBuilder, type ContentData } from '../ContentBuilder';
 
 interface CreateLinkSheetProps {
     isOpen: boolean;
@@ -13,7 +14,12 @@ interface CreateLinkSheetProps {
 }
 
 export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetProps) => {
-    const [file, setFile] = useState<File | null>(null);
+    const [contentData, setContentData] = useState<ContentData>({
+        contentMode: 'file',
+        textContent: '',
+        links: [],
+        file: null
+    });
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(1);
@@ -27,8 +33,11 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
 
     const { startProgress, stopProgress } = useProgress();
     const { createLink } = useAuth();
-
     const handleSubmit = async () => {
+        const hasTextContent = contentData.textContent.trim().length > 0 || contentData.links.length > 0;
+        const hasContent = contentData.file || hasTextContent;
+        if (!hasContent) return;
+
         setIsSubmitting(true);
         startProgress();
 
@@ -40,8 +49,8 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
             adType,
             adSource,
             customAd,
-            fileType: file?.name.split('.').pop()?.toUpperCase() || 'FILE',
-            fileName: file?.name,
+            fileType: contentData.file ? (contentData.file.name.split('.').pop()?.toUpperCase() || 'FILE') : (contentData.contentMode === 'text' ? 'TEXT' : 'BOTH'),
+            fileName: contentData.file ? contentData.file.name : (contentData.contentMode === 'text' ? 'Text Content' : 'Combined Content'),
         });
 
         setIsSubmitting(false);
@@ -50,7 +59,12 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
 
         // Reset state after slight delay
         setTimeout(() => {
-            setFile(null);
+            setContentData({
+                contentMode: 'file',
+                textContent: '',
+                links: [],
+                file: null
+            });
             setTitle('');
             setDesc('');
             setAdCount(1);
@@ -65,34 +79,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
 
                 {/* Upload Section */}
                 <div className="w-full">
-                    {!file ? (
-                        <div className="h-[120px] w-full border-2 border-dashed border-border rounded-[14px] flex flex-col items-center justify-center bg-surfaceAlt/50 cursor-pointer hover:border-brand/40 hover:bg-brandTint transition-colors"
-                            onClick={() => {
-                                // Mock file selection
-                                setFile(new File([''], 'new-resource.pdf', { type: 'application/pdf' }));
-                            }}
-                        >
-                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mb-2 text-textMid">
-                                <UploadCloud size={20} strokeWidth={2.5} />
-                            </div>
-                            <span className="text-[14px] font-bold text-text">Tap to select file</span>
-                        </div>
-                    ) : (
-                        <div className="w-full p-3 bg-surface border border-border rounded-[12px] flex items-center justify-between shadow-sm">
-                            <div className="flex items-center gap-3 overflow-hidden pr-2">
-                                <div className="w-10 h-10 rounded-[14px] bg-surfaceAlt flex items-center justify-center flex-shrink-0 text-[20px]">
-                                    📄
-                                </div>
-                                <span className="font-bold text-[14px] truncate text-text">{file.name}</span>
-                            </div>
-                            <button
-                                onClick={() => setFile(null)}
-                                className="text-[12px] font-bold text-error bg-errorBg px-3 h-8 rounded-full flex-shrink-0 hover:bg-error/20 transition-colors"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    )}
+                    <ContentBuilder value={contentData} onChange={setContentData} isSheet={true} />
                 </div>
 
                 {/* Title and Description */}
@@ -204,7 +191,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                         }
                         handleSubmit();
                     }}
-                    disabled={!file || !title || isSubmitting}
+                    disabled={!(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) || !title || isSubmitting}
                     className="btn-primary w-full h-[52px] rounded-[14px] text-[16px]"
                 >
                     {isSubmitting ? (

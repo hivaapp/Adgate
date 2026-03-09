@@ -5,6 +5,8 @@ import { useToast } from '../../../context/ToastContext';
 import { ConfirmationBottomSheet } from '../../ui/ConfirmationBottomSheet';
 import { useProgress } from '../../../context/ProgressContext';
 import { useNavigate } from 'react-router-dom';
+import { getAvatarColor } from '../../../lib/utils';
+import type { User } from '../../../lib/mockData';
 
 export const AccountTab = () => {
     const { currentUser, logout } = useAuth();
@@ -70,7 +72,7 @@ export const AccountTab = () => {
         <div className="flex flex-col gap-6 px-4 pt-4 sm:pt-8 w-full pb-28 min-h-full">
             {/* Profile Section */}
             <div className="card p-5 flex flex-col items-center gap-3 border-border shadow-sm">
-                <div className="w-[64px] h-[64px] rounded-full bg-brand flex items-center justify-center text-white font-black text-[28px] shadow-sm">
+                <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center text-white font-black text-[28px] shadow-sm" style={{ backgroundColor: getAvatarColor(currentUser?.username || '') }}>
                     {currentUser?.avatarInitial || 'A'}
                 </div>
                 <div className="flex flex-col items-center">
@@ -373,8 +375,7 @@ const ScreenPassword = ({ onSave }: { onSave: () => void }) => {
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ScreenEditProfile = ({ user, onSave }: { user: any, onSave: () => void }) => {
+const ScreenEditProfile = ({ user, onSave }: { user: User | null | undefined, onSave: () => void }) => {
     const { updateProfile } = useAuth();
     const { addToast } = useToast();
     const [name, setName] = useState(user?.name || '');
@@ -391,7 +392,7 @@ const ScreenEditProfile = ({ user, onSave }: { user: any, onSave: () => void }) 
     return (
         <div className="flex flex-col h-full animate-fadeIn pb-8 overflow-y-auto">
             <div className="flex flex-col items-center mb-6 pt-4">
-                <div className="w-[80px] h-[80px] rounded-full bg-brand flex items-center justify-center text-white font-black text-[32px] mb-3 shadow-sm">{name[0] || 'A'}</div>
+                <div className="w-[80px] h-[80px] rounded-full flex items-center justify-center text-white font-black text-[32px] mb-3 shadow-sm" style={{ backgroundColor: getAvatarColor(user?.username || '') }}>{name[0] || 'A'}</div>
                 <button className="px-4 py-1.5 border border-border font-bold text-[13px] rounded-full hover:bg-surfaceAlt">Change Photo</button>
             </div>
 

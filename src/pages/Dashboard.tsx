@@ -12,6 +12,7 @@ type Tab = 'home' | 'links' | 'earnings' | 'referrals' | 'account';
 
 export const Dashboard = () => {
     const [currentTab, setCurrentTab] = useState<Tab>('home');
+    const [linksSearchQuery, setLinksSearchQuery] = useState('');
     const [showOnboarding, setShowOnboarding] = useState(() => {
         // Mock check for first time user
         const hasSeenOnboarding = localStorage.getItem('adgate_onboarding');
@@ -56,7 +57,7 @@ export const Dashboard = () => {
         <>
             <DashboardLayout currentTab={currentTab} onTabChange={setCurrentTab}>
                 {currentTab === 'home' && <HomeTab onTabChange={setCurrentTab} />}
-                {currentTab === 'links' && <LinksTab />}
+                {currentTab === 'links' && <LinksTab searchQuery={linksSearchQuery} setSearchQuery={setLinksSearchQuery} />}
                 {currentTab === 'earnings' && <EarningsTab />}
                 {currentTab === 'referrals' && <ReferralsTab />}
                 {currentTab === 'account' && <AccountTab />}

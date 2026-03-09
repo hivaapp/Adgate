@@ -1,18 +1,54 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo, useEffect, useLayoutEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick, Sparkles, X } from 'lucide-react';
-import { mockExploreResources } from '../lib/mockData';
+import { mockExploreResources, type ExploreResource } from '../lib/mockData';
+import { getAvatarColor } from '../lib/utils';
 
 const CATEGORIES = ['All', '✨ Sponsored', 'Prompts', 'Guides', 'Templates', 'Images', 'Videos', 'Tools', 'Other'];
 const SORTS = ['Most Unlocked', 'Newest', 'Trending', 'Sponsored First'];
 
 export const ExplorePage = () => {
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    const [sortBy, setSortBy] = useState('Most Unlocked');
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const selectedCategory = searchParams.get('category') || 'All';
+    const sortBy = searchParams.get('sort') || 'Most Unlocked';
+    const viewMode = (searchParams.get('view') as 'grid' | 'list') || 'grid';
+    const searchQuery = searchParams.get('q') || '';
+
+    const updateParams = (newParams: Record<string, string>) => {
+        const next = new URLSearchParams(searchParams);
+        Object.keys(newParams).forEach(key => {
+            if (newParams[key]) {
+                next.set(key, newParams[key]);
+            } else {
+                next.delete(key);
+            }
+        });
+        setSearchParams(next, { replace: true });
+    };
+
+    const setSelectedCategory = (cat: string) => updateParams({ category: cat === 'All' ? '' : cat });
+    const setSortBy = (sort: string) => updateParams({ sort: sort === 'Most Unlocked' ? '' : sort });
+    const setViewMode = (view: 'grid' | 'list') => updateParams({ view: view === 'grid' ? '' : view });
+    const setSearchQuery = (q: string) => updateParams({ q });
+
     const [visibleCount, setVisibleCount] = useState(6);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+    useLayoutEffect(() => {
+        const handleScroll = () => {
+            sessionStorage.setItem('exploreScroll', window.scrollY.toString());
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const savedScroll = sessionStorage.getItem('exploreScroll');
+        if (savedScroll) {
+            window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'instant' });
+        }
+    }, []);
 
     const filteredResources = useMemo(() => {
         let res = [...mockExploreResources];
@@ -154,8 +190,7 @@ export const ExplorePage = () => {
             {/* Resources Container */}
             <div className="w-full max-w-[800px] px-4 flex flex-col items-center">
                 {(() => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const renderResourceGrid = (resources: any[]) => (
+                    const renderResourceGrid = (resources: ExploreResource[]) => (
                         <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
                             {resources.map(r => (
                                 <Link to={`/r/${r.slug}`} key={r.id} className="bg-white rounded-[14px] border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col group relative">
@@ -189,8 +224,7 @@ export const ExplorePage = () => {
                         </div>
                     );
 
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const renderResourceList = (resources: any[]) => (
+                    const renderResourceList = (resources: ExploreResource[]) => (
                         <div className="w-full flex justify-center flex-col gap-3 mb-8">
                             {resources.map(r => (
                                 <Link to={`/r/${r.slug}`} key={r.id} className="w-full h-[72px] bg-white rounded-[14px] border border-border p-3 flex items-center hover:bg-surfaceAlt transition-colors group relative">
@@ -218,8 +252,7 @@ export const ExplorePage = () => {
                         </div>
                     );
 
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const renderResources = (res: any[]) => viewMode === 'grid' ? renderResourceGrid(res) : renderResourceList(res);
+                    const renderResources = (res: ExploreResource[]) => viewMode === 'grid' ? renderResourceGrid(res) : renderResourceList(res);
 
                     if (sortBy === 'Sponsored First') {
                         const sponsored = visibleResources.filter(r => r.isCustomSponsor);
@@ -275,9 +308,11 @@ export const ExplorePage = () => {
                 <div className="w-full max-w-[800px] px-4">
                     <h2 className="text-[20px] font-black text-text mb-6">Top Creators This Week</h2>
                     <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-                        {[1, 2, 3, 4, 5].map(i => (
+                        {[1, 2, 3, 4, 5].map(i => {
+                            const handle = ['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1];
+                            return (
                             <div key={i} className="w-[140px] shrink-0 bg-surfaceAlt border border-border rounded-[16px] p-4 flex flex-col items-center text-center snap-start snap-always">
-                                <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-black text-[20px] mb-2">{['A', 'M', 'S', 'D', 'C'][i - 1]}</div>
+                                <div className="w-12 h-12 rounded-full text-white flex items-center justify-center font-black text-[20px] mb-2" style={{ backgroundColor: getAvatarColor(handle) }}>{['A', 'M', 'S', 'D', 'C'][i - 1]}</div>
                                 <span className="text-[13px] font-black leading-tight mb-0.5 line-clamp-1">{i === 1 || i === 3 ? '✨ ' : ''}{['Alex Creator', 'Marc Dev', 'Sarah M.', 'Design Guy', 'Creative Co'][i - 1]}</span>
                                 <span className="text-[11px] font-bold text-textMid mb-2 truncate max-w-full">@{['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}</span>
                                 {i === 1 || i === 3 ? (
@@ -285,9 +320,9 @@ export const ExplorePage = () => {
                                 ) : (
                                     <span className="text-[12px] font-black text-success bg-success/10 px-2 py-0.5 rounded-[14px] mb-3">{[1204, 950, 840, 710, 650][i - 1]} unlocks</span>
                                 )}
-                                <Link to={`/@${['alexcreator', 'marcdev', 'sarahm', 'designguy', 'creativeco'][i - 1]}`} className="mt-auto text-[12px] font-bold text-brand hover:underline">View Profile</Link>
+                                <Link to={`/@${handle}`} className="mt-auto text-[12px] font-bold text-brand hover:underline">View Profile</Link>
                             </div>
-                        ))}
+                        )})}
                     </div>
                 </div>
             </div>
@@ -304,9 +339,9 @@ export const ExplorePage = () => {
 
                     <div className="flex items-center gap-6 text-[13px] font-bold text-textMid">
                         <Link to="/explore" className="hover:text-text transition-colors">Explore</Link>
-                        <a href="#" className="hover:text-text transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-text transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-text transition-colors">Contact</a>
+                        <Link to="/terms" className="hover:text-text transition-colors">Terms of Service</Link>
+                        <Link to="/privacy" className="hover:text-text transition-colors">Privacy Policy</Link>
+                        <Link to="/contact" className="hover:text-text transition-colors">Contact</Link>
                     </div>
 
                     <div className="text-[12px] font-bold text-textLight">

@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { SignInModal } from './SignInModal';
 import { Menu, X, Lightbulb, Briefcase, Compass, Tag, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getAvatarColor } from '../lib/utils';
 
 export const Navbar = () => {
     const { isLoggedIn, currentUser } = useAuth();
@@ -84,7 +85,7 @@ export const Navbar = () => {
                         isDashboard ? (
                             <div className="flex items-center gap-3">
                                 <Link to="/explore" className="font-bold text-brand hover:text-brand-hover transition-colors px-2 py-2 text-[13px]">Explore</Link>
-                                <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white font-black text-[16px] shadow-sm">
+                                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-[16px] shadow-sm" style={{ backgroundColor: getAvatarColor(currentUser?.username || '') }}>
                                     {currentUser?.avatarInitial || 'A'}
                                 </div>
                             </div>
@@ -105,6 +106,8 @@ export const Navbar = () => {
                 <button
                     className="sm:hidden w-10 h-10 flex items-center justify-center text-text z-50"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Toggle navigation menu"
+                    aria-expanded={isMenuOpen}
                 >
                     {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>

@@ -1,156 +1,119 @@
-import { useParams, Link } from 'react-router-dom';
-import { TrendingUp, Check, ShieldCheck, Info } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { currentUser as mockUser } from '../lib/mockData';
+import { Check, Link as LinkIcon } from 'lucide-react';
 
 export const JoinPage = () => {
     const { code } = useParams<{ code: string }>();
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-    // Mock referrer info mapping
-    const referrerName = code === 'ALEX8K2P' ? 'Alex' : 'A creator';
+    const referrer = mockUser.referral?.referralCode === code ? mockUser : null;
+
+    if (!referrer) {
+        return (
+            <div className="min-h-screen bg-bg flex flex-col items-center justify-center px-4">
+                <div className="w-16 h-16 bg-[#FFF0EF] text-[#E8312A] rounded-full flex items-center justify-center mb-6">
+                    <LinkIcon size={32} />
+                </div>
+                <h1 className="text-[18px] font-[800] text-text text-center mb-2">This referral link is no longer valid</h1>
+                <p className="text-[14px] text-textMid text-center mb-8 font-[600]">It may have expired or been removed.</p>
+                <button onClick={() => navigate('/')} className="h-[48px] px-8 bg-[#E8312A] text-white rounded-[14px] font-[800] text-[15px] shadow-sm">
+                    Explore AdGate
+                </button>
+            </div>
+        );
+    }
+
+    const handleSignup = async (provider: string) => {
+        // mock signup flow
+        await login(provider);
+        // store the referral code in mock context somehow, AuthContext handles mock logic for now
+        navigate('/dashboard');
+    };
 
     return (
-        <div className="min-h-screen bg-bg flex flex-col lg:flex-row">
-            {/* Left Column - The Hook */}
-            <div className="flex-1 px-6 py-12 lg:px-24 flex flex-col justify-center max-w-[800px] lg:max-w-none mx-auto w-full lg:border-r border-border bg-white lg:bg-transparent relative z-10 z-[2]">
+        <div className="min-h-screen bg-white">
+            <header className="h-[48px] border-b border-border flex items-center justify-center">
+                <div className="flex items-center gap-1.5 opacity-90">
+                    <div className="w-5 h-5 rounded-[6px] bg-text text-white flex items-center justify-center font-black text-[9px] leading-none">
+                        AG
+                    </div>
+                    <span className="font-black text-[15px] tracking-tight text-text">AdGate</span>
+                </div>
+            </header>
 
-                {/* Logo & Referrer Badge */}
-                <div className="flex items-center gap-4 mb-16">
-                    <Link to="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-[14px] bg-text text-white flex items-center justify-center font-black text-xs leading-none">
-                            AG
-                        </div>
-                        <span className="font-black text-lg tracking-tight text-text">AdGate</span>
-                    </Link>
-                    <div className="h-6 px-3 bg-[#EBF5EE] border border-[#BBF7D0] rounded-full flex items-center justify-center">
-                        <span className="text-[11px] font-[800] text-[#166534] tracking-wide uppercase">
-                            {referrerName} invited you
-                        </span>
+            <div className="pt-[40px] px-[20px] flex flex-col items-center pb-[80px]">
+                <div className="bg-[#FFFBEB] text-[#92400E] px-3 py-1 rounded-full text-[11px] font-[800] h-[28px] flex items-center justify-center mb-3">
+                    You were invited by
+                </div>
+
+                <div className="bg-white border text-center border-border rounded-[14px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#E8312A] text-white flex items-center justify-center font-black text-[16px]">
+                        {referrer.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex flex-col items-start pr-2">
+                        <span className="text-[15px] font-[900] text-text leading-tight">{referrer.username}</span>
+                        <span className="text-[13px] font-[600] text-textMid">@{referrer.username}</span>
                     </div>
                 </div>
 
-                <div className="max-w-[480px]">
-                    <h1 className="text-[42px] sm:text-[52px] font-black text-text leading-[1.05] tracking-tight mb-8">
-                        The easiest way to monetize your audience.
-                    </h1>
+                <h1 className="mt-[20px] text-center text-text" style={{ fontSize: 'clamp(24px, 6vw, 36px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '480px' }}>
+                    Earn money sharing free content with your audience.
+                </h1>
 
-                    <div className="flex flex-col gap-6 mb-10">
-                        <div className="flex items-start gap-4">
-                            <div className="w-8 h-8 rounded-full bg-brandTint flex items-center justify-center shrink-0">
-                                <TrendingUp className="w-4 h-4 text-brand" />
-                            </div>
-                            <div>
-                                <h3 className="text-[16px] font-[800] text-text">Keep 95% of Revenue</h3>
-                                <p className="text-[14px] text-textMid mt-1 leading-relaxed">We take a tiny 5% cut. You keep the rest. Payouts via Stripe or Crypto.</p>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <div className="w-8 h-8 rounded-full bg-surfaceAlt flex items-center justify-center shrink-0">
-                                <Check className="w-4 h-4 text-text" />
-                            </div>
-                            <div>
-                                <h3 className="text-[16px] font-[800] text-text">Share Any File Setup</h3>
-                                <p className="text-[14px] text-textMid mt-1 leading-relaxed">Lock videos, PDFs, zip files, or secret links behind an ad-wall in 30 seconds.</p>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <div className="w-8 h-8 rounded-full bg-[#EBF5EE] flex items-center justify-center shrink-0">
-                                <ShieldCheck className="w-4 h-4 text-[#166534]" />
-                            </div>
-                            <div>
-                                <h3 className="text-[16px] font-[800] text-text">Free For Your Audience</h3>
-                                <p className="text-[14px] text-textMid mt-1 leading-relaxed">Your fans just watch a 10-second ad to unlock. No credit cards required.</p>
-                            </div>
-                        </div>
-                    </div>
+                <p className="mt-[12px] mb-[24px] text-center text-[#666] font-[600] text-[15px] max-w-[400px]">
+                    Upload a file. Share a link. Your audience watches a short ad to unlock it. You keep 95%.
+                </p>
 
-                    <button className="w-full h-[56px] bg-brand text-white rounded-[18px] font-[800] text-[16px] flex items-center justify-center hover:bg-brandHover transition-colors mb-4 shadow-sm" style={{ boxShadow: '0 4px 12px rgba(217,119,87,0.2)' }}>
-                        Sign Up Free
+                <div className="flex flex-col w-full max-w-[400px] gap-2 mb-6">
+                    {['Free to join — no credit card needed', 'Keep 95% of all ad revenue you generate', 'Your audience always gets your content free'].map((benefit, i) => (
+                        <div key={i} className="flex items-center gap-3 h-[44px]">
+                            <div className="w-5 h-5 rounded-full bg-[#417A55]/10 text-[#417A55] flex items-center justify-center shrink-0">
+                                <Check size={12} strokeWidth={4} />
+                            </div>
+                            <span className="text-[14px] font-[700] text-[#333]">{benefit}</span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="w-full max-w-[400px] bg-[#EDFAF3] border border-[#BBF7D0] rounded-[14px] p-4 flex gap-3 mb-6">
+                    <span className="text-[24px] leading-none">🎁</span>
+                    <p className="text-[13px] font-[700] text-[#166534] leading-[1.6]">
+                        Bonus: @{referrer.username} earns 5% of your future earnings as a thank-you. This costs you nothing — it comes from AdGate's share, not yours.
+                    </p>
+                </div>
+
+                <div className="w-full max-w-[400px] flex flex-col gap-3">
+                    <button onClick={() => handleSignup('email')} className="w-full h-[56px] bg-[#E8312A] text-white rounded-[14px] font-[900] text-[16px] shadow-sm mb-1 hover:bg-[#C4663F] transition-colors">
+                        Create Free Account
                     </button>
 
-                    <p className="text-[12px] font-[600] text-textMid text-center mb-10">Join 12,000+ creators earning today.</p>
+                    <button onClick={() => handleSignup('google')} className="w-full flex items-center justify-center h-[48px] bg-white border border-border rounded-[14px] font-bold text-text gap-2 transition-transform hover:-translate-y-[1px] hover:shadow-sm">
+                        <span className="text-xl font-black">G</span> Continue with Google
+                    </button>
+                    <button onClick={() => handleSignup('twitter')} className="w-full flex items-center justify-center h-[48px] bg-white border border-border rounded-[14px] font-bold text-text gap-2 transition-transform hover:-translate-y-[1px] hover:shadow-sm">
+                        <span className="text-xl font-black">𝕏</span> Continue with X / Twitter
+                    </button>
+                    <button onClick={() => handleSignup('discord')} className="w-full flex items-center justify-center h-[48px] bg-white border border-border rounded-[14px] font-bold text-text gap-2 transition-transform hover:-translate-y-[1px] hover:shadow-sm">
+                        <span className="text-xl font-black">D</span> Continue with Discord
+                    </button>
+                    <button onClick={() => handleSignup('github')} className="w-full flex items-center justify-center h-[48px] bg-white border border-border rounded-[14px] font-bold text-text gap-2 transition-transform hover:-translate-y-[1px] hover:shadow-sm">
+                        <span className="text-xl font-black">GH</span> Continue with GitHub
+                    </button>
 
-                    {/* Transparency Note */}
-                    <div className="w-full rounded-[16px] bg-[#FAF9F7] border border-[#E6E2D9] p-5 shadow-sm">
-                        <div className="flex items-start gap-3">
-                            <Info className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                            <div>
-                                <h4 className="text-[13px] font-[800] text-text mb-1 flex items-center gap-1.5">
-                                    Transparency note
-                                </h4>
-                                <p className="text-[13px] text-textMid font-[600] leading-relaxed">
-                                    By using this link, you don't lose anything. AdGate gives {referrerName} a 5% bonus <strong>from our cut</strong> on your earnings forever. You still keep 95% always. Win-win.
-                                </p>
-                            </div>
-                        </div>
+                    <div className="mt-4 text-center">
+                        <span className="text-[13px] text-textMid">Already have an account? </span>
+                        <button onClick={() => navigate('/')} className="text-[13px] font-bold text-brand hover:underline">Log in →</button>
                     </div>
                 </div>
             </div>
 
-            {/* Right Column - Dashboard Preview (Desktop Only) */}
-            <div className="hidden lg:flex flex-1 bg-[#FAF9F7] items-center justify-center p-12 overflow-hidden relative">
-
-                {/* Background Pattern */}
-                <div
-                    className="absolute inset-0 opacity-[0.03] z-[0]"
-                    style={{
-                        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")',
-                    }}
-                />
-
-                <div className="relative z-10 w-full max-w-[600px] h-[700px] bg-white rounded-[24px] border border-border shadow-[0_24px_48px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden rotate-[2deg] scale-[1.05] translate-x-12">
-
-                    {/* Mock Header */}
-                    <div className="h-[64px] border-b border-border px-6 flex items-center justify-between bg-white shrink-0">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse" />
-                            <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse" />
-                        </div>
-                        <div className="w-32 h-8 rounded-full bg-brandTint" />
-                    </div>
-
-                    {/* Mock Content */}
-                    <div className="p-8 flex-1 bg-[#FAF9F7]">
-                        <div className="flex gap-4 mb-8">
-                            <div className="flex-1 bg-white border border-border rounded-[16px] p-6 shadow-sm">
-                                <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse mb-8" />
-                                <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-2" />
-                                <div className="w-32 h-8 rounded-[14px] bg-text opacity-10" />
-                            </div>
-                            <div className="flex-1 bg-white border border-border rounded-[16px] p-6 shadow-sm">
-                                <div className="w-8 h-8 rounded-full bg-surfaceAlt animate-pulse mb-8" />
-                                <div className="w-24 h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-2" />
-                                <div className="w-32 h-8 rounded-[14px] bg-text opacity-10" />
-                            </div>
-                        </div>
-
-                        <div className="w-full bg-white border border-border rounded-[16px] p-6 shadow-sm">
-                            <div className="w-full h-4 rounded-[14px] bg-surfaceAlt animate-pulse mb-6 max-w-[200px]" />
-                            <div className="flex flex-col gap-4">
-                                {[1, 2, 3].map(i => (
-                                    <div key={i} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-[14px] bg-surfaceAlt animate-pulse" />
-                                            <div className="flex flex-col gap-2">
-                                                <div className="w-32 h-3 rounded-[14px] bg-surfaceAlt animate-pulse" />
-                                                <div className="w-16 h-2 rounded-[14px] bg-surfaceAlt animate-pulse opacity-50" />
-                                            </div>
-                                        </div>
-                                        <div className="w-12 h-6 rounded-full bg-brandTint" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Bottom Nav Mock */}
-                    <div className="h-[64px] border-t border-border bg-white flex items-center justify-around px-6 shrink-0">
-                        {[1, 2, 3, 4, 5].map(i => (
-                            <div key={i} className={`w-10 h-10 flex flex-col items-center justify-center gap-1 ${i === 1 ? 'opacity-100' : 'opacity-40'}`}>
-                                <div className="w-5 h-5 rounded-[14px] bg-text animate-pulse" />
-                                <div className="w-6 h-1 rounded-[14px] flex-shrink-0 bg-text animate-pulse" />
-                            </div>
-                        ))}
-                    </div>
+            <div className="w-full h-[60px] bg-[#F6F6F6] flex items-center justify-center gap-2 mb-10 px-4 mt-auto border-t border-border">
+                <div className="w-4 h-4 rounded-[4px] bg-text text-white flex items-center justify-center font-black text-[7px] leading-none shrink-0">
+                    AG
                 </div>
+                <span className="text-[13px] font-[700] text-[#555]">Join 12,400 creators already earning on AdGate</span>
             </div>
         </div>
     );

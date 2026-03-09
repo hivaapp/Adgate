@@ -429,9 +429,9 @@ export const Pricing = () => {
 
                     <div className="flex items-center gap-6 text-[13px] font-bold text-textMid">
                         <Link to="/explore" className="hover:text-text transition-colors">Explore</Link>
-                        <a href="#" className="hover:text-text transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-text transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-text transition-colors">Contact</a>
+                        <Link to="/terms" className="hover:text-text transition-colors">Terms of Service</Link>
+                        <Link to="/privacy" className="hover:text-text transition-colors">Privacy Policy</Link>
+                        <Link to="/contact" className="hover:text-text transition-colors">Contact</Link>
                     </div>
 
                     <div className="text-[12px] font-bold text-textLight">

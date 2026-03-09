@@ -1,12 +1,11 @@
 import { Copy, ChartBar, EyeOff, Trash2, ShieldAlert } from 'lucide-react';
 import { BottomSheet } from '../ui/BottomSheet';
 import { useToast } from '../../context/ToastContext';
-
+import type { DashboardLink } from './tabs/LinksTab';
 interface MoreActionSheetProps {
     isOpen: boolean;
     onClose: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    link: any;
+    link: DashboardLink;
     onDelete: () => void;
     onDisable: () => void;
 }

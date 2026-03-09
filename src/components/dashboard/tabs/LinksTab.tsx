@@ -6,18 +6,36 @@ import { EditLinkSheet } from '../EditLinkSheet';
 import { MoreActionSheet } from '../MoreActionSheet';
 import { useToast } from '../../../context/ToastContext';
 
-export const LinksTab = () => {
-    const [searchQuery, setSearchQuery] = useState('');
+export interface DashboardLink {
+    id: string;
+    title: string;
+    type: string;
+    adCount: number;
+    donate: boolean;
+    url: string;
+    views: number;
+    unlocks: number;
+    earned: number;
+    status: string;
+    adType: 'video' | 'click';
+    adSource?: string;
+    customAd?: {
+        requiresClick?: boolean;
+        redirectUrl?: string;
+        videoWatches?: number;
+    };
+    clicks?: number;
+}
+
+export const LinksTab = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (q: string) => void }) => {
     const [activeSort, setActiveSort] = useState('All');
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [editLinkData, setEditLinkData] = useState<any>(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [moreActionLink, setMoreActionLink] = useState<any>(null);
+    const [editLinkData, setEditLinkData] = useState<DashboardLink | null>(null);
+    const [moreActionLink, setMoreActionLink] = useState<DashboardLink | null>(null);
 
     const { showToast } = useToast();
 
-    const [links, setLinks] = useState([
+    const [links, setLinks] = useState<DashboardLink[]>([
         {
             id: '1',
             title: 'freeresource.pdf',

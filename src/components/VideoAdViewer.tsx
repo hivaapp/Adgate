@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { MockVideoAd } from '../lib/mockAds';
+import type { CustomAdData } from './CustomSponsorForm';
 import { Play } from 'lucide-react';
 
 interface VideoAdViewerProps {
@@ -7,8 +8,7 @@ interface VideoAdViewerProps {
     onCompleted: () => void;
     onSkip: () => void;
     isCustom?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    customAd?: any;
+    customAd?: CustomAdData;
     requiresClick?: boolean;
 }
 
@@ -16,8 +16,8 @@ export function VideoAdViewer({ ad, onCompleted, onSkip, isCustom, customAd, req
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
 
-    const skipAfterVal = isCustom && customAd ? (parseInt(customAd.skipAfter) || 5) : ad.skipAfter;
-    const durationVal = isCustom && customAd ? (parseInt(customAd.displayDuration) || 15) : ad.duration;
+    const skipAfterVal = isCustom && customAd ? (customAd.skipAfter || 5) : ad.skipAfter;
+    const durationVal = isCustom && customAd ? 15 : ad.duration;
 
     const canSkip = currentTime >= skipAfterVal;
     const isCompleted = currentTime >= durationVal;

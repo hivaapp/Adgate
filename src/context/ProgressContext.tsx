@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 
 interface ProgressContextType {
@@ -11,26 +11,27 @@ const ProgressContext = createContext<ProgressContextType | undefined>(undefined
 export const ProgressProvider = ({ children }: { children: ReactNode }) => {
     const [isProgressing, setIsProgressing] = useState(false);
     const [progress, setProgress] = useState(0);
+    const intervalRef = useRef<number | null>(null);
 
     const startProgress = useCallback(() => {
         setIsProgressing(true);
         setProgress(30);
         // Simulate progress bar moving
-        const interval = setInterval(() => {
+        const interval = window.setInterval(() => {
             setProgress((prev) => {
                 if (prev > 85) return prev;
                 return prev + Math.random() * 10;
             });
         }, 300);
 
-        // Let's attach this interval to state or window to clear it, but simple is okay for fake data
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).__progressInterval = interval;
+        intervalRef.current = interval;
     }, []);
 
     const stopProgress = useCallback(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        clearInterval((window as any).__progressInterval);
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
         setProgress(100);
         setTimeout(() => {
             setIsProgressing(false);

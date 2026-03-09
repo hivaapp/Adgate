@@ -5,8 +5,11 @@ import { useAdSession } from '../hooks/useAdSession';
 import { useToast } from '../context/ToastContext';
 import { AdInterstitial } from '../components/AdInterstitial';
 import { VideoAdViewer } from '../components/VideoAdViewer';
+import { Navbar } from '../components/Navbar';
 import { mockExploreResources } from '../lib/mockData';
 import type { MockAd, MockVideoAd } from '../lib/mockAds';
+import { getAvatarColor } from '../lib/utils';
+import type { CustomAdData } from '../components/CustomSponsorForm';
 
 export const ResourceUnlock = () => {
     const { slug } = useParams();
@@ -19,40 +22,22 @@ export const ResourceUnlock = () => {
     const [isDownloading, setIsDownloading] = useState(false);
     const [nextAdCountdown, setNextAdCountdown] = useState<number | null>(null);
     const [showTreeCard, setShowTreeCard] = useState(true);
+    const [popupBlocked, setPopupBlocked] = useState(false);
 
     // Mock resource fetch
-    const resource = mockExploreResources.find(r => r.slug === slug) || {
-        title: "Pro Design System UI Kit",
-        creatorName: "Alex Creator",
-        creatorHandle: "alexcreator",
-        creatorAvatar: "A",
-        verified: true,
-        fileType: "ZIP",
-        adCount: 3,
-        unlockCount: "1.2K",
-        category: "Templates",
-        description: "A complete professional design system for Figma with 1000+ components. Built for scale.",
-        fileSize: "24.5 MB",
-        donateEnabled: true,
-        adType: "click",
-        adSource: "custom",
-        customAd: {
-            brandName: "FlowDesk Tools",
-            redirectUrl: "https://flowdesk.example.com",
-            ctaText: "Get Access Now"
-        }
-    };
+    const resource = mockExploreResources.find(r => r.slug === slug);
 
-    const isCustom = resource.adSource === 'custom' || resource.isCustomSponsor;
-    const isVideo = isCustom ? true : resource.adType === 'video';
-    const requiresClick = isCustom && (!!resource.customAd?.redirectUrl || resource.requiresClick);
+    const isCustom = resource?.adSource === 'custom' || (resource?.isCustomSponsor ?? false);
+    const isVideo = isCustom ? true : resource?.adType === 'video';
+    const requiresClick = isCustom && (!!resource?.customAd?.redirectUrl || (resource?.requiresClick ?? false));
 
     useEffect(() => {
+        if (!resource || resource.isActive === false) return;
         // Initialize session on mount or slug change
         startSession(slug || 'default', isVideo ? 'video' : 'click', resource.adCount, isCustom);
         // Set open graph tags (mock implementation via DOM)
         document.title = `${resource.title} - AdGate`;
-    }, [slug, resource.adCount, startSession, resource.title, isVideo, isCustom]);
+    }, [slug, resource?.adCount, startSession, resource?.title, isVideo, isCustom, resource?.isActive, resource]);
 
     const handleUnlockClick = useCallback(() => {
         if (customSponsorStep === "click") {
@@ -137,13 +122,32 @@ export const ResourceUnlock = () => {
     };
 
     const handleSponsorClick = () => {
+        if (resource?.customAd?.redirectUrl) {
+            const newWindow = window.open(resource.customAd.redirectUrl, '_blank');
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                setPopupBlocked(true);
+                return;
+            }
+        }
         registerSponsorClick();
         setIsShowingAd(false);
         addToast('Sponsor visited! Revealing your content...', 'success');
-        if (resource.customAd?.redirectUrl) {
-            window.open(resource.customAd.redirectUrl, '_blank');
-        }
     };
+
+    const handleSponsorClickFallback = () => {
+        registerSponsorClick();
+        setIsShowingAd(false);
+        setPopupBlocked(false);
+        addToast('Sponsor visited! Revealing your content...', 'success');
+    };
+
+    if (!resource) {
+        return <ResourceNotFound />;
+    }
+
+    if (resource.isActive === false) {
+        return <ResourceDisabled />;
+    }
 
     const handleDownload = () => {
         setIsDownloading(true);
@@ -242,7 +246,7 @@ export const ResourceUnlock = () => {
                         <h1 className="text-[20px] font-black leading-tight mb-3 px-2 line-clamp-1 sm:line-clamp-none">{resource.title}</h1>
 
                         <div className="flex items-center justify-center gap-2 mb-4">
-                            <div className="w-7 h-7 rounded-full bg-brand text-white flex items-center justify-center font-bold text-[12px]">
+                            <div className="w-7 h-7 rounded-full text-white flex items-center justify-center font-bold text-[12px]" style={{ backgroundColor: getAvatarColor(resource.creatorHandle) }}>
                                 {resource.creatorAvatar}
                             </div>
                             <span className="text-[13px] font-bold text-textMid flex items-center gap-1">
@@ -354,7 +358,10 @@ export const ResourceUnlock = () => {
                                     <div className="flex flex-col items-center gap-2 relative">
                                         <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 z-10 shadow-sm transition-all duration-300
                                             ${customSponsorStep === "click" || isComplete ? 'bg-success border-success text-white animate-checkPop' : 'bg-white border-[#E8312A] text-[#E8312A] animate-pulseRing'}
-                                        `}>
+                                        `}
+                                        aria-label={customSponsorStep === "click" || isComplete ? "Step 1 complete" : "Current Step: Watch Video"}
+                                        role="status"
+                                        >
                                             {(customSponsorStep === "click" || isComplete) ? <Check size={18} strokeWidth={3} /> : <Play size={16} fill="currentColor" />}
                                         </div>
                                         <span className={`text-[11px] font-[700] ${customSponsorStep === "watch" && !isComplete ? 'text-[#E8312A]' : 'text-[#AAA]'}`}>
@@ -373,7 +380,10 @@ export const ResourceUnlock = () => {
                                                     ${isComplete ? 'bg-success border-success text-white animate-checkPop' :
                                                         customSponsorStep === "click" ? 'bg-white border-[#6366F1] text-[#6366F1] animate-pulseRing' :
                                                             'bg-white border-[#E8E8E8] text-[#AAA]'}
-                                                `}>
+                                                `}
+                                                aria-label={isComplete ? "Step 2 complete" : customSponsorStep === "click" ? "Current Step: Visit Sponsor" : "Step 2 pending: Visit Sponsor"}
+                                                role="status"
+                                                >
                                                     {isComplete ? <Check size={18} strokeWidth={3} /> : <MousePointerClick size={16} />}
                                                 </div>
                                                 <span className={`text-[11px] font-[700] ${isComplete ? 'text-[#AAA]' : customSponsorStep === "click" ? 'text-[#6366F1]' : 'text-[#AAA]'}`}>
@@ -397,7 +407,10 @@ export const ResourceUnlock = () => {
                                                     ${isDone ? 'bg-success border-success text-white animate-checkPop' :
                                                         isActive ? 'bg-white border-brand text-brand animate-pulseRing' :
                                                             'bg-white border-border text-border'}
-                                                `}>
+                                                `}
+                                                aria-label={isDone ? `Step ${idx+1} complete` : isActive ? `Current Step: ${isVideo ? 'Watch Video' : 'Click Ad'} ${idx+1}` : `Step ${idx+1} pending`}
+                                                role="status"
+                                                >
                                                     {isDone ? <Check size={18} strokeWidth={3} /> : (isVideo ? <Play size={16} fill={isActive ? "currentColor" : "none"} /> : <MousePointer2 size={16} />)}
                                                 </div>
                                                 <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>
@@ -524,6 +537,8 @@ export const ResourceUnlock = () => {
                         customAd={resource.customAd}
                         onClick={handleSponsorClick}
                         onClose={handleAdClose}
+                        popupBlocked={popupBlocked}
+                        onFallbackClick={handleSponsorClickFallback}
                     />
                 ) : isVideo && currentAd ? (
                     <VideoAdViewer
@@ -564,8 +579,7 @@ export const ResourceUnlock = () => {
 };
 
 // Step 2 Click Interstitial for Custom Sponsors
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SponsorClickInterstitial = ({ customAd, onClick, onClose }: { customAd: any, onClick: () => void, onClose: () => void }) => {
+const SponsorClickInterstitial = ({ customAd, onClick, onClose, popupBlocked, onFallbackClick }: { customAd: CustomAdData | undefined, onClick: () => void, onClose: () => void, popupBlocked?: boolean, onFallbackClick?: () => void }) => {
     return (
         <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-md animate-fadeIn p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true">
             {/* Deliberately no close button on Step 2; encourages click or abandonment */}
@@ -605,12 +619,28 @@ const SponsorClickInterstitial = ({ customAd, onClick, onClose }: { customAd: an
                         </div>
                     </div>
 
-                    <button
-                        onClick={onClick}
-                        className="w-full h-[56px] rounded-[16px] bg-[#6366F1] hover:bg-[#4F46E5] flex items-center justify-center text-white font-black text-[16px] shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
-                    >
-                        {customAd?.ctaText || "Visit Sponsor"} <ArrowRight size={18} className="ml-2" />
-                    </button>
+                    {popupBlocked ? (
+                        <div className="w-full flex flex-col gap-2">
+                            <p className="text-[12px] font-bold text-error text-center mb-1">Popup blocked! Please click the link below directly.</p>
+                            <a
+                                href={customAd?.redirectUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={onFallbackClick}
+                                className="w-full h-[56px] rounded-[16px] bg-[#6366F1] hover:bg-[#4F46E5] flex items-center justify-center text-white font-black text-[16px] shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                {customAd?.ctaText || "Visit Sponsor"} <ArrowRight size={18} className="ml-2" />
+                            </a>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={onClick}
+                            className="w-full h-[56px] rounded-[16px] bg-[#6366F1] hover:bg-[#4F46E5] flex items-center justify-center text-white font-black text-[16px] shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            {customAd?.ctaText || "Visit Sponsor"} <ArrowRight size={18} className="ml-2" />
+                        </button>
+                    )}
+                    
                     <button onClick={onClose} className="mt-5 text-textLight hover:text-textMid text-[12px] font-bold hover:underline transition-colors w-full h-[32px]">
                         I don't want the free resource anymore
                     </button>
@@ -619,3 +649,54 @@ const SponsorClickInterstitial = ({ customAd, onClick, onClose }: { customAd: an
         </div>
     );
 };
+
+const ResourceNotFound = () => (
+    <div className="min-h-screen bg-bg flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-fadeIn">
+            <div className="text-[48px] mb-4">🔗</div>
+            <h1 className="text-[22px] font-black text-[#111] mb-2">This link doesn't exist</h1>
+            <p className="text-[14px] font-bold text-textMid mb-8 max-w-[360px]">The creator may have deleted this resource or the link is incorrect.</p>
+
+            <div className="flex items-center gap-3 mb-12 flex-col sm:flex-row w-full max-w-[400px]">
+                <Link to="/" className="w-full sm:w-auto flex-1 h-[44px] bg-[#E8312A] text-white font-black text-[14px] rounded-[14px] flex items-center justify-center hover:bg-[#C0392B] shadow-sm">
+                    Go Home
+                </Link>
+                <Link to="/explore" className="w-full sm:w-auto flex-1 h-[44px] bg-transparent border-2 border-[#E8312A] text-[#E8312A] font-black text-[14px] rounded-[14px] flex items-center justify-center hover:bg-[#FFF0EF] shadow-sm">
+                    Explore Resources
+                </Link>
+            </div>
+
+            <div className="flex items-center gap-1.5 opacity-60">
+                <div className="w-5 h-5 rounded-[6px] bg-text text-white flex items-center justify-center font-black text-[9px] leading-none">
+                    AG
+                </div>
+                <span className="font-black text-[13px] tracking-tight text-text">AdGate</span>
+            </div>
+        </div>
+    </div>
+);
+
+const ResourceDisabled = () => (
+    <div className="min-h-screen bg-bg flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center animate-fadeIn">
+            <div className="text-[48px] mb-4">🔒</div>
+            <h1 className="text-[22px] font-black text-[#111] mb-2">This resource is no longer available</h1>
+            <p className="text-[14px] font-bold text-textMid mb-8 max-w-[360px]">The creator has paused this link.</p>
+
+            <div className="flex items-center gap-3 mb-12 flex-col sm:flex-row w-full max-w-[400px]">
+                <Link to="/explore" className="w-full sm:w-auto px-6 h-[44px] bg-[#E8312A] text-white font-black text-[14px] rounded-[14px] flex items-center justify-center hover:bg-[#C0392B] shadow-sm">
+                    Explore Free Resources
+                </Link>
+            </div>
+
+            <div className="flex items-center gap-1.5 opacity-60">
+                <div className="w-5 h-5 rounded-[6px] bg-text text-white flex items-center justify-center font-black text-[9px] leading-none">
+                    AG
+                </div>
+                <span className="font-black text-[13px] tracking-tight text-text">AdGate</span>
+            </div>
+        </div>
+    </div>
+);

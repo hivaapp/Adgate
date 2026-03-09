@@ -9,6 +9,11 @@
   body {
     @apply bg-bg text-text antialiased;
   }
+  
+  *:focus-visible {
+    outline: 2px solid #D97757;
+    outline-offset: 2px;
+  }
 }
 
 @layer components {

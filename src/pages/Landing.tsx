@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UploadCloud, Link as LinkIcon, Trash2, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick, Settings, X, File } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick, Settings } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
 import { AdSourceSelector, type AdSourceType } from '../components/AdSourceSelector';
 import { type CustomAdData } from '../components/CustomSponsorForm';
 import { TreesLandingSection } from '../components/TreesLandingSection';
 import { BottomSheet } from '../components/ui/BottomSheet';
 import { useNavigate, Link } from 'react-router-dom';
+import { ContentBuilder, type ContentData } from '../components/ContentBuilder';
 
 const FAQS = [
     { q: "How much can I earn?", a: "You earn 95% of ad revenue. Rates vary by ad count, but average $0.02 - $0.06 per unlock. For 10,000 unlocks, you can earn up to $600." },
@@ -26,10 +27,13 @@ export const Landing = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Upload state
-    const [files, setFiles] = useState<File[]>([]);
-    const [isDragging, setIsDragging] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    // Content state
+    const [contentData, setContentData] = useState<ContentData>({
+        contentMode: 'file',
+        textContent: '',
+        links: [],
+        file: null
+    });
 
     // Ad count state
     const [adCount, setAdCount] = useState<number>(1);
@@ -47,6 +51,8 @@ export const Landing = () => {
     // Generate state
     const [isGenerating, setIsGenerating] = useState(false);
     const [isGenerated, setIsGenerated] = useState(false);
+    const linkRevealed = isLoggedIn && isGenerated;
+
     const [fakeUrl] = useState('adga.te/r/freeresource');
     const [isCopied, setIsCopied] = useState(false);
 
@@ -63,8 +69,6 @@ export const Landing = () => {
     // Mobile UI state
     const [isAdSetupSheetOpen, setAdSetupSheetOpen] = useState(false);
     const [isTreesSheetOpen, setTreesSheetOpen] = useState(false);
-    const [showTextInput, setShowTextInput] = useState(false);
-    const [textInputValue, setTextInputValue] = useState("");
     const [hasPulsed, setHasPulsed] = useState(false);
     const [hasConfiguredAdSetup, setHasConfiguredAdSetup] = useState(false);
     const outputCardRef = useRef<HTMLDivElement>(null);
@@ -79,13 +83,14 @@ export const Landing = () => {
     }, [isGenerated]);
 
     useEffect(() => {
-        if (files.length > 0 && !hasPulsed && !hasConfiguredAdSetup) {
+        const hasContent = contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0;
+        if (hasContent && !hasPulsed && !hasConfiguredAdSetup) {
             const timer = setTimeout(() => {
                 if (!hasConfiguredAdSetup) setHasPulsed(true);
             }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [files, hasPulsed, hasConfiguredAdSetup]);
+    }, [contentData, hasPulsed, hasConfiguredAdSetup]);
 
     useEffect(() => {
         if (hasPulsed) {
@@ -116,33 +121,11 @@ export const Landing = () => {
     const calcNet = calcGross * 0.95;
     const calcFinal = calcDonateOn ? calcNet - (calcNet * 0.05) : calcNet;
 
-    // Handlers
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-    const handleDragLeave = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-    };
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            setFiles(prev => [...prev, ...Array.from(e.dataTransfer.files)]);
-        }
-    };
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setFiles(prev => [...prev, ...Array.from(e.target.files!)]);
-        }
-    };
-    const removeFile = (index: number) => {
-        setFiles(prev => prev.filter((_, i) => i !== index));
-    };
 
     const handleGenerate = () => {
-        if (files.length === 0) return;
+        const hasTextContent = contentData.textContent.trim().length > 0 || contentData.links.length > 0;
+        const hasContent = contentData.file || hasTextContent;
+        if (!hasContent) return;
         if (adSource === 'custom') {
             if (hasCustomAdErrors) {
                 // Trigger validation UI
@@ -208,59 +191,14 @@ export const Landing = () => {
             <div className="w-full max-w-[600px] px-4 mb-24 relative z-10" id="generator">
                 {/* Desktop Step Layout */}
                 <div className="hidden sm:flex bg-white rounded-[24px] border border-border shadow-md p-4 sm:p-6 flex-col gap-6">
-
                     {/* Step 1 */}
                     <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 mb-4">
                             <div className="w-6 h-6 bg-text text-white rounded-full flex items-center justify-center font-black text-[12px]">1</div>
-                            <h3 className="font-black text-text text-[18px] tracking-tight">Upload your files</h3>
+                            <h3 className="font-black text-text text-[18px] tracking-tight">Create your resource</h3>
                         </div>
 
-                        <div
-                            className={`w-full rounded-[16px] border border-dashed p-6 flex flex-col items-center text-center transition-all duration-200 ease-out cursor-pointer ${isDragging ? 'border-brand bg-brandTint scale-[1.01]' : 'border-border bg-surfaceAlt hover:border-textMid'
-                                }`}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <input
-                                type="file"
-                                className="hidden"
-                                ref={fileInputRef}
-                                multiple
-                                onChange={handleFileChange}
-                            />
-                            <div className={`w-12 h-12 rounded-full mb-3 flex items-center justify-center ${isDragging ? 'bg-brand/20 text-brand' : 'bg-white border border-border text-textLight'}`}>
-                                <UploadCloud size={24} />
-                            </div>
-                            <h4 className="font-black text-[15px] text-text tracking-tight mb-1">Drag and drop files here</h4>
-                            <p className="text-textMid font-bold text-[13px] mb-4">or click to select files</p>
-                            <div className="flex gap-2">
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">PDF</span>
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">ZIP</span>
-                                <span className="bg-white border border-border text-textLight text-[10px] font-black px-2 py-0.5 rounded-[14px] uppercase">IMG</span>
-                            </div>
-                        </div>
-
-                        {files.length > 0 && (
-                            <div className="flex flex-col gap-2 mt-1 animate-fadeIn">
-                                {files.map((file, idx) => (
-                                    <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-[12px] border border-border shadow-sm">
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="w-8 h-8 rounded-[14px] bg-surfaceAlt flex items-center justify-center text-[16px] shrink-0">📄</div>
-                                            <span className="font-bold text-[13px] text-text truncate">{file.name}</span>
-                                        </div>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); removeFile(idx); }}
-                                            className="w-8 h-8 rounded-full flex items-center justify-center text-textLight hover:bg-errorBg hover:text-error transition-colors shrink-0"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        <ContentBuilder value={contentData} onChange={setContentData} />
                     </div>
 
                     <div className="h-px w-full bg-border" />
@@ -358,8 +296,8 @@ export const Landing = () => {
                         {!isGenerated ? (
                             <button
                                 onClick={handleGenerate}
-                                disabled={isGenerating || files.length === 0}
-                                className={`h-[56px] rounded-[14px] font-black text-[16px] flex items-center justify-center gap-2 transition-all ${files.length > 0 ? 'bg-brand text-white hover:bg-brand-hover shadow-sm' : 'bg-surfaceAlt text-textLight cursor-not-allowed'}`}
+                                disabled={isGenerating || !(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0)}
+                                className={`h-[56px] rounded-[14px] font-black text-[16px] flex items-center justify-center gap-2 transition-all ${(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) ? 'bg-brand text-white hover:bg-brand-hover shadow-sm' : 'bg-surfaceAlt text-textLight cursor-not-allowed'}`}
                             >
                                 {isGenerating ? (
                                     <Loader2 size={24} className="animate-spin" />
@@ -374,7 +312,7 @@ export const Landing = () => {
                             <div className="flex flex-col animate-fadeIn">
                                 <label className="font-black text-[11px] text-textMid uppercase tracking-wider mb-1.5">Your Generated Link</label>
                                 <div className="flex gap-2">
-                                    {isLoggedIn ? (
+                                    {linkRevealed ? (
                                         <>
                                             <div className="flex-1 h-[56px] rounded-[14px] border-2 px-4 flex items-center relative overflow-hidden transition-colors bg-brandTint border-brand/30">
                                                 <span className="font-bold font-mono text-[14px] sm:text-[15px] truncate text-text">{fakeUrl}</span>
@@ -402,13 +340,17 @@ export const Landing = () => {
                                         </div>
                                     )}
                                     <div className="h-[24px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid shadow-sm">
-                                        <span className="text-[12px] font-[700] uppercase">{files.length > 0 ? files[0].name : "Resource"}</span>
+                                        <span className="text-[12px] font-[700] uppercase">
+                                            {contentData.contentMode === 'file' ? (contentData.file ? contentData.file.name : "File") :
+                                             contentData.contentMode === 'text' ? (contentData.links.length > 0 && contentData.textContent.trim().length === 0 ? `${contentData.links.length} Link${contentData.links.length > 1 ? 's' : ''}` : "Text Content") :
+                                             "Text + File"}
+                                        </span>
                                     </div>
                                     <div className="h-[24px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid shadow-sm">
                                         <span className="text-[12px] font-[700] uppercase">{adCount} Ad{adCount > 1 ? 's' : ''}</span>
                                     </div>
                                 </div>
-                                {!isLoggedIn && (
+                                {!linkRevealed && (
                                     <p className="text-[12px] font-bold text-brand mt-2 flex items-center gap-1.5 bg-brandTint p-2 rounded-[14px]">
                                         <span className="text-[16px]">👆</span> Sign in or create an account to claim and share this link.
                                     </p>
@@ -420,63 +362,7 @@ export const Landing = () => {
 
                 {/* Mobile Compact Layout */}
                 <div className="sm:hidden flex flex-col w-full">
-                    {/* The Main Drop Zone Card */}
-                    <div
-                        className={`w-full h-[180px] bg-white rounded-[18px] transition-all relative shadow-[0_1px_3px_rgba(0,0,0,0.06)] 
-                        ${files.length > 0 || showTextInput ? 'border-2 border-[#E8312A]' : isDragging ? 'border-2 border-dashed border-[#E8312A] bg-[#FFF0EF]' : 'border-2 border-dashed border-[#E8E8E8]'}`}
-                        onClick={() => { if (files.length === 0 && !showTextInput) fileInputRef.current?.click() }}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                    >
-                        {(files.length === 0 && !showTextInput) ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                                <div className="w-12 h-12 rounded-[12px] bg-[#FFF0EF] text-[#E8312A] flex items-center justify-center mb-3">
-                                    <UploadCloud size={24} />
-                                </div>
-                                <h4 className="font-[900] text-[16px] text-[#111] mb-0.5">Drop your file here</h4>
-                                <p className="font-[600] text-[14px] text-[#999] mb-3">or tap to browse</p>
-                                <div className="flex gap-2">
-                                    {["PDF", "ZIP", "MP4", "PNG", "TXT"].map(k => (
-                                        <div key={k} className="h-6 px-2.5 rounded-full bg-surfaceAlt text-[11px] font-[700] text-[#666] flex items-center">
-                                            {k}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : showTextInput ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                                <input
-                                    type="text"
-                                    autoFocus
-                                    value={textInputValue}
-                                    onChange={(e) => setTextInputValue(e.target.value)}
-                                    placeholder="Paste a URL or type your prompt here..."
-                                    className="w-full h-[44px] rounded-[14px] border border-[#E8E8E8] px-3 text-[14px] outline-none focus:border-[#E8312A]"
-                                />
-                            </div>
-                        ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                                <div className="w-full h-[60px] flex items-center justify-between mb-3">
-                                    <div className="flex items-center flex-1 min-w-0 pr-3">
-                                        <div className="w-12 h-12 bg-[#F5F5F5] text-text rounded-[10px] flex items-center justify-center shrink-0">
-                                            <File size={24} />
-                                        </div>
-                                        <div className="ml-3 flex flex-col min-w-0">
-                                            <span className="font-[800] text-[14px] text-[#111] truncate">{files[0]?.name}</span>
-                                            <span className="text-[12px] text-[#666]">{(files[0]?.size / 1024 / 1024).toFixed(2)} MB</span>
-                                        </div>
-                                    </div>
-                                    <button onClick={(e) => { e.stopPropagation(); removeFile(0); }} className="w-8 h-8 rounded-full flex items-center justify-center text-[#E8312A] bg-[#FFF0EF] shrink-0">
-                                        <X size={16} strokeWidth={3} />
-                                    </button>
-                                </div>
-                                <button onClick={(e) => { e.stopPropagation(); setShowTextInput(true); removeFile(0); }} className="text-[12px] font-[700] text-[#999] hover:text-[#666]">
-                                    No file? Share a link or text prompt instead
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                    <ContentBuilder value={contentData} onChange={setContentData} />
 
                     {/* The Settings Summary Bar */}
                     <div className="w-full h-[52px] bg-white rounded-[14px] mt-[8px] flex overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] border border-[#E6E2D9]">
@@ -527,17 +413,17 @@ export const Landing = () => {
                     <div className="mt-[10px]">
                         <button
                             onClick={handleGenerate}
-                            disabled={isGenerating || (files.length === 0 && !textInputValue)}
+                            disabled={isGenerating || !(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0)}
                             className={`w-full h-[52px] rounded-[14px] font-[800] text-[16px] flex items-center justify-center gap-2 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.06)]
-                            ${(files.length > 0 || textInputValue) ? 'bg-[#E8312A] text-white' : 'bg-[#E8312A]/50 text-white'}`}
+                            ${(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) ? 'bg-[#E8312A] text-white' : 'bg-[#E8312A]/50 text-white'}`}
                         >
                             {isGenerating ? (
                                 <>
                                     <Loader2 size={20} className="animate-spin" />
                                     Generating...
                                 </>
-                            ) : (files.length === 0 && !textInputValue) ? (
-                                "Add a file to get started"
+                            ) : !(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) ? (
+                                "Add content to get started"
                             ) : (
                                 <>
                                     <LinkIcon size={18} />
@@ -957,9 +843,9 @@ export const Landing = () => {
 
                     <div className="flex items-center gap-6 text-[13px] font-bold text-textMid">
                         <Link to="/explore" className="hover:text-text transition-colors">Explore</Link>
-                        <a href="#" className="hover:text-text transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-text transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-text transition-colors">Contact</a>
+                        <Link to="/terms" className="hover:text-text transition-colors">Terms of Service</Link>
+                        <Link to="/privacy" className="hover:text-text transition-colors">Privacy Policy</Link>
+                        <Link to="/contact" className="hover:text-text transition-colors">Contact</Link>
                     </div>
 
                     <div className="text-[12px] font-bold text-textLight">

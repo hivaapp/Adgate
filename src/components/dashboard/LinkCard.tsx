@@ -1,9 +1,9 @@
 import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointerClick, Sparkles } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import type { DashboardLink } from './tabs/LinksTab';
 
 interface LinkCardProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    link: any;
+    link: DashboardLink;
     onEdit: () => void;
     onMore: () => void;
 }
@@ -114,7 +114,7 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                         </div>
                         <div className="flex flex-col justify-center items-center py-2 border-r border-border">
                             <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Clicks</span>
-                            <span className="text-[14px] font-black text-[#6366F1] leading-none">{link.clicks > 0 ? link.clicks.toLocaleString() : link.unlocks.toLocaleString()}</span>
+                            <span className="text-[14px] font-black text-[#6366F1] leading-none">{(link.clicks || 0) > 0 ? (link.clicks || 0).toLocaleString() : link.unlocks.toLocaleString()}</span>
                         </div>
                         <div className="flex flex-col justify-center items-center py-2 bg-successBg/50 rounded-r-[14px]">
                             <span className="text-[10px] sm:text-[11px] font-bold text-textLight uppercase tracking-wider mb-0.5">Earned</span>
