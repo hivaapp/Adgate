@@ -1,10 +1,9 @@
 import { useState, useCallback } from 'react';
-import { getRandomAd, getNextVideoAd } from '../lib/mockAds';
-import type { MockAd, MockVideoAd } from '../lib/mockAds';
+import { getNextVideoAd } from '../lib/mockAds';
+import type { MockVideoAd } from '../lib/mockAds';
 
 export function useAdSession() {
     const [currentResourceSlug, setCurrentResourceSlug] = useState<string | null>(null);
-    const [currentAdType, setCurrentAdType] = useState<"click" | "video">("click");
     const [totalAdsRequired, setTotalAdsRequired] = useState(0);
     const [adsClicked, setAdsClicked] = useState(0);
     const [sessionAdHistory, setSessionAdHistory] = useState<string[]>([]);
@@ -13,9 +12,8 @@ export function useAdSession() {
     // New states for custom sponsor ads
     const [customSponsorStep, setCustomSponsorStep] = useState<"watch" | "click" | null>(null);
 
-    const startSession = useCallback((slug: string, adType: "click" | "video", adCount: number, isCustomSponsor?: boolean) => {
+    const startSession = useCallback((slug: string, adCount: number, isCustomSponsor?: boolean) => {
         setCurrentResourceSlug(slug);
-        setCurrentAdType(adType);
         setTotalAdsRequired(adCount);
         setAdsClicked(0);
         setSessionAdHistory([]);
@@ -28,14 +26,11 @@ export function useAdSession() {
         }
     }, []);
 
-    const getNextAd = useCallback((): MockAd | MockVideoAd => {
-        if (currentAdType === 'video') {
-            return getNextVideoAd(sessionAdHistory);
-        }
-        return getRandomAd(sessionAdHistory);
-    }, [sessionAdHistory, currentAdType]);
+    const getNextAd = useCallback((): MockVideoAd => {
+        return getNextVideoAd(sessionAdHistory);
+    }, [sessionAdHistory]);
 
-    const registerClick = useCallback((adId: string) => {
+    const registerCompletion = useCallback((adId: string) => {
         setAdsClicked(prev => {
             const nextCount = prev + 1;
             if (nextCount >= totalAdsRequired) {
@@ -62,7 +57,6 @@ export function useAdSession() {
 
     const resetSession = useCallback(() => {
         setCurrentResourceSlug(null);
-        setCurrentAdType("click");
         setTotalAdsRequired(0);
         setAdsClicked(0);
         setSessionAdHistory([]);
@@ -72,14 +66,12 @@ export function useAdSession() {
 
     return {
         currentResourceSlug,
-        currentAdType,
         totalAdsRequired,
         adsClicked,
-        sessionAdHistory,
         isComplete,
         customSponsorStep,
         startSession,
-        registerClick,
+        registerCompletion,
         registerVideoWatch,
         registerSponsorClick,
         getNextAd,

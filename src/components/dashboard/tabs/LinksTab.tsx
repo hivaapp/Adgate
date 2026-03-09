@@ -17,7 +17,7 @@ export interface DashboardLink {
     unlocks: number;
     earned: number;
     status: string;
-    adType: 'video' | 'click';
+    adType: 'video';
     adSource?: string;
     customAd?: {
         requiresClick?: boolean;
@@ -60,7 +60,7 @@ export const LinksTab = ({ searchQuery, setSearchQuery }: { searchQuery: string,
             unlocks: 120,
             earned: 8.50,
             status: 'active',
-            adType: 'click'
+            adType: 'video'
         },
         {
             id: '3',
@@ -77,7 +77,7 @@ export const LinksTab = ({ searchQuery, setSearchQuery }: { searchQuery: string,
         }
     ]);
 
-    const sorts = ['All', 'Video Ads', 'Click Ads', 'Most Viewed', 'Most Earned', 'Newest', 'Disabled'];
+    const sorts = ['All', 'Most Viewed', 'Most Earned', 'Newest', 'Disabled'];
 
     const handleDelete = (id: string) => {
         setLinks(prev => prev.map(l => l.id === id ? { ...l, status: 'deleting' } : l));
@@ -100,8 +100,6 @@ export const LinksTab = ({ searchQuery, setSearchQuery }: { searchQuery: string,
         .filter(l => {
             if (activeSort === 'All') return true;
             if (activeSort === 'Disabled') return l.status === 'disabled';
-            if (activeSort === 'Video Ads') return l.adType === 'video';
-            if (activeSort === 'Click Ads') return l.adType === 'click';
             return true;
         })
         .sort((a, b) => {
@@ -201,7 +199,7 @@ export const LinksTab = ({ searchQuery, setSearchQuery }: { searchQuery: string,
                         unlocks: 0,
                         earned: 0,
                         status: 'active',
-                        adType: 'click'
+                        adType: 'video'
                     }, ...links]);
                 }}
             />

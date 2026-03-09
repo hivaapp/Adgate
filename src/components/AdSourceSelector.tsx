@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { AdTypeSelector } from "./AdTypeSelector";
 import { CustomSponsorForm, type CustomAdData } from "./CustomSponsorForm";
 
 export type AdSourceType = "platform" | "custom";
 
 interface AdSourceSelectorProps {
     value?: AdSourceType;
-    adType?: "click" | "video";
     customAd?: CustomAdData | null;
     onChange?: (source: AdSourceType) => void;
-    onAdTypeChange?: (type: "click" | "video") => void;
     onCustomAdChange?: (data: CustomAdData | null) => void;
     onErrorStateChange?: (hasErrors: boolean) => void;
     adCount?: number;
@@ -17,10 +14,8 @@ interface AdSourceSelectorProps {
 
 export function AdSourceSelector({
     value = "platform",
-    adType = "click",
     customAd,
     onChange,
-    onAdTypeChange,
     onCustomAdChange,
     onErrorStateChange,
     adCount = 1
@@ -61,7 +56,7 @@ export function AdSourceSelector({
                         </div>
                         <div className="flex flex-col">
                             <span className="text-[15px] font-[900] text-[#21201C]">Platform Ads</span>
-                            <span className="text-[12px] font-[600] text-[#6B6860] mt-0.5">AdGate finds sponsors for you</span>
+                            <span className="text-[13px] font-[600] text-[#666] mt-0.5">Short video ads — viewers watch to unlock</span>
                         </div>
                         <div className="ml-auto flex flex-col items-end gap-1.5 shrink-0">
                             <div className="w-5 h-5 rounded-full flex items-center justify-center transition-colors duration-150 border-2 border-gray-300">
@@ -77,6 +72,10 @@ export function AdSourceSelector({
                         </div>
                     </div>
 
+                    <div className="mt-3 w-full rounded-md bg-[#F5F5F5] py-2 px-3 text-left">
+                        <span className="text-[12px] font-[700] text-[#666]">📺 Short video ad · Skip after 5s · Viewer watches to unlock</span>
+                    </div>
+
                     <div className="w-full h-[1px] bg-[#E6E2D9] my-4" />
 
                     <div className="flex flex-col gap-2 flex-1">
@@ -90,12 +89,12 @@ export function AdSourceSelector({
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#A0622A] shrink-0" />
-                            <span className="text-[12px] font-[700] text-[#555]">Earn per view or click automatically</span>
+                            <span className="text-[12px] font-[700] text-[#555]">Earn per view automatically</span>
                         </div>
                     </div>
 
                     <div className="mt-3 pt-3 border-t border-transparent text-[12px] font-[800] text-[#417A55]">
-                        Est. ${(0.02 * adCount).toFixed(2)}–${(0.15 * adCount).toFixed(2)} per unlock
+                        Est. ${(0.05 * adCount).toFixed(2)}–${(0.15 * adCount).toFixed(2)} per unlock
                     </div>
                 </button>
 
@@ -153,18 +152,6 @@ export function AdSourceSelector({
             </div>
 
             {/* Dynamic Content Container */}
-            <div className={`grid transition-[grid-template-rows,opacity] duration-[250ms] ${isPlatform ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-                <div className="overflow-hidden">
-                    <div className="pt-3 pb-1 pl-3 ml-1 border-l-2 border-[#E8E8E8]">
-                        <AdTypeSelector
-                            value={adType}
-                            onChange={onAdTypeChange}
-                            adCount={adCount}
-                        />
-                    </div>
-                </div>
-            </div>
-
             <div className={`grid transition-[grid-template-rows,opacity] duration-[250ms] ${isCustom ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                 <div className="overflow-hidden">
                     <CustomSponsorForm
@@ -177,3 +164,4 @@ export function AdSourceSelector({
         </div>
     );
 }
+

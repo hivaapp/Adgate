@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UploadCloud, Link as LinkIcon, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, MousePointerClick, Settings } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Lock, Check, Loader2, ChevronDown, ChevronUp, Star, DollarSign, ArrowRight, Play, Settings } from 'lucide-react';
 import { SignInModal } from '../components/SignInModal';
 import { AdSourceSelector, type AdSourceType } from '../components/AdSourceSelector';
 import { type CustomAdData } from '../components/CustomSponsorForm';
@@ -38,8 +38,6 @@ export const Landing = () => {
     // Ad count state
     const [adCount, setAdCount] = useState<number>(1);
 
-    // Ad type state
-    const [adType, setAdType] = useState<"click" | "video">("click");
     // Ad Source State
     const [adSource, setAdSource] = useState<AdSourceType>("platform");
     const [customAd, setCustomAd] = useState<CustomAdData | null>(null);
@@ -59,7 +57,6 @@ export const Landing = () => {
     // Calc state
     const [calcViews, setCalcViews] = useState(2000);
     const [calcAds, setCalcAds] = useState(1);
-    const [calcAdType, setCalcAdType] = useState<"click" | "video">("video");
     const [calcDonateOn, setCalcDonateOn] = useState(false);
     const [calcShowFormula, setCalcShowFormula] = useState(false);
 
@@ -116,7 +113,7 @@ export const Landing = () => {
     };
     const activeEstimate = getAdEstimates(adCount);
 
-    const calcRate = calcAdType === 'video' ? 0.065 : 0.035;
+    const calcRate = 0.065;
     const calcGross = Math.round(calcViews * 0.6 * calcAds * calcRate);
     const calcNet = calcGross * 0.95;
     const calcFinal = calcDonateOn ? calcNet - (calcNet * 0.05) : calcNet;
@@ -215,8 +212,6 @@ export const Landing = () => {
                             <AdSourceSelector
                                 value={adSource}
                                 onChange={setAdSource}
-                                adType={adType}
-                                onAdTypeChange={setAdType}
                                 customAd={customAd}
                                 onCustomAdChange={setCustomAd}
                                 onErrorStateChange={setHasCustomAdErrors}
@@ -328,15 +323,15 @@ export const Landing = () => {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-2 mt-3 flex-wrap">
-                                    {adType === 'video' ? (
+                                    {adSource === 'platform' ? (
                                         <div className="h-[24px] px-2 rounded-full bg-[#E8312A] flex items-center gap-1.5 text-white shadow-sm">
                                             <Play size={10} fill="currentColor" />
                                             <span className="text-[12px] font-[700] uppercase tracking-wider">Video</span>
                                         </div>
                                     ) : (
-                                        <div className="h-[24px] px-2 rounded-full bg-[#333333] flex items-center gap-1.5 text-white shadow-sm">
-                                            <MousePointerClick size={10} />
-                                            <span className="text-[12px] font-[700] uppercase tracking-wider">Click</span>
+                                        <div className="h-[24px] px-2 rounded-full bg-[#6366F1] flex items-center gap-1.5 text-white shadow-sm">
+                                            <Star size={10} fill="currentColor" />
+                                            <span className="text-[12px] font-[700] uppercase tracking-wider">Custom</span>
                                         </div>
                                     )}
                                     <div className="h-[24px] px-2 rounded-full bg-surfaceAlt border border-border flex items-center text-textMid shadow-sm">
@@ -379,7 +374,7 @@ export const Landing = () => {
                             </div>
                             {hasConfiguredAdSetup ? (
                                 <span className="text-[11px] sm:text-[12px] font-[800] text-[#111] truncate px-1 max-w-[140px]">
-                                    {adSource === 'platform' ? `Platform \u00B7 ${adType === 'click' ? 'Click' : 'Video'}` : `Custom \u00B7 ${(customAd?.redirectUrl) ? 'Watch \u2192 Click' : 'Video'} \u00B7 ${customAd?.brandName || 'Sponsor'}`}
+                                    {adSource === 'platform' ? `Platform \u00B7 ${adCount} video ad${adCount > 1 ? 's' : ''}` : `Custom \u00B7 ${(customAd?.redirectUrl) ? 'Watch \u2192 Click' : 'Video'} \u00B7 ${customAd?.brandName || 'Sponsor'}`}
                                 </span>
                             ) : (
                                 <span className="text-[12px] italic text-[#BBBBBB]">Tap to set</span>
@@ -464,7 +459,7 @@ export const Landing = () => {
                             <div className="flex items-center gap-1.5 mt-3">
                                 {adSource === 'platform' ? (
                                     <div className="h-[22px] px-2 rounded-full bg-[#FFF0EF] flex items-center gap-1 text-[#E8312A]">
-                                        {adType === 'video' ? <Play size={8} fill="currentColor" /> : <MousePointerClick size={8} />}
+                                        <Play size={8} fill="currentColor" />
                                         <span className="text-[10px] font-[800] uppercase pt-px">Platform</span>
                                     </div>
                                 ) : (
@@ -545,7 +540,7 @@ export const Landing = () => {
                                 <DollarSign size={32} className="text-success" />
                             </div>
                             <h3 className="text-[18px] font-black text-text mb-2">3. Earn Revenue</h3>
-                            <p className="text-[14px] text-textMid font-bold">{howTab === 'custom' ? 'Direct viewers to your sponsor.' : 'Users click ad(s) to automatically unlock. You get paid for every click.'}</p>
+                            <p className="text-[14px] text-textMid font-bold">{howTab === 'custom' ? 'Direct viewers to your sponsor.' : 'Users watch a short video to automatically unlock. You get paid for every view.'}</p>
                         </div>
                     </div>
 
@@ -619,28 +614,20 @@ export const Landing = () => {
                             </div>
                         </div>
 
-                        {/* Input Row 2 - Ad Type */}
-                        <div className="flex flex-col gap-3 mb-6">
-                            <label className="text-[13px] font-[800] text-[#333]">Ad type</label>
-                            <div className="flex flex-col sm:flex-row gap-2">
-                                <button
-                                    onClick={() => setCalcAdType("video")}
-                                    className={`flex-1 h-[44px] text-[14px] font-[800] rounded-[6px] transition-colors border flex justify-center items-center gap-2 ${calcAdType === "video" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-border text-textMid bg-white hover:border-textLight'}`}
-                                >
-                                    🎬 Video Ads
-                                </button>
-                                <button
-                                    onClick={() => setCalcAdType("click")}
-                                    className={`flex-1 h-[44px] text-[14px] font-[800] rounded-[6px] transition-colors border flex justify-center items-center gap-2 ${calcAdType === "click" ? 'bg-[#E8312A] border-[#E8312A] text-white' : 'border-border text-textMid bg-white hover:border-textLight'}`}
-                                >
-                                    👆 Click Ads
-                                </button>
+                        {/* Information Row - Rates */}
+                        <div className="flex flex-col gap-2 mb-6 bg-surfaceAlt p-4 rounded-[12px] border border-border">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[13px] font-[800] text-text">Platform Video Ads</span>
+                                <span className="text-[13px] font-[800] text-success">$0.05–$0.15 <span className="text-textLight font-[600]">/ unlock</span></span>
                             </div>
-                            <div className="mt-1 relative group flex items-start flex-col">
-                                <button className="text-[12px] font-[700] text-[#6366F1] underline decoration-1 underline-offset-2 hover:text-[#4F46E5]">
-                                    Using your own sponsor? Your rate may vary.
-                                </button>
-                                <div className="mt-2 bg-[#F5F3FF] p-3 rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity absolute top-[20px] w-full text-left pointer-events-none z-10 shadow-sm border border-[#E0D8FE]">
+                            <span className="text-[12px] text-textMid font-[600]">Based on platform video ad CPMs.</span>
+                            
+                            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-2 relative group cursor-help">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[13px] font-[800] text-[#4F46E5]">Custom Sponsor</span>
+                                    <span className="text-[13px] font-[800] text-[#4F46E5] opacity-80 decoration-1 underline-offset-2 underline decoration-[#4F46E5]/30">Varies</span>
+                                </div>
+                                <div className="mt-1 bg-[#F5F3FF] p-3 rounded-[12px] opacity-0 group-hover:opacity-100 transition-opacity absolute top-[30px] w-full text-left pointer-events-none z-10 shadow-sm border border-[#E0D8FE]">
                                     <span className="text-[12px] text-textMid font-[600]">With a custom sponsor you keep 100% of your deal. AdGate takes zero commission. Your earnings are entirely between you and your sponsor.</span>
                                 </div>
                             </div>
@@ -868,8 +855,6 @@ export const Landing = () => {
                         <AdSourceSelector
                             value={adSource}
                             onChange={setAdSource}
-                            adType={adType}
-                            onAdTypeChange={setAdType}
                             customAd={customAd}
                             onCustomAdChange={setCustomAd}
                             onErrorStateChange={setHasCustomAdErrors}

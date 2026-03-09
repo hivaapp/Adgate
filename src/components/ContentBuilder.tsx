@@ -63,9 +63,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
     // Paste Detection
     const [pastePrompt, setPastePrompt] = useState<{ url: string, position: { top: number, left: number } } | null>(null);
 
-    // Handlers
-    // Handlers
-
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(true);
@@ -184,9 +181,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({ value, onChange,
     };
 
     const textLength = value.textContent.length;
-    const isTextMode = value.contentMode === 'text' || value.contentMode === 'both';
-    const isBothMode = value.contentMode === 'both';
-    const isFileMode = value.contentMode === 'file' || value.contentMode === 'both';
+    const isTextMode = true;
+    const isBothMode = true;
+    const isFileMode = true;
 
     return (
         <div className="w-full flex flex-col items-center">

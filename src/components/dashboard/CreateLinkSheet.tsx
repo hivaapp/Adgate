@@ -23,7 +23,6 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(1);
-    const [adType, setAdType] = useState<"click" | "video">("click");
     const [adSource, setAdSource] = useState<AdSourceType>("platform");
     const [customAd, setCustomAd] = useState<CustomAdData | null>(null);
     const [hasCustomAdErrors, setHasCustomAdErrors] = useState(true);
@@ -41,14 +40,11 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
         setIsSubmitting(true);
         startProgress();
 
-        const fallbackTitle = contentData.file ? contentData.file.name : (contentData.links[0]?.title || contentData.links[0]?.url || 'Untitled Resource');
-
         await createLink({
-            title: title || fallbackTitle,
+            title,
             description: desc,
             adCount: adSource === 'custom' ? 1 : adCount,
             donateEnabled: donate,
-            adType,
             adSource,
             customAd,
             fileType: contentData.file ? (contentData.file.name.split('.').pop()?.toUpperCase() || 'FILE') : (contentData.contentMode === 'text' ? 'TEXT' : 'BOTH'),
@@ -70,7 +66,6 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
             setTitle('');
             setDesc('');
             setAdCount(1);
-            setAdType('click');
             setDonate(false);
         }, 300);
     };
@@ -87,7 +82,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                 {/* Title and Description */}
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5 relative">
-                        <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Resource Title <span className="text-textLight font-semibold capitalize tracking-normal">(optional)</span></label>
+                        <label className="text-[12px] font-extrabold text-textMid uppercase tracking-wide">Resource Title</label>
                         <input
                             type="text"
                             className={`input-field h-[48px] text-[15px] font-bold ${title.length > 50 ? 'border-error/50 focus:border-error focus:ring-error focus:ring-1' : ''}`}
@@ -122,8 +117,6 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                     <AdSourceSelector
                         value={adSource}
                         onChange={setAdSource}
-                        adType={adType}
-                        onAdTypeChange={setAdType}
                         customAd={customAd}
                         onCustomAdChange={setCustomAd}
                         onErrorStateChange={setHasCustomAdErrors}
@@ -193,7 +186,7 @@ export const CreateLinkSheet = ({ isOpen, onClose, onSuccess }: CreateLinkSheetP
                         }
                         handleSubmit();
                     }}
-                    disabled={!(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) || isSubmitting}
+                    disabled={!(contentData.file || contentData.textContent.trim().length > 0 || contentData.links.length > 0) || !title || isSubmitting}
                     className="btn-primary w-full h-[52px] rounded-[14px] text-[16px]"
                 >
                     {isSubmitting ? (

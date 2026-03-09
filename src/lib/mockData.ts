@@ -85,7 +85,7 @@ export const mockLinks = [
         fileSize: "0 KB",
         adCount: 1,
         adSource: "platform",
-        adType: "click",
+        adType: "video",
         donateEnabled: true,
         isActive: true,
         viewCount: 304,
@@ -186,7 +186,7 @@ export const mockLinks = [
         fileSize: "4.2 MB",
         adCount: 1,
         adSource: "custom",
-        adType: "click",
+        adType: "video",
         customAd: {
             fileName: "novamind-promo.mp4",
             fileSize: 10240000,
@@ -298,7 +298,7 @@ export const mockLinks = [
         fileSize: "45.2 MB",
         adCount: 1,
         adSource: "custom",
-        adType: "click",
+        adType: "video",
         customAd: {
             fileName: "creatorpro-app.mp4",
             fileSize: 8500000,
@@ -376,7 +376,7 @@ export interface ExploreResource {
     adCount: number;
     unlockCount: string;
     category: string;
-    adType?: "click" | "video";
+    adType?: "video";
     isCustomSponsor?: boolean;
     sponsorName?: string;
     requiresClick?: boolean;
@@ -431,7 +431,7 @@ export const mockExploreResources: ExploreResource[] = [
         adCount: 2,
         unlockCount: "840",
         category: "Prompts",
-        adType: "click",
+        adType: "video",
     },
     {
         id: "exp_3",

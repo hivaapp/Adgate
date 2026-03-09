@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 deviceSplit: { mobile: 0, desktop: 0, tablet: 0 },
                 ...finalLinkData,
             };
-            if (!newLink.adType) newLink.adType = "click";
+            if (!newLink.adType) newLink.adType = "video";
             if (!newLink.adSource) newLink.adSource = "platform";
             setLinks([newLink, ...links]);
 

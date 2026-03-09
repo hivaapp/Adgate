@@ -351,7 +351,7 @@ export const Pricing = () => {
                             <div className="w-full h-px bg-white/20 mb-6" />
 
                             <div className="flex flex-col gap-0 mb-4 flex-1">
-                                {["Unlimited link creation", "Video and click ad types", "1–3 ads per unlock", "Supabase file storage up to 100MB", "Creator public profile page", "Referral program access", "Weekly payouts via Stripe", "Basic analytics per link"].map((feature, i) => (
+                                {["Unlimited link creation", "Video ad types", "1–3 ads per unlock", "Supabase file storage up to 100MB", "Creator public profile page", "Referral program access", "Weekly payouts via Stripe", "Basic analytics per link"].map((feature, i) => (
                                     <div key={i} className="flex items-center gap-3 h-[40px]">
                                         <Check size={16} className="text-white/80 shrink-0" />
                                         <span className="text-[13px] font-bold text-white/90">{feature}</span>

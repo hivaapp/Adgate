@@ -107,7 +107,7 @@ export const HowItWorks = () => {
                         {[
                             { step: "1", icon: "👤", tint: "bg-[#EFF6FF]", title: "Sign up in 10 seconds", desc: "Use Google, Twitter, GitHub, or Discord. No forms, no credit card, instant access." },
                             { step: "2", icon: "📤", tint: "bg-[#FFF0EF]", title: "Upload any file or resource", desc: "PDFs, ZIP files, prompt packs, guides, templates, images. Up to 100MB free. Or paste a link to external content." },
-                            { step: "3", icon: "🎯", tint: "bg-[#FFFBEB]", title: "Set your ad preferences", desc: "Pick how ads work — let AdGate serve Video or Click Ads automatically, or upload your own sponsor's creative for zero commission. Choose 1 to 3 ads per unlock for platform ads. Takes 30 seconds." },
+                            { step: "3", icon: "🎯", tint: "bg-[#FFFBEB]", title: "Set your ad preferences", desc: "Pick how ads work — let AdGate serve Video Ads automatically, or upload your own sponsor's creative for zero commission. Choose 1 to 3 ads per unlock for platform ads. Takes 30 seconds." },
                             { step: "4", icon: "🔗", tint: "bg-[#F5F3FF]", title: "Generate your shareable link", desc: "AdGate creates a unique URL like adgate.io/r/abc123 that you own. Share it anywhere. Your link works the same way regardless of ad type — one URL your audience can click from anywhere." },
                             { step: "5", icon: "📲", tint: "bg-[#ECFDF5]", title: "Post on any platform", desc: "Twitter, Instagram, YouTube descriptions, TikTok bio, Reddit posts, newsletters, Discord servers — anywhere." },
                             { step: "6", icon: "💰", tint: "bg-[#FEF3C7]", title: "Earn from every unlock", desc: "Your dashboard shows real-time views, unlocks, and earnings. Get paid weekly to Stripe." }
@@ -219,12 +219,12 @@ export const HowItWorks = () => {
                 </div>
             </div>
 
-            {/* Section 4 — The Three Ad Configurations */}
+            {/* Section 4 — The Two Ad Configurations */}
             <div id="ad-types" className="w-full bg-white py-[40px] px-5 flex flex-col items-center">
                 <div className="w-full max-w-[800px] flex flex-col items-center">
-                    <h2 className="text-[22px] font-black text-[#111] mb-2 text-center">The Three Ad Configurations</h2>
+                    <h2 className="text-[22px] font-black text-[#111] mb-2 text-center">The Two Ad Configurations</h2>
                     <p className="text-[14px] text-textMid mb-10 text-center max-w-[500px] leading-relaxed">
-                        Creators choose one of three setups when generating a link. Platform ads are automatic. Custom Sponsor is your own deal.
+                        Creators choose one of two setups when generating a link. Platform ads are automatic. Custom Sponsor is your own deal.
                     </p>
 
                     <div className="w-full flex text-left flex-col md:flex-row gap-4 mb-10 items-stretch">
@@ -240,17 +240,7 @@ export const HowItWorks = () => {
                             </ul>
                         </div>
 
-                        <div className="flex-1 bg-white border border-border border-l-[4px] border-l-[#888] p-4 rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex flex-col relative">
-                            <h3 className="text-[15px] font-black text-[#333] mb-4 pr-16 line-clamp-1 truncate w-full">Platform Click Ad</h3>
-                            <div className="absolute top-4 right-4 bg-[#FFF0EF] text-[#E8312A] px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase shrink-0">5% fee</div>
-                            <ul className="flex flex-col gap-2.5 text-[13px] font-medium text-textMid leading-[1.5] w-full">
-                                <li>✨ Viewer taps CTA</li>
-                                <li>✨ Opens in new tab</li>
-                                <li>✨ Confirmed tap counts</li>
-                                <li>✨ Est. $0.02–$0.08 / ad</li>
-                                <li>✨ Best for X / Reddit logic</li>
-                            </ul>
-                        </div>
+
 
                         <div className="flex-1 bg-[#FAFAFF] border border-border border-l-[4px] border-l-[#6366F1] p-4 rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06)] flex flex-col relative">
                             <h3 className="text-[15px] font-black text-[#6366F1] mb-[34px] pr-20 line-clamp-1 truncate w-[85%]">Custom Sponsor Ad</h3>
@@ -276,11 +266,7 @@ export const HowItWorks = () => {
                             <span className="text-[14px] font-medium text-textMid">$0.05–$0.15</span>
                             <span className="text-[14px] font-medium text-textMid">5%</span>
                         </div>
-                        <div className="grid grid-cols-[1.5fr_1fr_1fr] px-4 py-4 border-b border-[transparent] items-center">
-                            <span className="text-[14px] font-bold text-text">Platform Click</span>
-                            <span className="text-[14px] font-medium text-textMid">$0.02–$0.08</span>
-                            <span className="text-[14px] font-medium text-textMid">5%</span>
-                        </div>
+
                         <div className="grid grid-cols-[1.5fr_1fr_1fr] px-4 py-4 bg-[#F0FFF4] items-center border-t border-[#BBF7D0]">
                             <span className="text-[14px] font-black text-[#166534]">Custom Sponsor</span>
                             <span className="text-[14px] font-bold italic text-[#4C1D95]">Your negotiated rate</span>
@@ -296,13 +282,7 @@ export const HowItWorks = () => {
                                 <span className="text-[13px] font-medium text-textMid">Fee: 5%</span>
                             </div>
                         </div>
-                        <div className="bg-white border border-border rounded-[12px] p-4 flex flex-col gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                            <span className="font-black text-[14px] text-text">Platform Click</span>
-                            <div className="flex justify-between items-center">
-                                <span className="text-[13px] font-medium text-textMid">Est: $0.02–$0.08</span>
-                                <span className="text-[13px] font-medium text-textMid">Fee: 5%</span>
-                            </div>
-                        </div>
+
                         <div className="bg-[#F0FFF4] border border-[#BBF7D0] rounded-[12px] p-4 flex flex-col gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                             <span className="font-black text-[15px] text-[#166534]">Custom Sponsor</span>
                             <div className="flex flex-col gap-1">

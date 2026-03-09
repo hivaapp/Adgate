@@ -1,4 +1,4 @@
-import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, MousePointerClick, Sparkles } from 'lucide-react';
+import { Share2, Edit2, MoreHorizontal, FileIcon, ShieldAlert, Play, Sparkles } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import type { DashboardLink } from './tabs/LinksTab';
 
@@ -60,13 +60,9 @@ export const LinkCard = ({ link, onEdit, onMore }: LinkCardProps) => {
                     <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#6366F1] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
                         <Sparkles size={10} /> Sponsor
                     </span>
-                ) : link.adType === 'video' ? (
+                ) : (
                     <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#E8312A] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
                         <Play size={10} fill="currentColor" /> Video
-                    </span>
-                ) : (
-                    <span className="flex-shrink-0 h-[26px] px-[10px] rounded-[50px] bg-[#333333] text-[11px] font-[800] text-white flex items-center justify-center gap-1.5 shadow-sm">
-                        <MousePointerClick size={10} /> Click
                     </span>
                 )}
 

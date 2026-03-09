@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, MousePointer2, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick, ArrowRight } from 'lucide-react';
+import { FileIcon, FileText, FileArchive, Image as ImageIcon, CheckCircle2, Lock, Download, Twitter, MessageCircle, Copy, Check, Play, X, MousePointerClick, ArrowRight } from 'lucide-react';
 import { useAdSession } from '../hooks/useAdSession';
 import { useToast } from '../context/ToastContext';
-import { AdInterstitial } from '../components/AdInterstitial';
 import { VideoAdViewer } from '../components/VideoAdViewer';
 import { Navbar } from '../components/Navbar';
 import { mockExploreResources } from '../lib/mockData';
@@ -14,7 +13,7 @@ import type { CustomAdData } from '../components/CustomSponsorForm';
 export const ResourceUnlock = () => {
     const { slug } = useParams();
     const { addToast } = useToast();
-    const { startSession, registerClick, registerVideoWatch, registerSponsorClick, getNextAd, totalAdsRequired, adsClicked, isComplete, customSponsorStep } = useAdSession();
+    const { startSession, registerCompletion, registerVideoWatch, registerSponsorClick, getNextAd, totalAdsRequired, adsClicked, isComplete, customSponsorStep } = useAdSession();
 
     const [isShowingAd, setIsShowingAd] = useState(false);
     const [currentAd, setCurrentAd] = useState<MockAd | MockVideoAd | null>(null);
@@ -28,16 +27,16 @@ export const ResourceUnlock = () => {
     const resource = mockExploreResources.find(r => r.slug === slug);
 
     const isCustom = resource?.adSource === 'custom' || (resource?.isCustomSponsor ?? false);
-    const isVideo = isCustom ? true : resource?.adType === 'video';
+
     const requiresClick = isCustom && (!!resource?.customAd?.redirectUrl || (resource?.requiresClick ?? false));
 
     useEffect(() => {
         if (!resource || resource.isActive === false) return;
         // Initialize session on mount or slug change
-        startSession(slug || 'default', isVideo ? 'video' : 'click', resource.adCount, isCustom);
+        startSession(slug || 'default', resource.adCount, isCustom);
         // Set open graph tags (mock implementation via DOM)
         document.title = `${resource.title} - AdGate`;
-    }, [slug, resource?.adCount, startSession, resource?.title, isVideo, isCustom, resource?.isActive, resource]);
+    }, [slug, resource?.adCount, startSession, resource?.title, isCustom, resource?.isActive, resource]);
 
     const handleUnlockClick = useCallback(() => {
         if (customSponsorStep === "click") {
@@ -70,16 +69,7 @@ export const ResourceUnlock = () => {
         setIsShowingAd(false);
     };
 
-    const handleAdClick = () => {
-        registerClick(currentAd!.id);
-        setIsShowingAd(false);
-        const remaining = totalAdsRequired - adsClicked - 1;
-        if (remaining > 0) {
-            addToast(`Ad clicked! ${remaining} more to go`, 'success');
-        } else {
-            addToast('Last ad done! Revealing your content...', 'success');
-        }
-    };
+
 
     const handleVideoComplete = () => {
         if (isCustom) {
@@ -89,7 +79,7 @@ export const ResourceUnlock = () => {
                 addToast('Video complete! Revealing your content...', 'success');
             }
         } else {
-            registerClick(currentAd!.id);
+            registerCompletion(currentAd!.id);
             setIsShowingAd(false);
             const remaining = totalAdsRequired - adsClicked - 1;
             if (remaining > 0) {
@@ -109,7 +99,7 @@ export const ResourceUnlock = () => {
                 addToast('Video complete! Revealing your content...', 'success');
             }
         } else {
-            registerClick(currentAd!.id);
+            registerCompletion(currentAd!.id);
             setIsShowingAd(false);
             const remaining = totalAdsRequired - adsClicked - 1;
             if (remaining > 0) {
@@ -179,8 +169,8 @@ export const ResourceUnlock = () => {
 
     // Button text dynamic logic
     const remainingAds = totalAdsRequired - adsClicked;
-    let buttonText = isVideo ? "Watch Video to Unlock" : "Click Ad to Unlock";
-    let buttonIcon = isVideo ? <Play size={18} fill="currentColor" /> : <MousePointer2 size={18} />;
+    let buttonText = "Watch Video to Unlock";
+    let buttonIcon = <Play size={18} fill="currentColor" />;
     let buttonBg = "bg-brand hover:bg-brand-hover";
 
     if (isCustom) {
@@ -199,11 +189,11 @@ export const ResourceUnlock = () => {
         }
     } else {
         if (remainingAds > 1 && remainingAds !== totalAdsRequired) {
-            buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
+            buttonText = `Watch ${remainingAds} Videos to Unlock`;
         } else if (remainingAds === 1 && totalAdsRequired > 1) {
-            buttonText = isVideo ? "One More Video — Almost There" : "One More Ad — Almost There";
+            buttonText = "One More Video — Almost There";
         } else if (remainingAds > 1) {
-            buttonText = isVideo ? `Watch ${remainingAds} Videos to Unlock` : `Click ${remainingAds} Ads to Unlock`;
+            buttonText = `Watch ${remainingAds} Videos to Unlock`;
         }
     }
 
@@ -290,7 +280,7 @@ export const ResourceUnlock = () => {
                                 </div>
                             ) : (
                                 <span className="px-2 py-0.5 bg-brandTint text-brand rounded-[14px] text-[11px] flex items-center gap-1">
-                                    {isVideo ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {resource.adCount} {isVideo ? 'Video' : 'Ad'}{resource.adCount > 1 ? 's' : ''}
+                                    <Play size={10} fill="currentColor" /> {resource.adCount} Video{resource.adCount > 1 ? 's' : ''}
                                 </span>
                             )}
 
@@ -408,13 +398,13 @@ export const ResourceUnlock = () => {
                                                         isActive ? 'bg-white border-brand text-brand animate-pulseRing' :
                                                             'bg-white border-border text-border'}
                                                 `}
-                                                aria-label={isDone ? `Step ${idx+1} complete` : isActive ? `Current Step: ${isVideo ? 'Watch Video' : 'Click Ad'} ${idx+1}` : `Step ${idx+1} pending`}
+                                                aria-label={isDone ? `Step ${idx+1} complete` : isActive ? `Current Step: Watch Video ${idx+1}` : `Step ${idx+1} pending`}
                                                 role="status"
                                                 >
-                                                    {isDone ? <Check size={18} strokeWidth={3} /> : (isVideo ? <Play size={16} fill={isActive ? "currentColor" : "none"} /> : <MousePointer2 size={16} />)}
+                                                    {isDone ? <Check size={18} strokeWidth={3} /> : <Play size={16} fill={isActive ? "currentColor" : "none"} />}
                                                 </div>
                                                 <span className={`text-[10px] font-bold ${isDone ? 'text-success' : isActive ? 'text-brand' : 'text-textLight'}`}>
-                                                    {isVideo ? 'Video' : 'Ad'} {idx + 1}
+                                                    Video {idx + 1}
                                                 </span>
                                             </div>
                                         );
@@ -429,15 +419,10 @@ export const ResourceUnlock = () => {
                                             {customSponsorStep === "click" ? "Great \u2014 now visit the sponsor's site to unlock your content." : "Watch the sponsor video, then visit their site to unlock."}
                                         </p>
                                     </>
-                                ) : isVideo ? (
+                                ) : (
                                     <>
                                         <p className="text-[14px] font-bold text-text mb-1">Watch short videos below to unlock your free resource.</p>
                                         <p className="text-[12px] font-semibold text-textMid">Enjoy {totalAdsRequired} quick videos.</p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p className="text-[14px] font-bold text-text mb-1">Click on each ad below to unlock your free resource.</p>
-                                        <p className="text-[12px] font-semibold text-textMid">Each click opens the ad in a new tab. Come back here after each one.</p>
                                     </>
                                 )}
                             </div>
@@ -540,7 +525,7 @@ export const ResourceUnlock = () => {
                         popupBlocked={popupBlocked}
                         onFallbackClick={handleSponsorClickFallback}
                     />
-                ) : isVideo && currentAd ? (
+                ) : currentAd ? (
                     <VideoAdViewer
                         ad={currentAd as MockVideoAd}
                         onCompleted={handleVideoComplete}
@@ -548,14 +533,6 @@ export const ResourceUnlock = () => {
                         isCustom={isCustom}
                         customAd={resource.customAd}
                         requiresClick={requiresClick}
-                    />
-                ) : currentAd ? (
-                    <AdInterstitial
-                        ad={currentAd as MockAd}
-                        onClose={handleAdClose}
-                        onClick={handleAdClick}
-                        isCustom={isCustom}
-                        customAd={resource.customAd}
                     />
                 ) : null
             )}

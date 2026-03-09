@@ -3,20 +3,19 @@ import { BottomSheet } from '../ui/BottomSheet';
 import { FileIcon, TreeDeciduous } from 'lucide-react';
 import { useProgress } from '../../context/ProgressContext';
 import { useAuth } from '../../context/AuthContext';
-import { AdTypeSelector } from '../AdTypeSelector';
 
 interface EditLinkSheetProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    link: { id: string; title: string; description?: string; adCount: number; adType?: "click" | "video"; donateEnabled?: boolean; donate?: boolean; type?: string; } | null | undefined;
+    link: { id: string; title: string; description?: string; adCount: number; adType?: "video"; donateEnabled?: boolean; donate?: boolean; type?: string; } | null | undefined;
 }
 
 export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkSheetProps) => {
     const [title, setTitle] = useState(link?.title || '');
     const [desc, setDesc] = useState('');
     const [adCount, setAdCount] = useState(link?.adCount || 1);
-    const [adType, setAdType] = useState<"click" | "video">(link?.adType || 'click');
+
     const [donate, setDonate] = useState(link?.donateEnabled || link?.donate || false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [prevLink, setPrevLink] = useState(link);
@@ -30,7 +29,6 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
             setTitle(link.title);
             setDesc(link.description || '');
             setAdCount(link.adCount);
-            setAdType(link.adType || 'click');
             setDonate(link.donateEnabled || link.donate || false);
         }
     }
@@ -44,8 +42,7 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
             title,
             description: desc,
             adCount,
-            donateEnabled: donate,
-            adType
+            donateEnabled: donate
         });
 
         setIsSubmitting(false);
@@ -109,11 +106,7 @@ export const EditLinkSheet = ({ isOpen, onClose, onSuccess, link }: EditLinkShee
                     </div>
                 </div>
 
-                {/* Ad Type */}
-                <div className="flex flex-col gap-3">
-                    <label className="text-[13px] font-extrabold text-textMid uppercase tracking-wide">Ad Type</label>
-                    <AdTypeSelector value={adType} onChange={setAdType} adCount={adCount} />
-                </div>
+
 
                 {/* Ad Count */}
                 <div className="flex flex-col gap-3">

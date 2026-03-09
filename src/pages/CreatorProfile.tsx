@@ -1,15 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
-import { FileIcon, ShieldAlert, Sparkles, User2, Play, MousePointerClick } from 'lucide-react';
+import { FileIcon, ShieldAlert, Sparkles, User2, Play } from 'lucide-react';
 
 export const CreatorProfile = () => {
     const { username } = useParams();
 
     // Mock links data
     const links = [
-        { id: '1', title: 'Figma Complete UI Kit 2026', type: 'FILE', views: 1205, adCount: 2, adType: 'video' },
-        { id: '2', title: 'Notion Life Planner Template', type: 'LINK', views: 804, adCount: 1, adType: 'video' },
-        { id: '3', title: '50+ Free Procreate Brushes', type: 'FILE', views: 3200, adCount: 2, donate: true, adType: 'click' },
-        { id: '4', title: 'Design Interview Prep Guide', type: 'FILE', views: 420, adCount: 3, adType: 'click' },
+        { id: '1', title: 'Figma Complete UI Kit 2026', type: 'FILE', views: 1205, adCount: 2 },
+        { id: '2', title: 'Notion Life Planner Template', type: 'LINK', views: 804, adCount: 1 },
+        { id: '3', title: '50+ Free Procreate Brushes', type: 'FILE', views: 3200, adCount: 2, donate: true },
+        { id: '4', title: 'Design Interview Prep Guide', type: 'FILE', views: 420, adCount: 3 },
     ];
 
     return (
@@ -91,7 +91,7 @@ export const CreatorProfile = () => {
                                         </span>
                                         <div className="flex items-center gap-1 text-[12px] font-bold text-textLight">
                                             <ShieldAlert size={12} strokeWidth={3} />
-                                            {link.adCount} {link.adType === 'video' ? 'Video' : 'Ad'}{link.adCount > 1 ? 's' : ''}
+                                            {link.adCount} Video{link.adCount > 1 ? 's' : ''}
                                         </div>
                                         {link.donate && (
                                             <div className="flex items-center gap-1 text-[11px] font-[800] text-[#166534] bg-[#EBF5EE] px-1.5 py-0.5 rounded-[14px] ml-auto sm:ml-2 shrink-0">
@@ -103,7 +103,7 @@ export const CreatorProfile = () => {
                             </div>
 
                             <div className="shrink-0 h-[40px] px-5 bg-text hover:bg-black text-white rounded-full font-black text-[13px] flex items-center justify-center relative z-10 transition-colors shadow-sm gap-1.5">
-                                {link.adType === 'video' ? <Play size={14} fill="currentColor" /> : <MousePointerClick size={14} />}
+                                <Play size={14} fill="currentColor" />
                                 Unlock
                             </div>
                         </Link>

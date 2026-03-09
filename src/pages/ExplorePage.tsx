@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useLayoutEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Grid, List as ListIcon, ChevronRight, Play, MousePointerClick, Sparkles, X } from 'lucide-react';
+import { Search, Grid, List as ListIcon, ChevronRight, Play, Sparkles, X } from 'lucide-react';
 import { mockExploreResources, type ExploreResource } from '../lib/mockData';
 import { getAvatarColor } from '../lib/utils';
 
@@ -207,7 +207,7 @@ export const ExplorePage = () => {
                                             {r.isCustomSponsor ? (
                                                 <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded-[14px] flex items-center gap-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
                                             ) : (
-                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />}</div> {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                                <span className="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] flex items-center gap-1"><div className="w-3 h-3 flex items-center justify-center"><Play size={10} fill="currentColor" /></div> {r.adCount} Video{r.adCount > 1 ? 's' : ''}</span>
                                             )}
                                         </div>
 
@@ -242,7 +242,7 @@ export const ExplorePage = () => {
                                         {r.isCustomSponsor ? (
                                             <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-[#EDE9FE] text-[#4C1D95] rounded-[14px] mb-1"><Sparkles size={10} /> {r.requiresClick ? 'Watch \u2192 Click' : 'Video Only'} · {r.sponsorName}</span>
                                         ) : (
-                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] mb-1">{r.adType === 'video' ? <Play size={10} fill="currentColor" /> : <MousePointerClick size={10} />} {r.adCount} {r.adType === 'video' ? 'Video' : 'Ad'}{r.adCount > 1 ? 's' : ''}</span>
+                                            <span className="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 bg-brandTint text-brand rounded-[14px] mb-1"><Play size={10} fill="currentColor" /> {r.adCount} Video{r.adCount > 1 ? 's' : ''}</span>
                                         )}
                                         <span className="text-[11px] font-bold text-textLight">{r.unlockCount} unlocks</span>
                                     </div>

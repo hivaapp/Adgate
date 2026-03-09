@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, Play, MousePointerClick } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 
 const CATEGORIES = [
     "All", "AI & Prompts", "Education", "Design", "Fitness",
@@ -20,8 +20,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$42–75/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$210–375/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
+        bestAd: "video"
     },
     {
         id: 2, category: "AI & Prompts", emoji: "🤖", tint: "bg-[#FFF0EF]",
@@ -33,7 +33,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$33–60/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$165–300/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
     {
@@ -46,8 +46,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$48–80/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$240–400/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
+        bestAd: "video"
     },
 
     // Education
@@ -61,7 +61,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$25–50/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$125–250/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
     {
@@ -74,7 +74,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$60–100/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$300–500/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
         bestAd: "video"
     },
     {
@@ -87,8 +87,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$28–52/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$140–260/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
+        bestAd: "video"
     },
 
     // Design
@@ -102,8 +102,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$72–120/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$360–600/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
+        bestAd: "video"
     },
     {
         id: 8, category: "Design", emoji: "🎨", tint: "bg-[#F5F3FF]",
@@ -115,8 +115,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$40–72/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$200–360/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
+        bestAd: "video"
     },
     {
         id: 9, category: "Design", emoji: "🎨", tint: "bg-[#F5F3FF]",
@@ -128,7 +128,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$56–88/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$280–440/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
 
@@ -143,7 +143,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$36–64/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$180–320/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
     {
@@ -156,7 +156,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$32–56/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$160–280/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
 
@@ -171,8 +171,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$80–140/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$400–700/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
+        bestAd: "video"
     },
     {
         id: 13, category: "Business", emoji: "💼", tint: "bg-[#FFFBEB]",
@@ -184,8 +184,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$72–112/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$360–560/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
+        bestAd: "video"
     },
 
     // Gaming
@@ -199,7 +199,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$44–76/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$220–380/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
         bestAd: "video"
     },
 
@@ -214,8 +214,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$64–104/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$320–520/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
+        bestAd: "video"
     },
     {
         id: 16, category: "Coding", emoji: "💻", tint: "bg-[#F0FDFA]",
@@ -227,8 +227,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$48–80/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$240–400/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
+        bestAd: "video"
     },
 
     // Photography
@@ -242,7 +242,7 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$88–152/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$440–760/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 2 ads, $0.035–0.065/unlock",
+        calcNote: "Based on 60% unlock rate, 2 ads, $0.065/unlock",
         bestAd: "video"
     },
 
@@ -257,8 +257,8 @@ const USE_CASES = [
             { label: "Medium", sub: "2,000 monthly clicks", range: "$40–68/mo" },
             { label: "Large", sub: "10,000 monthly clicks", range: "$200–340/mo" }
         ],
-        calcNote: "Based on 60% unlock rate, 1 ad, $0.035–0.065/unlock",
-        bestAd: "click"
+        calcNote: "Based on 60% unlock rate, 1 ad, $0.065/unlock",
+        bestAd: "video"
     },
     // Custom Sponsor
     {
@@ -361,7 +361,7 @@ export const UseCases = () => {
 
                 <div className="w-full max-w-[800px] flex flex-row items-center justify-center gap-[24px] sm:gap-[64px] border-t border-white/10 pt-8">
                     <div className="flex flex-col items-center">
-                        <span className="text-[24px] font-black text-white leading-none">$0.035</span>
+                        <span className="text-[24px] font-black text-white leading-none">$0.065</span>
                         <span className="text-[11px] font-semibold text-white/60 mt-2">avg per unlock</span>
                     </div>
                     <div className="flex flex-col items-center">
@@ -457,20 +457,15 @@ export const UseCases = () => {
                                 <div className="w-full flex items-center justify-between border-t border-border pt-4">
                                     <div className="flex items-center gap-2">
                                         <span className="text-[11px] font-bold text-textMid">Best ad type</span>
-                                        {uc.bestAd === 'video' ? (
-                                            <div className="h-[22px] px-2 rounded-full bg-[#E8312A] flex items-center gap-1 text-white shadow-sm">
-                                                <Play size={10} fill="currentColor" />
-                                                <span className="text-[10px] font-black uppercase tracking-wider">Video</span>
-                                            </div>
-                                        ) : uc.bestAd === 'custom' ? (
+                                        {uc.bestAd === 'custom' ? (
                                             <div className="h-[22px] px-2 rounded-full bg-[#6366F1] flex items-center gap-1 text-white shadow-sm">
                                                 <span className="text-[10px]">✨</span>
                                                 <span className="text-[10px] font-black uppercase tracking-wider">Custom Sponsor</span>
                                             </div>
                                         ) : (
-                                            <div className="h-[22px] px-2 rounded-full bg-[#333333] flex items-center gap-1 text-white shadow-sm">
-                                                <MousePointerClick size={10} />
-                                                <span className="text-[10px] font-black uppercase tracking-wider">Click</span>
+                                            <div className="h-[22px] px-2 rounded-full bg-[#E8312A] flex items-center gap-1 text-white shadow-sm">
+                                                <Play size={10} fill="currentColor" />
+                                                <span className="text-[10px] font-black uppercase tracking-wider">Video</span>
                                             </div>
                                         )}
                                     </div>
@@ -499,7 +494,6 @@ export const UseCases = () => {
                         {[
                             { f: "Unlock Rate", v: "60%", n: "Of viewers who click the link, 60% complete the ads" },
                             { f: "Video Ad CPM", v: "$0.065 per unlock", n: "Per completed video watch" },
-                            { f: "Click Ad Rate", v: "$0.035 per click", n: "Per verified sponsor link click" },
                             { f: "Creator Share", v: "95%", n: "After 5% platform fee at payout" }
                         ].map((row, i) => (
                             <div key={i} className={`w-full p-4 flex flex-col sm:flex-row flex-wrap sm:items-center ${i > 0 ? 'border-t border-border' : ''}`}>
