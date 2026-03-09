@@ -41,7 +41,7 @@ export interface LinkData {
         impressions?: number;
         videoWatches?: number;
         clicks?: number;
-    };
+    } | null;
     [key: string]: unknown;
 }
 
